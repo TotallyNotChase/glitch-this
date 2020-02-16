@@ -14,6 +14,9 @@ def glitch_right(start_copy_x, start_copy_y, width, height, paste_x, paste_y):
     outputarr[paste_y : paste_y + height, paste_x : paste_x + width] = right_chunk
     outputarr[paste_y : paste_y + height, 0 : paste_x] = wrap_chunk
 
+def get_random_channel():
+    return randint(0, pixel_tuple_len - 1)
+
 def copy_channel(start_copy_x, start_copy_y, width, height, channel_index):
     start_y = start_copy_y
     stop_y = start_y + height
@@ -70,9 +73,10 @@ channel_chunk_start_x = randint(0, int(img_width / 4))
 channel_chunk_width = img_width - channel_chunk_start_x
 channel_chunk_start_y = randint(0, int(img_height / 4))
 channel_chunk_height = img_height - channel_chunk_start_y
-
-channel_chunk = copy_channel(channel_chunk_start_x, channel_chunk_start_y, channel_chunk_width, channel_chunk_height, 0)
-paste_channel(randint(0, channel_chunk_start_x), randint(0, channel_chunk_start_y), channel_chunk_width, channel_chunk_height, 0, channel_chunk)
+
+channel_index = get_random_channel()
+channel_chunk = copy_channel(channel_chunk_start_x, channel_chunk_start_y, channel_chunk_width, channel_chunk_height, channel_index)
+paste_channel(randint(0, channel_chunk_start_x), randint(0, channel_chunk_start_y), channel_chunk_width, channel_chunk_height, channel_index, channel_chunk)
 
 # Converting 2D array back to original 3D array and saving as glitched image
 outputarr = np.reshape(outputarr, (img_height, img_width, pixel_tuple_len))
