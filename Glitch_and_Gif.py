@@ -3,24 +3,46 @@ from random import randint
 import numpy as np
 
 def glitch_left(start_copy_x, start_copy_y, width, height, start_paste_x, start_paste_y):
-    """ 
-    Grabs a rectange of given width and height from inputarr and shifts it leftwards
-    Any lost pixel data is wrapped back to the right
+    # Grabs a rectange of given width and height from inputarr and shifts it leftwards
+    # Any lost pixel data is wrapped back to the right
+    """
     Consider an array like so-
     [[ 0,  1,  2,  3],
     [ 4,  5,  6,  7],
     [ 8,  9, 10, 11],
     [12, 13, 14, 15]]
-    If we were to take 
+    If we were to left shift the first row only, starting from the 1st index; 
+    i.e a rectangle of width = 3, height = 1, start_copy_x = 1, start_copy_y = 0
+    We'd grab [1, 2, 3] and left shift it until the start of row
+    so it'd look like [[1, 2, 3, 3]]
+    Now we wrap around the lost values, i.e 0
+    now it'd look like [[1, 2, 3, 0]]
+    That's the end result!
     """
-    left_chunk = inputarr[start_copy_y : start_copy_y + height, start_copy_x : img_width]
+    left_chunk = inputarr[start_copy_y : start_copy_y + height, start_copy_x : start_copy_x + width]
     wrap_chunk = inputarr[start_copy_y : start_copy_y + height, 0 : start_copy_x]
     outputarr[start_paste_y : start_paste_y + height, start_paste_x : start_paste_x + width] = left_chunk
     outputarr[start_paste_y : start_paste_y + height, start_paste_x + width : img_width] = wrap_chunk
 
 def glitch_right(start_copy_x, start_copy_y, width, height, paste_x, paste_y):
-    right_chunk = inputarr[start_copy_y : start_copy_y + height, start_copy_x : width]
-    wrap_chunk = inputarr[start_copy_y : start_copy_y + height, width : img_width]
+    # Grabs a rectange of given width and height from inputarr and shifts it leftwards
+    # Any lost pixel data is wrapped back to the right
+    """ 
+    Consider an array like so-
+    [[ 0,  1,  2,  3],
+    [ 4,  5,  6,  7],
+    [ 8,  9, 10, 11],
+    [12, 13, 14, 15]]
+    If we were to right shift the first row only, starting from the 0th index; 
+    i.e a rectangle of width = 3, height = 1, start_copy_x = 0, start_copy_y = 0
+    We'd grab [0, 1, 2] and right shift it until the end of row
+    so it'd look like [[0, 0, 1, 2]]
+    Now we wrap around the lost values, i.e 3
+    now it'd look like [[3, 0, 1, 2]]
+    That's the end result!
+    """
+    right_chunk = inputarr[start_copy_y : start_copy_y + height, start_copy_x : start_copy_x + width]
+    wrap_chunk = inputarr[start_copy_y : start_copy_y + height, start_copy_x + width : img_width]
     outputarr[paste_y : paste_y + height, paste_x : paste_x + width] = right_chunk
     outputarr[paste_y : paste_y + height, 0 : paste_x] = wrap_chunk
 
