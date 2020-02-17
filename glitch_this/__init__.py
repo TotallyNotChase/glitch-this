@@ -1,1 +1,1 @@
-from .glitch_this.py import ImageGlitcher
+from .glitch_this import ImageGlitcher

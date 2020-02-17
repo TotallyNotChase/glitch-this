@@ -1,4 +1,7 @@
+*.mypy_cache
 */.mypy_cache
+*.__pycache__
+*/__pycache__
 test.py
 test.png
 glitched_test.png
