@@ -1,6 +1,7 @@
 from PIL import Image
 from random import randint
 import numpy as np
+import os
 
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
@@ -10,7 +11,17 @@ class ImageGlitcher:
         Glitches the image located at given path
         Intensity of glitch depends on glitch_amount
         """
-        src_img = Image.open(src_img_path)
+        # Sanity checking the inputs
+        if not 1 <= glitch_amount <= 10:
+            raise Exception('glitch_amount parameter must be in range 1 to 10, inclusive')
+        if not os.path.exists(src_img_path):
+            raise Exception('No image found at given path')
+                
+        try:
+            src_img = Image.open(src_img_path)
+        except:
+            raise Exception('File format not supported - must be an image file')
+        
         # Fetching image attributes
         pixel_tuple_len = len(src_img.getbands())
         img_width, img_height = src_img.size
@@ -54,7 +65,7 @@ class ImageGlitcher:
         
         # Channel offset for glitched colors
         # The start point (x, y) is randomized and the end point is always (img_width, img_height)
-        channel_chunk_start_x = randint(0, int(img_width / glitch_amount ** 2))
+        channel_chunk_start_x = randint(1, int(img_width / glitch_amount ** 2))
         channel_chunk_width = img_width - channel_chunk_start_x
         channel_chunk_start_y = randint(0, int(img_height / glitch_amount ** 2))
         channel_chunk_height = img_height - channel_chunk_start_y
@@ -63,7 +74,7 @@ class ImageGlitcher:
         channel_chunk = self.__copy_channel(channel_chunk_start_x, channel_chunk_start_y, channel_chunk_width, channel_chunk_height, channel_index)
         # To ensure that the paste_channel has the same width and height, the start point must not be
         # greater than (channel_chunk_start_x, channel_chunk_y) or we will end up running out of slots
-        self.__paste_channel(randint(0, channel_chunk_start_x), randint(0, channel_chunk_start_y), channel_chunk_width, channel_chunk_height, channel_index, channel_chunk)
+        self.__paste_channel(randint(1, channel_chunk_start_x), randint(0, channel_chunk_start_y), channel_chunk_width, channel_chunk_height, channel_index, channel_chunk)
 
         # Converting 2D array back to original 3D array
         self.outputarr = np.reshape(self.outputarr, (img_height, img_width, pixel_tuple_len))
