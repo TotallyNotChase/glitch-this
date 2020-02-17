@@ -1,0 +1,4 @@
+*/.mypy_cache
+test.py
+test.png
+glitched_test.png
