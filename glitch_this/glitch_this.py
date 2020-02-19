@@ -42,7 +42,7 @@ class ImageGlitcher:
         max_offset = int((glitch_amount ** 2 / 100) * img_width)
         for _ in range(0, glitch_amount * 2):
             # Setting up offset needed for the randomized glitching
-            current_offset = randint(0, max_offset)
+            current_offset = randint(-max_offset, max_offset)
 
             if current_offset is 0:
                 # Can't wrap left OR right when offset is 0, End of Array
