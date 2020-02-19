@@ -8,8 +8,8 @@ class ImageGlitcher:
 
     def glitch_image(self, src_img_path, glitch_amount):
         """
-         Glitches the image located at given path
-         Intensity of glitch depends on glitch_amount
+         Sets up values needed for glitching the image
+         Returns created Image object
         """
         # Sanity checking the inputs
         if not 1 <= glitch_amount <= 10:
@@ -23,27 +23,26 @@ class ImageGlitcher:
             raise Exception('File format not supported - must be an image file')
 
         # Fetching image attributes
-        pixel_tuple_len = len(src_img.getbands())
-        img_width, img_height = src_img.size
-        img_filename = src_img.filename
-        img_mode = src_img.mode
-
-        # Assigning global img attributes
-        self.img_width = img_width
-        self.img_height = img_height
-        self.pixel_tuple_len = pixel_tuple_len
+        self.pixel_tuple_len = len(src_img.getbands())
+        self.img_width, self.img_height = src_img.size
+        self.img_mode = src_img.mode
 
         # Creating 3D arrays with pixel data
         self.inputarr = np.asarray(src_img)
         self.outputarr = np.array(src_img)
 
         # Glitching begins here
+        return self.get_glitched_img(glitch_amount)
 
-        max_offset = int((glitch_amount ** 2 / 100) * img_width)
+    def get_glitched_img(self, glitch_amount):
+        """
+         Glitches the image located at given path
+         Intensity of glitch depends on glitch_amount
+        """
+        max_offset = int((glitch_amount ** 2 / 100) * self.img_width)
         for _ in range(0, glitch_amount * 2):
             # Setting up offset needed for the randomized glitching
             current_offset = randint(-max_offset, max_offset)
-
             if current_offset is 0:
                 # Can't wrap left OR right when offset is 0, End of Array
                 continue
@@ -57,11 +56,11 @@ class ImageGlitcher:
                 self.glitch_right(current_offset)
 
         # Channel offset for glitched colors
-        # The start point (y, x) as well as the channel is randomized
+        # The start point (y, x) is randomized
         self.color_offset(randint(-glitch_amount * 2, glitch_amount * 2), randint(-glitch_amount * 2, glitch_amount * 2), self.get_random_channel())
 
         # Creating glitched image from output array
-        glitch_img = Image.fromarray(self.outputarr, img_mode)
+        glitch_img = Image.fromarray(self.outputarr, self.img_mode)
         return glitch_img
 
     def glitch_left(self, offset):

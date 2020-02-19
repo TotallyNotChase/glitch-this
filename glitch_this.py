@@ -112,6 +112,37 @@ def get_random_channel():
     # For an RGB image, a 0th index represents the RED channel
     return randint(0, pixel_tuple_len - 1)
 
+def get_glitch_image():
+    """
+     Glitches the image located at given path
+     Intensity of glitch depends on glitch_amount
+    """
+    max_offset = int((glitch_amount ** 2 / 100) * img_width)
+    for _ in range(0, glitch_amount * 2):
+        # Setting up values needed for the randomized glitching
+        current_offset = randint(-max_offset, max_offset)
+
+        if current_offset is 0:
+            # Can't wrap left OR right when offset is 0, End of Array
+            continue
+        if current_offset < 0:
+            # Grab a rectangle of specific width and heigh, shift it left by a specified offset
+            # Wrap around the lost pixel data from the right
+            glitch_left(-current_offset)
+        else:
+            # Grab a rectangle of specific width and height, shift it right by a specified offset
+            # Wrap around the lost pixel data from the left
+            glitch_right(current_offset)
+
+
+    # Channel offset for glitched colors
+    # The start point (x, y) and the end point, determined by width, height, are randomized
+    color_offset(randint(-glitch_amount * 2, glitch_amount * 2), randint(-glitch_amount * 2, glitch_amount * 2), get_random_channel())
+
+    # Creating glitched image from output array
+    glitch_img = Image.fromarray(outputarr, img_mode)
+    return glitch_img
+
 if __name__ == '__main__':
     try:
         src_img = Image.open(args.src_img_path)
@@ -136,38 +167,7 @@ if __name__ == '__main__':
 
     # Glitching begins here
     glitch_amount = args.glitch_level
-    max_offset = int((glitch_amount ** 2 / 100) * img_width)
-    for _ in range(0, glitch_amount * 2):
-        # Setting up values needed for the randomized glitching
-        start_y = randint(0, img_height)
-        chunk_height = randint(1, int(img_height / 4))
-        chunk_height = min(chunk_height, img_height - start_y)
-        current_offset = randint(-max_offset, max_offset)
-
-        if current_offset is 0:
-            # Can't wrap left OR right when offset is 0, End of Array
-            continue
-        if current_offset < 0:
-            # Grab a rectangle of specific width and heigh, shift it left by a specified offset
-            # Wrap around the lost pixel data from the right
-            glitch_left(-current_offset)
-        else:
-            # Grab a rectangle of specific width and height, shift it right by a specified offset
-            # Wrap around the lost pixel data from the left
-            glitch_right(current_offset)
-
-    # Converting 3D array to 2D array, Ex - breaking down [[[R, G, B]....]] to [[R, G, B...]]
-    inputarr = inputarr.reshape(img_height, -1)
-    outputarr = outputarr.reshape(img_height, -1)
-
-    # Channel offset for glitched colors
-    # The start point (x, y) is randomized and the end point is always (img_width, img_height)
-    color_offset(randint(-glitch_amount, glitch_amount), randint(-glitch_amount, glitch_amount), get_random_channel())
-    # Converting 2D array back to original 3D array
-    outputarr = np.reshape(outputarr, (img_height, img_width, pixel_tuple_len))
-
-    # Creating glitched image from output array
-    glitch_img = Image.fromarray(outputarr, img_mode)
+    glitch_img = get_glitch_image()
     glitch_img.save('glitched_{}'.format(img_filename))
     t1 = time()
     print('Glitched image saved as "glitched_{}"'.format(img_filename))
