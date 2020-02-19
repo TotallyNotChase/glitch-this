@@ -85,7 +85,7 @@ def glitch_right(offset):
     outputarr[start_y : stop_y, : start_x] = wrap_chunk
 
 
-def color_offset(self, offset_x, offset_y, channel_index):
+def color_offset(offset_x, offset_y, channel_index):
     """
      Takes the given channel's color value from inputarr, starting from (0, 0)
      and puts it in the same channel's slot in outputarr, starting from (offset_y, offset_x)
