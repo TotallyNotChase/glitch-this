@@ -85,54 +85,27 @@ def glitch_right(offset):
     outputarr[start_y : stop_y, : start_x] = wrap_chunk
 
 
-def color_offset(offset_x, offset_y, channel_index):
-    """
-     Takes the given channel's color value from inputarr, starting from (0, 0)
-     and puts it in the same channel's slot in outputarr, starting from (offset_y, offset_x)
-     Consider inputarr as -
-     array([[ [0,  1,  2],  [3,  4,  5],  [6,  7,  8]],
-        [ [9, 10, 11], [12, 13, 14], [15, 16, 17]],
-        [[18, 19, 20], [21, 22, 23], [24, 25, 26]],
-        [[27, 28, 29],  [30, 31, 32],  [33, 34, 35]]])
-     Which should actually look like this BEFORE calling this function-
-     array([[ 0,  1,  2,  3,  4,  5,  6,  7,  8],
-        [ 9, 10, 11, 12, 13, 14, 15, 16, 17],
-        [18, 19, 20, 21, 22, 23, 24, 25, 26],
-        [ 27, 28, 29,  30, 31, 32,  33, 34, 35]])
-
-     Now simply every Nth element needs to be replaced, where N represents the length of color channels
-     For an RGB image, N is 3, hence every 3rd element should repeat the same color
-     The starting value should be of note though
-     If channel to be replaced is RED, the value to start from in both arrays should also be RED
-
-     For the first row, the available places to start iterating when channel is RED
-     (i.e channel index = 0) would be 0, 3, and 6
-
-     Since the starting point of outputarr is random, there is a chance the y and x value can overflow
-     in this case, they are simply wrapped back around
-
-     NOTE: `img_width represents column` length for **unflattened** array
-           `img_width * pixel_tuple_len` is for the **flattened** array
-    """
-
-    """
-     Determining the starting point
-     offset_x actually represents the `offset_x`th pixel tuple for **unflattened** array
-     Need to set it to the index of the channel for **flattened** array
-     A value of 1 for offset_x means the 1st pixel tuple (zero indexed)
-     Which means if each tuple contains 3 channels and channel index is 1 (for GREEN)
-     The x value of starting point would be 3 + 1 = 4
-     Or for a general case, offset_x * pixel_tuple_len + channel_index
-    """
-    offset_x = offset_x * pixel_tuple_len + channel_index if not offset_x is 0 else channel_index
-    for index, x in np.ndenumerate(inputarr):
-        if not index[1] % pixel_tuple_len == 0:
-            continue
-        if offset_y + index[0] >= img_height:
-            offset_y = -index[0]
-        if offset_x + index[1] >= img_width * pixel_tuple_len:
-            offset_x = -index[1] + channel_index
-        outputarr[offset_y + index[0], offset_x + index[1]] = x
+def color_offset(self, offset_x, offset_y, channel_index):
+    """
+     Takes the given channel's color value from inputarr, starting from (0, 0)
+     and puts it in the same channel's slot in outputarr, starting from (offset_y, offset_x)
+    """
+        # Make sure offset_x isn't negative in the actual algo
+    offset_x = offset_x if offset_x >= 0 else img_width + offset_x
+    offset_y = offset_y if offset_y >= 0 else img_height + offset_y
+
+    # Assign values from 0th row of inputarr to offset_y th row of outputarr
+    # If outputarr's columns run out before inputarr's does, wrap the remaining values around
+    outputarr[offset_y, offset_x:, channel_index] = inputarr[0, :img_width - offset_x, channel_index]
+    outputarr[offset_y, :offset_x, channel_index] = inputarr[0, img_width - offset_x:, channel_index]
+
+    # Continue afterwards till end of outputarr
+    # Make sure the width and height match for both slices in this case
+    outputarr[offset_y + 1: , :, channel_index] = inputarr[1:img_height - offset_y, :, channel_index]
+
+    # Restart from 0th row of outputarr and go until the offset_y th row
+    # This will assign the remaining values in inputarr to outputarr
+    outputarr[:offset_y, :, channel_index] = inputarr[img_height - offset_y: , :, channel_index]
 
 def get_random_channel():
     # Returns a random index from 0 to pixel_tuple_len
