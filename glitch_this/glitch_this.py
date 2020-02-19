@@ -8,8 +8,8 @@ class ImageGlitcher:
 
     def glitch_image(self, src_img_path, glitch_amount):
         """
-        Glitches the image located at given path
-        Intensity of glitch depends on glitch_amount
+         Glitches the image located at given path
+         Intensity of glitch depends on glitch_amount
         """
         # Sanity checking the inputs
         if not 1 <= glitch_amount <= 10:
@@ -66,22 +66,22 @@ class ImageGlitcher:
 
     def glitch_left(self, offset):
         """
-        Grabs a rectange from inputarr and shifts it leftwards
-        Any lost pixel data is wrapped back to the right
-        Rectangle's Width and Height are determined from offset
+         Grabs a rectange from inputarr and shifts it leftwards
+         Any lost pixel data is wrapped back to the right
+         Rectangle's Width and Height are determined from offset
 
-        Consider an array like so-
-        [[ 0, 1, 2, 3],
-        [ 4, 5, 6, 7],
-        [ 8, 9, 10, 11],
-        [12, 13, 14, 15]]
-        If we were to left shift the first row only, starting from the 1st index;
-        i.e a rectangle of width = 3, height = 1, starting at (0, 0)
-        We'd grab [1, 2, 3] and left shift it until the start of row
-        so it'd look like [[1, 2, 3, 3]]
-        Now we wrap around the lost values, i.e 0
-        now it'd look like [[1, 2, 3, 0]]
-        That's the end result!
+         Consider an array like so-
+         [[ 0, 1, 2, 3],
+         [ 4, 5, 6, 7],
+         [ 8, 9, 10, 11],
+         [12, 13, 14, 15]]
+         If we were to left shift the first row only, starting from the 1st index;
+         i.e a rectangle of width = 3, height = 1, starting at (0, 0)
+         We'd grab [1, 2, 3] and left shift it until the start of row
+         so it'd look like [[1, 2, 3, 3]]
+         Now we wrap around the lost values, i.e 0
+         now it'd look like [[1, 2, 3, 0]]
+         That's the end result!
         """
         # Setting up values that will determine the rectangle height
         start_y = randint(0, self.img_height)
@@ -101,22 +101,22 @@ class ImageGlitcher:
 
     def glitch_right(self, offset):
         """
-        Grabs a rectange from inputarr and shifts it rightwards
-        Any lost pixel data is wrapped back to the left
-        Rectangle's Width and Height are determined from offset
+         Grabs a rectange from inputarr and shifts it rightwards
+         Any lost pixel data is wrapped back to the left
+         Rectangle's Width and Height are determined from offset
 
-        Consider an array like so-
-        [[ 0, 1, 2, 3],
-        [ 4, 5, 6, 7],
-        [ 8, 9, 10, 11],
-        [12, 13, 14, 15]]
-        If we were to right shift the first row only, starting from the 0th index;
-        i.e a rectangle of width = 3, height = 1 starting at (0, 0)
-        We'd grab [0, 1, 2] and right shift it until the end of row
-        so it'd look like [[0, 0, 1, 2]]
-        Now we wrap around the lost values, i.e 3
-        now it'd look like [[3, 0, 1, 2]]
-        That's the end result!
+         Consider an array like so-
+         [[ 0, 1, 2, 3],
+         [ 4, 5, 6, 7],
+         [ 8, 9, 10, 11],
+         [12, 13, 14, 15]]
+         If we were to right shift the first row only, starting from the 0th index;
+         i.e a rectangle of width = 3, height = 1 starting at (0, 0)
+         We'd grab [0, 1, 2] and right shift it until the end of row
+         so it'd look like [[0, 0, 1, 2]]
+         Now we wrap around the lost values, i.e 3
+         now it'd look like [[3, 0, 1, 2]]
+         That's the end result!
         """
         # Setting up values that will determine the rectangle height
         start_y = randint(0, self.img_height)

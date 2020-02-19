@@ -18,22 +18,22 @@ if not os.path.exists(args.src_img_path):
 
 def glitch_left(offset):
     """
-    Grabs a rectange from inputarr and shifts it leftwards
-    Any lost pixel data is wrapped back to the right
-    Rectangle's Width and Height are determined from offset
+     Grabs a rectange from inputarr and shifts it leftwards
+     Any lost pixel data is wrapped back to the right
+     Rectangle's Width and Height are determined from offset
 
-    Consider an array like so-
-    [[ 0, 1, 2, 3],
-    [ 4, 5, 6, 7],
-    [ 8, 9, 10, 11],
-    [12, 13, 14, 15]]
-    If we were to left shift the first row only, starting from the 1st index;
-    i.e a rectangle of width = 3, height = 1, starting at (0, 0)
-    We'd grab [1, 2, 3] and left shift it until the start of row
-    so it'd look like [[1, 2, 3, 3]]
-    Now we wrap around the lost values, i.e 0
-    now it'd look like [[1, 2, 3, 0]]
-    That's the end result!
+     Consider an array like so-
+     [[ 0, 1, 2, 3],
+     [ 4, 5, 6, 7],
+     [ 8, 9, 10, 11],
+     [12, 13, 14, 15]]
+     If we were to left shift the first row only, starting from the 1st index;
+     i.e a rectangle of width = 3, height = 1, starting at (0, 0)
+     We'd grab [1, 2, 3] and left shift it until the start of row
+     so it'd look like [[1, 2, 3, 3]]
+     Now we wrap around the lost values, i.e 0
+     now it'd look like [[1, 2, 3, 0]]
+     That's the end result!
     """
     start_y = randint(0, img_height)
     chunk_height = randint(1, int(img_height / 4))
@@ -52,22 +52,22 @@ def glitch_left(offset):
 
 def glitch_right(offset):
     """
-    Grabs a rectange from inputarr and shifts it rightwards
-    Any lost pixel data is wrapped back to the left
-    Rectangle's Width and Height are determined from offset
+     Grabs a rectange from inputarr and shifts it rightwards
+     Any lost pixel data is wrapped back to the left
+     Rectangle's Width and Height are determined from offset
 
-    Consider an array like so-
-    [[ 0, 1, 2, 3],
-    [ 4, 5, 6, 7],
-    [ 8, 9, 10, 11],
-    [12, 13, 14, 15]]
-    If we were to left shift the first row only, starting from the 1st index;
-    i.e a rectangle of width = 3, height = 1, starting at (0, 0)
-    We'd grab [0, 1, 2] and right shift it until the end of row
-    so it'd look like [[0, 0, 1, 2]]
-    Now we wrap around the lost values, i.e 3
-    now it'd look like [[3, 0, 1, 2]]
-    That's the end result!
+     Consider an array like so-
+     [[ 0, 1, 2, 3],
+     [ 4, 5, 6, 7],
+     [ 8, 9, 10, 11],
+     [12, 13, 14, 15]]
+     If we were to left shift the first row only, starting from the 1st index;
+     i.e a rectangle of width = 3, height = 1, starting at (0, 0)
+     We'd grab [0, 1, 2] and right shift it until the end of row
+     so it'd look like [[0, 0, 1, 2]]
+     Now we wrap around the lost values, i.e 3
+     now it'd look like [[3, 0, 1, 2]]
+     That's the end result!
     """
     start_y = randint(0, img_height)
     chunk_height = randint(1, int(img_height / 4))
