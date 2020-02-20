@@ -35,6 +35,14 @@ That's it! You can now use the script and/or the library!
 ## Usage - `glitch_this.py`
 The script is designed to be used from the terminal, you can invoke it using `python ./glitch_this.py` and pass in the required/optional parameters.
 
+### TL;DR - Basic Usage
+
+![basic](./example/basic_usage.gif)
+
+### TL; DR - GIF creation
+
+![gif](./example/gif_usage.gif)
+
 Here's some points about the parameters - and what they do!
 
 * `-h` : Shows help text, use this to get used to the parameters!
@@ -108,7 +116,7 @@ The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
 
   * `scan_lines` : Set to `True` if you want **scan lines** effect to be added to output image
 
-     Defaults to `False` 
+     Defaults to `False`
 
 ## Peformance
 The algorithm is pretty fast, however larger image files will take longer to glitch
