@@ -101,19 +101,19 @@ Here's some glitched images generated from this script - of different intensity 
 
 #### Glitched version - Level 2:-
 
-![glitched_2][./example/glitched2.png]
+![glitched_2](./example/glitched2.png)
 
 *Not badly glitched now is it?*
 
 #### Glitched version - Level 5:-
 
-![glitched_5][./example/glitched5.png]
+![glitched_5](./example/glitched5.png)
 
 *Well it's certainly starting to get glitchy*
 
 #### Glitched version  - Level 8:-
 
-![glitched_8][./example/glitched8.png]
+![glitched_8](./example/glitched8.png)
 
 *I don't know what I'm looking at*
 
@@ -123,12 +123,12 @@ That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
 #### Glitched GIF - Level 2:-
 
-![glitched_gif2][./example/glitched2.gif]
+![glitched_gif2](./example/glitched2.gif)
 
 #### Glitched GIF - Level 5:-
 
-![glitched_gif5][./example/glitched5.gif]
+![glitched_gif5](./example/glitched5.gif)
 
 #### Glitched GIF  - Level 8:-
 
-![glitched_gif8][./example/glitched8.gif]
+![glitched_gif8](./example/glitched8.gif)
