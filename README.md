@@ -133,11 +133,25 @@ Here's some glitched images generated from this script - of different intensity 
 
 *Well it's certainly starting to get glitchy*
 
-#### Glitched version  - Level 8:-
+#### Glitched version - Level 8:-
 
 ![glitched_8](./example/glitched8.png)
 
 *I don't know what I'm looking at*
+
+Let's get some **scan lines** on there!
+
+#### Glitched version (scan_lines)- Level 2:-
+
+![glitched_2_scan](./example/glitched2scan.png)
+
+#### Glitched version (scan_lines) - Level 5:-
+
+![glitched_5_scan](./example/glitched5scan.png)
+
+#### Glitched version (scan_lines) - Level 8:-
+
+![glitched_8_scan](./example/glitched8scan.png)
 
 That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
@@ -151,6 +165,6 @@ That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
 ![glitched_gif5](./example/glitched5.gif)
 
-#### Glitched GIF  - Level 8:-
+#### Glitched GIF - Level 8:-
 
 ![glitched_gif8](./example/glitched8.gif)
