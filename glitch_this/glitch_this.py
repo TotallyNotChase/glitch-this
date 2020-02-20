@@ -16,7 +16,7 @@ class ImageGlitcher:
         self.inputarr = None
         self.outputarr = None
 
-    def glitch_image(self, src_img_path, glitch_amount):
+    def glitch_image(self, src_img_path, glitch_amount, scan_lines=False):
         """
          Sets up values needed for glitching the image
          Returns created Image object
@@ -42,9 +42,9 @@ class ImageGlitcher:
         self.outputarr = np.array(src_img)
 
         # Glitching begins here
-        return self.get_glitched_img(glitch_amount)
+        return self.get_glitched_img(glitch_amount, scan_lines)
 
-    def get_glitched_img(self, glitch_amount):
+    def get_glitched_img(self, glitch_amount, scan_lines):
         """
          Glitches the image located at given path
          Intensity of glitch depends on glitch_amount
@@ -74,8 +74,17 @@ class ImageGlitcher:
                           randint(-glitch_amount * 2, glitch_amount * 2),
                           self.get_random_channel())
 
+        if scan_lines and self.pixel_tuple_len >= 3:
+            # Add scan lines if checked true
+            # Input picture must be RGB or RGBA
+            self.add_scan_lines()
+
         # Creating glitched image from output array
         return Image.fromarray(self.outputarr, self.img_mode)
+
+    def add_scan_lines(self):
+        # Make every other row have only black pixels
+        self.outputarr[::2, :, :3] = [0, 0, 0]
 
     def glitch_left(self, offset):
         """

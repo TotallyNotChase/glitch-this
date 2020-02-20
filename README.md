@@ -10,6 +10,7 @@ If you like using this tool, please consider **starring on Github**!
   That's right, before this tool, I had to manually download each image from [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), save them, and then head to a GIF creation website.
   Now you can do it *all* at once!
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
+* Add **scan lines** for a retro CRT effect!
 * Oh and did I mention, **color offset**? Just like [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), this tool *glitches the color* channels as well as the pixels - for **very convincing** looking glitched images!
 
 ## Requirements
@@ -64,6 +65,11 @@ Here's some points about the parameters - and what they do!
 
 So, with all the required parameters in place, this is how the command should look like - `python ./glitch_this.py test.png 2`
 #### Optional Parameters
+  * `-s` : If included, the glitched image will have scan lines
+
+    Ex - `python ./glitch_this.py -s test.png 2`
+
+    (OR) `python3 ./glitch_this.py -s test.png 2`
   * `-g` : If included, the output will be GIF
 
     Ex - `python ./glitch_this.py -g test.png 2`
@@ -94,6 +100,15 @@ If you'd like to use the `glitch_this` module as a library, you can simply put t
 *I know this is not conveninent, if enough people use this, I might put this on PyPi*
 
 A full example of how you can use the class is in `test_script.py`
+
+The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
+  * `src_img_path` : Full/Relative path to image
+
+  * `glitch_amount`: Intensity/Level of glitching, must be between 1 to 10 (including both 1 and 10)
+
+  * `scan_lines` : Set to `True` if you want **scan lines** effect to be added to output image
+
+     Defaults to `False` 
 
 ## Peformance
 The algorithm is pretty fast, however larger image files will take longer to glitch
