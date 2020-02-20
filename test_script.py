@@ -1,7 +1,7 @@
-from glitch_this import ImageGlitcher
+import os, shutil
 from random import randint
 from time import time
-import os, shutil
+from glitch_this import ImageGlitcher
 
 if __name__=='__main__':
     glitcher = ImageGlitcher()
@@ -25,4 +25,3 @@ if __name__=='__main__':
     except KeyboardInterrupt:
         logtxt.close()
         print('Average time: ' + str(sum / count))
-        
