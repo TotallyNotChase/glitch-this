@@ -88,6 +88,13 @@ So, with all the required parameters in place, this is how the command should lo
 
     *tip : if you want the GIF to be slower, supply a bigger duration value*
 
+## Usage - `glitch_this` library
+If you'd like to use the `glitch_this` module as a library, you can simply put the `glitch_this` directory in your project and use `from glitch_this import ImageGlitcher` in your project
+
+*I know this is not conveninent, if enough people use this, I might put this on PyPi*
+
+A full example of how you can use the class is in `test_script.py`
+
 ## Peformance
 The algorithm is pretty fast, however larger image files will take longer to glitch
 It is recommended to keep the `FRAMES` parameter as low as possible, especially for large images. Simply for memory and performance concerns
