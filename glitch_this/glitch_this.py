@@ -28,7 +28,10 @@ class ImageGlitcher:
             raise Exception('No image found at given path')
 
         try:
-            src_img = Image.open(src_img_path).convert('RGBA')
+            if src_img_path.endswith('.png'):
+                src_img = Image.open(src_img_path).convert('RGBA')
+            else:
+                src_img = Image.open(src_img_path).convert('RGB')
         except:
             raise Exception('File format not supported - must be an image file')
 

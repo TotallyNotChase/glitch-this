@@ -189,7 +189,10 @@ def get_glitched_image():
 if __name__ == '__main__':
     try:
         src_img_path = Path(args.src_img_path)
-        src_img = Image.open(src_img_path).convert('RGBA')
+        if args.src_img_path.endswith('.png'):
+            src_img = Image.open(src_img_path).convert('RGBA')
+        else:
+            src_img = Image.open(src_img_path).convert('RGB')
     except:
         raise Exception('File format not supported - must be an image file')
 
