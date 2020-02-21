@@ -201,7 +201,8 @@ if __name__ == '__main__':
     # Fetching image attributes
     pixel_tuple_len = len(src_img.getbands())
     img_width, img_height = src_img.size
-    img_filename, img_fileex = os.path.split(src_img.filename)[-1].split('.')
+    img_path, img_file = os.path.split(src_img.filename)
+    img_filename, img_fileex = img_file.split('.')
     img_mode = src_img.mode
 
     # Creating 3D arrays with pixel data
@@ -212,9 +213,10 @@ if __name__ == '__main__':
     glitch_amount = args.glitch_level
     if not args.gif:
         glitch_img = get_glitched_image()
-        glitch_img.save('glitched_{}.{}'.format(img_filename, img_fileex))
+        full_path = os.path.join(img_path, 'glitched_' + img_file)
+        glitch_img.save(full_path)
         t1 = time()
-        print('Glitched image saved as "glitched_{}.{}"'.format(img_filename, img_fileex))
+        print('Glitched image saved in "{}"'.format(full_path))
         print('Time taken: ' + str(t1 - t0))
     else:
         # Set up directory for storing glitched images
@@ -228,13 +230,14 @@ if __name__ == '__main__':
         os.chdir('Glitched GIF')
         glitched_imgs = [Image.open(f) for f in os.listdir(os.getcwd())]
         os.chdir('..')
-        glitched_imgs[0].save('glitched_{}.gif'.format(img_filename),
+        full_path = os.path.join(img_path, 'glitched_{}.gif'.format(img_filename))
+        glitched_imgs[0].save(full_path,
                               format='GIF',
                               append_images=glitched_imgs[1:],
                               save_all=True,
                               duration=args.duration,
                               loop=0)
         t1 = time()
-        print('Glitched image saved as "glitched_{}.gif"\nFrames = {}, Duration = {}'.format(img_filename, args.frames, args.duration))
+        print('Glitched GIF saved in "{}"\nFrames = {}, Duration = {}'.format(full_path, args.frames, args.duration))
         print('Time taken: ' + str(t1 - t0))
         shutil.rmtree('Glitched GIF')
