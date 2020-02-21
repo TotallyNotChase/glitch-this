@@ -100,9 +100,7 @@ def glitch_right(offset):
     outputarr[start_y : stop_y, : start_x] = wrap_chunk
 
 def add_scan_lines():
-
     # Make every other row have only black pixels
-
     outputarr[::2, :, :3] = [0, 0, 0]
 
 def color_offset(offset_x, offset_y, channel_index):
@@ -181,11 +179,8 @@ def get_glitched_image():
                  get_random_channel())
 
     if args.scan_lines and pixel_tuple_len >= 3:
-
         # Add scan lines if checked true
-
         # Input picture must be RGB or RGBA
-
         add_scan_lines()
 
     # Creating glitched image from output array

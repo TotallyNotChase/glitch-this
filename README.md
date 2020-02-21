@@ -3,6 +3,8 @@ A commandline tool + `python` library to glitchify images and **even make GIFs**
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
 If you like using this tool, please consider **starring on Github**!
+
+**NOTE** : Works best with RGB/RGBA images
 ## FEATURES!
 * Choose from *10 gradually different levels* of **glitching intensity**!
   Want just a tiny bit of glitching, enough to make your image look cool? - use level 2 (my favorite)!
@@ -30,9 +32,9 @@ You can install the required packages all at once through the included `requirem
   ```
   pip install -r requirements.txt
   ```
-  
+
   (OR)
-  
+
   ```
   pip3 install -r requirements.txt
   ```
