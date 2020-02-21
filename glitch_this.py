@@ -12,7 +12,6 @@ argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
 argparser.add_argument('glitch_level', metavar='Glitch_Level', type=int,
                        help='Integer between 1 and 10, inclusive, representing amount of glitchiness')
 argparser.add_argument('-s', '--scan', dest='scan_lines', action='store_true',
-
                        help='Whether or not to add scan lines effect, defaults to False')
 argparser.add_argument('-g', '--gif', dest='gif', action='store_true',
                        help='Include if you want a GIF instead of static image')
@@ -27,6 +26,10 @@ if not 1 <= args.glitch_level <= 10:
     raise Exception('glitch_amount parameter must be in range 1 to 10, inclusive')
 if not os.path.exists(args.src_img_path):
     raise Exception('No image found at given path')
+if not args.frames <= 0:
+    raise Exception('Frames must be greather than 0')
+if not args.duration <= 0:
+    raise Exception('Duration must be greather than 0')
 
 def glitch_left(offset):
     """
