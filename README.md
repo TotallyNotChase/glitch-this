@@ -26,8 +26,15 @@ You can install the required packages all at once through the included `requirem
   git clone https://github.com/TotallyNotChase/glitch-this.git
   ```
 * While inside the folder, install the `requirements.txt`
+
   ```
-  pip install requirements.txt
+  pip install -r requirements.txt
+  ```
+  
+  (OR)
+  
+  ```
+  pip3 install -r requirements.txt
   ```
 
 That's it! You can now use the script and/or the library!
