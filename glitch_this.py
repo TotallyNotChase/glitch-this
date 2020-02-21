@@ -188,7 +188,8 @@ def get_glitched_image():
 
 if __name__ == '__main__':
     try:
-        src_img = Image.open(Path(args.src_img_path))
+        src_img_path = Path(args.src_img_path)
+        src_img = Image.open(src_img_path).convert('RGBA')
     except:
         raise Exception('File format not supported - must be an image file')
 
@@ -196,7 +197,7 @@ if __name__ == '__main__':
     # Fetching image attributes
     pixel_tuple_len = len(src_img.getbands())
     img_width, img_height = src_img.size
-    img_path, img_file = os.path.split(src_img.filename)
+    img_path, img_file = os.path.split(src_img_path)
     img_filename, img_fileex = img_file.split('.')
     img_mode = src_img.mode
 

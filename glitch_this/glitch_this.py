@@ -28,7 +28,7 @@ class ImageGlitcher:
             raise Exception('No image found at given path')
 
         try:
-            src_img = Image.open(src_img_path)
+            src_img = Image.open(src_img_path).convert('RGBA')
         except:
             raise Exception('File format not supported - must be an image file')
 
@@ -74,16 +74,22 @@ class ImageGlitcher:
                           randint(-glitch_amount * 2, glitch_amount * 2),
                           self.get_random_channel())
 
-        if scan_lines and self.pixel_tuple_len >= 3:
-            # Add scan lines if checked true
-            # Input picture must be RGB or RGBA
-            self.add_scan_lines()
+        if scan_lines and self.pixel_tuple_len >= 3:
+
+            # Add scan lines if checked true
+
+            # Input picture must be RGB or RGBA
+
+            self.add_scan_lines()
+
 
         # Creating glitched image from output array
         return Image.fromarray(self.outputarr, self.img_mode)
 
-    def add_scan_lines(self):
-        # Make every other row have only black pixels
+    def add_scan_lines(self):
+
+        # Make every other row have only black pixels
+
         self.outputarr[::2, :, :3] = [0, 0, 0]
 
     def glitch_left(self, offset):
