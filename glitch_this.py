@@ -26,9 +26,9 @@ if not 1 <= args.glitch_level <= 10:
     raise Exception('glitch_amount parameter must be in range 1 to 10, inclusive')
 if not os.path.exists(args.src_img_path):
     raise Exception('No image found at given path')
-if not args.frames <= 0:
+if not args.frames > 0:
     raise Exception('Frames must be greather than 0')
-if not args.duration <= 0:
+if not args.duration > 0:
     raise Exception('Duration must be greather than 0')
 
 def glitch_left(offset):
