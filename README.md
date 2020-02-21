@@ -107,9 +107,23 @@ So, with all the required parameters in place, this is how the command should lo
     *tip : if you want the GIF to be slower, supply a bigger duration value*
 
 ## Usage - `glitch_this` library
-If you'd like to use the `glitch_this` module as a library, you can simply put the `glitch_this` directory in your project and use `from glitch_this import ImageGlitcher` in your project
+If you'd like to use the `glitch_this` module as a library, all you have to do is build it from github!
 
-*I know this is not conveninent, if enough people use this, I might put this on PyPi*
+Just make sure `wheel` is installed first
+
+```
+pip install wheel
+pip install git+git://github.com/TotallyNotChase/glitch-this.git
+```
+
+(OR)
+
+```
+pip3 install wheel
+pip3 install git+git://github.com/TotallyNotChase/glitch-this.git
+```
+
+*I know this is not super conveninent, if enough people use this, I might put this on PyPi*
 
 A full example of how you can use the class is in `test_script.py`
 

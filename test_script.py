@@ -5,7 +5,6 @@ from glitch_this import ImageGlitcher
 
 if __name__=='__main__':
     # Create the ImageGlitcher object
-    # You don't have to do this, you can also call ImageGlitcher.glitch_image()
     glitcher = ImageGlitcher()
     count = 0
     sum = 0
