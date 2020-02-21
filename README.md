@@ -11,7 +11,7 @@ If you like using this tool, please consider **starring on Github**!
   Now you can do it *all* at once!
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
 * Add **scan lines** for a retro CRT effect!
-* Oh and did I mention, **color offset**? Just like [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), this tool *glitches the color* channels as well as the pixels - for **very convincing** looking glitched images!
+* Oh and did I mention, **color offset**? Just like [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), this tool *glitches the color channels* as well as the pixels - for **very convincing** looking glitched images!
 
 ## Requirements
 * `python 3`
@@ -37,6 +37,8 @@ You can install the required packages all at once through the included `requirem
   pip3 install -r requirements.txt
   ```
 
+*OR*, if you're a wizard and don't need no help, download just the `glitch_this.py` standalone script and invoke it!
+
 That's it! You can now use the script and/or the library!
 
 ## Usage - `glitch_this.py`
@@ -44,7 +46,7 @@ The script is designed to be used from the terminal, you can invoke it using `py
 
 ### TL;DR - Basic Usage
 
-Simply pass in the **image path** and **glich level**!
+Simply pass in the **image path** and **glitch level**!
 
 ![basic](./example/basic_usage.gif)
 
