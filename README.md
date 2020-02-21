@@ -37,9 +37,13 @@ The script is designed to be used from the terminal, you can invoke it using `py
 
 ### TL;DR - Basic Usage
 
+Simply pass in the **image path** and **glich level**!
+
 ![basic](./example/basic_usage.gif)
 
 ### TL; DR - GIF creation
+
+Same as last time, just include the `-g` option
 
 ![gif](./example/gif_usage.gif)
 
