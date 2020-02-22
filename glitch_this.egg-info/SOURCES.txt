@@ -1,0 +1,9 @@
+README.md
+setup.py
+glitch_this/__init__.py
+glitch_this/glitch_this.py
+glitch_this.egg-info/PKG-INFO
+glitch_this.egg-info/SOURCES.txt
+glitch_this.egg-info/dependency_links.txt
+glitch_this.egg-info/requires.txt
+glitch_this.egg-info/top_level.txt

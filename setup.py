@@ -10,6 +10,7 @@ setup(
     author_email='44284917+TotallyNotChase@users.noreply.github.com',
     description='A package to glitch images',
     long_description=readme,
+    long_description_content_type='text/markdown',
     url='https://github.com/TotallyNotChase/Glitch-and-Gif',
     packages=find_packages(),
     install_requires=[
@@ -17,7 +18,9 @@ setup(
         'numpy>=1.18.1',
     ],
     classifiers=[
-        "Programming Language :: Python :: 3.7",
-        "License :: OSI Approved :: MIT Licence",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
+    python_requires='>=3.6',
 )
