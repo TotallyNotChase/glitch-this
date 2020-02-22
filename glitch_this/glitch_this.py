@@ -57,7 +57,7 @@ class ImageGlitcher:
             # Setting up offset needed for the randomized glitching
             current_offset = randint(-max_offset, max_offset)
 
-            if current_offset is 0:
+            if current_offset == 0:
                 # Can't wrap left OR right when offset is 0, End of Array
                 continue
             if current_offset < 0:
