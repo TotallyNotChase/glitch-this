@@ -25,7 +25,7 @@ View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/ma
 * `numpy`
 
 You can install the required packages all at once through the included `requirements.txt`
-## Installation
+## Installation - The script
 * Download or clone this repo to a local folder
   ```
   cd /path/to/clone-folder
@@ -46,6 +46,21 @@ You can install the required packages all at once through the included `requirem
 *OR*, if you're a wizard and don't need no help, download just the `glitch_this.py` standalone script and invoke it!
 
 That's it! You can now use the script and/or the library!
+
+## Installation - The library
+If you'd like to use the `glitch_this` module as a library, all you have to do is install it from [pypi](https://pypi.org/project/glitch-this/)!
+
+Just make sure `wheel` is installed first and run
+
+```
+pip install glitch-this
+```
+
+(OR)
+
+```
+pip3 install glitch-this
+```
 
 ## Usage - `glitch_this.py`
 The script is designed to be used from the terminal, you can invoke it using `python ./glitch_this.py` and pass in the required/optional parameters.
@@ -129,24 +144,6 @@ So, with all the required parameters in place, this is how the command should lo
     *tip : if you want the GIF to be slower, supply a bigger duration value*
 
 ## Usage - `glitch_this` library
-If you'd like to use the `glitch_this` module as a library, all you have to do is build it from github!
-
-Just make sure `wheel` is installed first
-
-```
-pip install wheel
-pip install git+git://github.com/TotallyNotChase/glitch-this.git
-```
-
-(OR)
-
-```
-pip3 install wheel
-pip3 install git+git://github.com/TotallyNotChase/glitch-this.git
-```
-
-*I know this is not super conveninent, if enough people use this, I might put this on PyPi*
-
 A full example of how you can use the class is in `test_script.py`
 
 The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
