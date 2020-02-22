@@ -4,6 +4,8 @@ Featuring *10 different levels of glitching intensity*! The algorithm used to cr
 
 If you like using this tool, please consider **starring on Github**!
 
+![demo](./example/glitched2.gif)
+
 **NOTE** : Works best with RGB/RGBA images
 
 ## Changelog
