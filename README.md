@@ -5,6 +5,10 @@ Featuring *10 different levels of glitching intensity*! The algorithm used to cr
 If you like using this tool, please consider **starring on Github**!
 
 **NOTE** : Works best with RGB/RGBA images
+
+## Changelog
+View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)
+
 ## FEATURES!
 * Choose from *10 gradually different levels* of **glitching intensity**!
   Want just a tiny bit of glitching, enough to make your image look cool? - use level 2 (my favorite)!
