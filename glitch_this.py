@@ -202,7 +202,7 @@ if __name__ == '__main__':
     pixel_tuple_len = len(src_img.getbands())
     img_width, img_height = src_img.size
     img_path, img_file = os.path.split(src_img_path)
-    img_filename, img_fileex = img_file.split('.')
+    img_filename, img_fileex = img_file.rsplit('.', 1)
     img_mode = src_img.mode
 
     # Creating 3D arrays with pixel data
