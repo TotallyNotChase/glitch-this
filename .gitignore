@@ -4,5 +4,6 @@
 *.__pycache__
 */__pycache__
 Collections/
+dist/
 glitched_test.png
 glitched_test.gif
