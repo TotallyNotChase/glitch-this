@@ -5,3 +5,6 @@
            Thanks to @ojensen5115
 * 0.0.4 -> Add detailed exceptions
            Thanks to @amancevice
+* 0.0.5 -> Change `==` to `is`
+           Thanks to @amancevice and @KopfKrieg
+           
