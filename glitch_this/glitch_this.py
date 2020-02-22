@@ -23,9 +23,9 @@ class ImageGlitcher:
         """
         # Sanity checking the inputs
         if not 1 <= glitch_amount <= 10:
-            raise Exception('glitch_amount parameter must be in range 1 to 10, inclusive')
+            raise ValueError('glitch_amount parameter must be in range 1 to 10, inclusive')
         if not os.path.exists(src_img_path):
-            raise Exception('No image found at given path')
+            raise FileNotFoundError('No image found at given path')
 
         try:
             if src_img_path.endswith('.png'):

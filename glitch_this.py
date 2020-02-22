@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os, argparse, shutil
 import numpy as np
 from pathlib import Path
@@ -25,13 +26,13 @@ args = argparser.parse_args()
 
 # Sanity checking the inputs
 if not 1 <= args.glitch_level <= 10:
-    raise Exception('glitch_amount parameter must be in range 1 to 10, inclusive')
+    raise ValueError('glitch_amount parameter must be in range 1 to 10, inclusive')
 if not os.path.exists(args.src_img_path):
-    raise Exception('No image found at given path')
+    raise FileNotFoundError('No image found at given path')
 if not args.frames > 0:
-    raise Exception('Frames must be greather than 0')
+    raise ValueError('Frames must be greather than 0')
 if not args.duration > 0:
-    raise Exception('Duration must be greather than 0')
+    raise ValueError('Duration must be greather than 0')
 
 def glitch_left(offset):
     """
@@ -160,7 +161,7 @@ def get_glitched_image():
         # Setting up values needed for the randomized glitching
         current_offset = randint(-max_offset, max_offset)
 
-        if current_offset is 0:
+        if current_offset == 0:
             # Can't wrap left OR right when offset is 0, End of Array
             continue
         if current_offset < 0:
@@ -195,7 +196,7 @@ if __name__ == '__main__':
         else:
             src_img = Image.open(src_img_path).convert('RGB')
     except:
-        raise Exception('File format not supported - must be an image file')
+        raise TypeError('File format not supported - must be an image file')
 
     t0 = time()
     # Fetching image attributes
