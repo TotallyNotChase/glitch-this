@@ -16,7 +16,7 @@ class ImageGlitcher:
         self.inputarr = None
         self.outputarr = None
 
-    def glitch_image(self, src_img_path, glitch_amount, scan_lines=False):
+    def glitch_image(self, src_img_path, glitch_amount, color_offset=False, scan_lines=False):
         """
          Sets up values needed for glitching the image
          Returns created Image object
@@ -45,9 +45,9 @@ class ImageGlitcher:
         self.outputarr = np.array(src_img)
 
         # Glitching begins here
-        return self.get_glitched_img(glitch_amount, scan_lines)
+        return self.get_glitched_img(glitch_amount, color_offset, scan_lines)
 
-    def get_glitched_img(self, glitch_amount, scan_lines):
+    def get_glitched_img(self, glitch_amount, color_offset, scan_lines):
         """
          Glitches the image located at given path
          Intensity of glitch depends on glitch_amount
@@ -71,18 +71,15 @@ class ImageGlitcher:
                 # Wrap around the lost pixel data from the left
                 self.glitch_right(current_offset)
 
-        # Channel offset for glitched colors
-        # The start point (y, x) is randomized
-        self.color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
-                          randint(-glitch_amount * 2, glitch_amount * 2),
-                          self.get_random_channel())
 
-        if scan_lines and self.pixel_tuple_len >= 3:
+        if color_offset:
+            # Add color channel offset if checked true
+            self.color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
+                              randint(-glitch_amount * 2, glitch_amount * 2),
+                              self.get_random_channel())
 
+        if scan_lines:
             # Add scan lines if checked true
-
-            # Input picture must be RGB or RGBA
-
             self.add_scan_lines()
 
 

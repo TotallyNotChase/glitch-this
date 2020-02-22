@@ -88,6 +88,13 @@ Here's some points about the parameters - and what they do!
 
 So, with all the required parameters in place, this is how the command should look like - `python ./glitch_this.py test.png 2`
 #### Optional Parameters
+
+  * `-c` : If included, the glitched image will have a color offset, **more realistic** glitching!
+
+    Ex - `python ./glitch_this.py -c test.png 2`
+
+    (OR) `python3 ./glitch_this.py -c test.png 2`
+
   * `-s` : If included, the glitched image will have scan lines
 
     Ex - `python ./glitch_this.py -s test.png 2`
@@ -143,6 +150,10 @@ The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
 
   * `glitch_amount`: Intensity/Level of glitching, must be between 1 to 10 (including both 1 and 10)
 
+  * `color_offset` : Set to `True` if you want **color offset** to be added to output image, *more realistic* glitching!
+
+     Defaults to `False`
+
   * `scan_lines` : Set to `True` if you want **scan lines** effect to be added to output image
 
      Defaults to `False`
@@ -153,6 +164,8 @@ It is recommended to keep the `FRAMES` parameter as low as possible, especially 
 
 ## Whoa! Cool Glitches
 Here's some glitched images generated from this script - of different intensity levels!
+
+**NOTE**: All these images had `-c` parameter included, for color offset
 
 #### Original image for reference:-
 

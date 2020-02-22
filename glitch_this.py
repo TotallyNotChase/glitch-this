@@ -11,6 +11,8 @@ argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                        help='Relative or Absolute string path to source image')
 argparser.add_argument('glitch_level', metavar='Glitch_Level', type=int,
                        help='Integer between 1 and 10, inclusive, representing amount of glitchiness')
+argparser.add_argument('-c', '--color', dest='color', action='store_true',
+                       help='Whether or not to add color offset, defaults to False')
 argparser.add_argument('-s', '--scan', dest='scan_lines', action='store_true',
                        help='Whether or not to add scan lines effect, defaults to False')
 argparser.add_argument('-g', '--gif', dest='gif', action='store_true',
@@ -172,15 +174,14 @@ def get_glitched_image():
             # Wrap around the lost pixel data from the left
             glitch_right(current_offset)
 
-    # Channel offset for glitched colors
-    # The start point (x, y) and the end point, determined by width, height, are randomized
-    color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
-                 randint(-glitch_amount * 2, glitch_amount * 2),
-                 get_random_channel())
+    if args.color:
+        # Add color channel offset if checked true
+        color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
+                     randint(-glitch_amount * 2, glitch_amount * 2),
+                     get_random_channel())
 
-    if args.scan_lines and pixel_tuple_len >= 3:
+    if args.scan_lines:
         # Add scan lines if checked true
-        # Input picture must be RGB or RGBA
         add_scan_lines()
 
     # Creating glitched image from output array

@@ -18,8 +18,9 @@ if __name__=='__main__':
             level = randint(1, 10)
             # glitch_image() will return a PIL.Image.Image object
             # Make sure to supply the full/relative path to the image as well as glitch level
+            # Set `color_offset` to True for color channel offset, otherwise leave it
             # Set `scan_lines` to True for scan lines effect, otherwise leave it empty
-            glitch_img = glitcher.glitch_image('test.png', level, True)
+            glitch_img = glitcher.glitch_image('test.png', level, color_offset=True)
             # You can then save it or do anything else you want with it
             glitch_img.save('Collections/glitched_test_{}.png'.format(str(count)))
             t1 = time()
