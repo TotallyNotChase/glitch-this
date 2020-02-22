@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os, argparse, shutil
 import numpy as np
 from pathlib import Path
