@@ -3,9 +3,7 @@ from random import randint
 from time import time
 from glitch_this import ImageGlitcher
 
-if __name__=='__main__':
-    # Create the ImageGlitcher object
-    glitcher = ImageGlitcher()
+def main():
     count = 0
     sum = 0
     try:
@@ -37,3 +35,21 @@ if __name__=='__main__':
                 print('Time taken: ' + str(t1 - t0))
     except KeyboardInterrupt:
         print('Average time: ' + str(sum / count))
+
+def main_alt():
+    glitch_img = glitcher.glitch_image('test.png', 2, color_offset=True, gif=True, frames=2)
+    if os.path.isdir('Collections'):
+        shutil.rmtree('Collections')
+    os.mkdir('Collections')
+    glitch_img[0].save('Collections/glitched_test.gif',
+                        format='GIF',
+                        append_images=glitch_img[1:],
+                        save_all=True,
+                        duration=200,
+                        loop=0)
+
+if __name__=='__main__':
+    # Create the ImageGlitcher object
+    glitcher = ImageGlitcher()
+    main_alt()
+    

@@ -51,16 +51,18 @@ class ImageGlitcher:
 
         # Return glitched GIF
         # Set up directory for storing glitched images
-        if os.path.isdir('Glitched GIF'):
-            shutil.rmtree('Glitched GIF')
-        os.mkdir('Glitched GIF')
+        lib_path = os.path.split(os.path.abspath(__file__))[0]
+        gif_dirpath = os.path.join(lib_path, 'Glitched GIF')
+        if os.path.isdir(gif_dirpath):
+            shutil.rmtree(gif_dirpath)
+        os.mkdir(gif_dirpath)
 
+        glitched_imgs = []
         for i in range(frames):
             glitched_img  = self.get_glitched_img(glitch_amount, color_offset, scan_lines)
-            glitched_img.save(os.path.join('Glitched GIF', 'glitched_{}.png'.format(str(i))))
-        os.chdir('Glitched GIF')
-        glitched_imgs = [Image.open(f) for f in os.listdir(os.getcwd())]
-        os.chdir('..')
+            file_path = os.path.join(gif_dirpath, 'glitched_{}.png'.format(str(i)))
+            glitched_img.save(file_path)
+            glitched_imgs.append(Image.open(file_path))
         return glitched_imgs
   
     def get_glitched_img(self, glitch_amount, color_offset, scan_lines):

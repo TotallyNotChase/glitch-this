@@ -6,7 +6,15 @@ If you like using this tool, please consider **starring on Github**!
 
 ![demo](./example/glitched2.gif)
 
+What are you waiting for? Import the library and get glitching!
+
 **NOTE** : Works best with RGB/RGBA images
+
+## What others have to say ~
+* [#1 hot in r/python](https://www.reddit.com/r/Python/comments/f7taiy/my_python_imagegif_glitching_library_is_now_on/)
+* [#1 hot in r/programming](https://www.reddit.com/r/programming/comments/f7q2q3/i_made_a_commandline_script_to_make_glitched/)
+* [#1 hot in r/broken_gifs](https://www.reddit.com/r/brokengifs/comments/f7pyqw/i_made_a_commandline_script_to_make_glitched_gifs/)
+* [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
 
 ## Changelog
 View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)
@@ -27,32 +35,9 @@ View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/ma
 * `numpy`
 
 You can install the required packages all at once through the included `requirements.txt`
-## Installation - The script
-* Download or clone this repo to a local folder
-  ```
-  cd /path/to/clone-folder
-  git clone https://github.com/TotallyNotChase/glitch-this.git
-  ```
-* While inside the folder, install the `requirements.txt`
+## Installation
 
-  ```
-  pip install -r requirements.txt
-  ```
-
-  (OR)
-
-  ```
-  pip3 install -r requirements.txt
-  ```
-
-*OR*, if you're a wizard and don't need no help, download just the `glitch_this.py` standalone script and invoke it!
-
-That's it! You can now use the script and/or the library!
-
-## Installation - The library
-If you'd like to use the `glitch_this` module as a library, all you have to do is install it from [pypi](https://pypi.org/project/glitch-this/)!
-
-Just make sure `wheel` is installed first and run
+Simply install `glitch-this` from [pypi](https://pypi.org/project/glitch-this/)!
 
 ```
 pip install glitch-this
@@ -63,108 +48,6 @@ pip install glitch-this
 ```
 pip3 install glitch-this
 ```
-
-## Usage - `glitch_this.py`
-The script is designed to be used from the terminal, you can invoke it using `python ./glitch_this.py` and pass in the required/optional parameters.
-
-### TL;DR - Basic Usage
-
-Simply pass in the **image path** and **glitch level**!
-
-![basic](./example/basic_usage.gif)
-
-### TL; DR - GIF creation
-
-Same as last time, just include the `-g` option
-
-![gif](./example/gif_usage.gif)
-
-Here's some points about the parameters - and what they do!
-
-* `-h` : Shows help text, use this to get used to the parameters!
-
-  Ex - `python ./glitch_this.py -h`
-
-  (OR) `python3 ./glitch_this.py -h`
-#### Required Parameters
-  * `IMAGE_PATH` : The script needs to know, what file you want to glitchify right?
-
-    That's *exactly* what this is for, you supply the full/relative path to the image you want to glitchify.
-
-    Remember, the path **must** *exist as an image file*. `PNG`, `JPEG` are certainly preferred.
-
-    Ex - `python ./glitch_this.py test.png`
-
-    (OR) `python3 ./glitch_this.py test.png`
-
-  * `GLITCH_LEVEL` : An integer between 1 to 10 (including both 1 and 10), signifying *how glitched* the output image should be.
-
-    1 stands for "you call this glitched?", 10 stands for "good luck understanding this one"
-
-    *my personal favorite is 2 if anyone cares :P*
-
-    Ex - `python ./glitch_this.py 2`
-
-    (OR) `python3 ./glitch_this.py 2`
-
-So, with all the required parameters in place, this is how the command should look like - `python ./glitch_this.py test.png 2`
-#### Optional Parameters
-
-  * `-c` : If included, the glitched image will have a color offset, **more realistic** glitching!
-
-    Ex - `python ./glitch_this.py -c test.png 2`
-
-    (OR) `python3 ./glitch_this.py -c test.png 2`
-
-  * `-s` : If included, the glitched image will have scan lines
-
-    Ex - `python ./glitch_this.py -s test.png 2`
-
-    (OR) `python3 ./glitch_this.py -s test.png 2`
-  * `-g` : If included, the output will be GIF
-
-    Ex - `python ./glitch_this.py -g test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g test.png 2`
-
-  * `-f FRAMES` : Specify the number of glitched images to be used in GIF
-
-    Defaults to 23
-
-    Ex - `python ./glitch_this.py -g -f 10 test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g -f 10 test.png 2`
-
-  * `-d DURATION` : Specify the time (in centiseconds - hundredths of a second), a single frame is visible
-
-    Defaults to 200
-
-    Ex - `python ./glitch_this.py -g -d 500 test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g -d 500 test.png 2`
-
-    *tip : if you want the GIF to be slower, supply a bigger duration value*
-
-## Usage - `glitch_this` library
-A full example of how you can use the class is in `test_script.py`
-
-The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
-  * `src_img_path` : Full/Relative path to image
-
-  * `glitch_amount`: Intensity/Level of glitching, must be between 1 to 10 (including both 1 and 10)
-
-  * `color_offset` : Set to `True` if you want **color offset** to be added to output image, *more realistic* glitching!
-
-     Defaults to `False`
-
-  * `scan_lines` : Set to `True` if you want **scan lines** effect to be added to output image
-
-     Defaults to `False`
-
-## Peformance
-The algorithm is pretty fast, however larger image files will take longer to glitch
-It is recommended to keep the `FRAMES` parameter as low as possible, especially for large images. Simply for memory and performance concerns
-
 ## Whoa! Cool Glitches
 Here's some glitched images generated from this script - of different intensity levels!
 
