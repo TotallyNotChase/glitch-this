@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os, argparse, shutil
 import numpy as np
 from pathlib import Path
@@ -39,7 +39,6 @@ def glitch_left(offset):
     Grabs a rectange from inputarr and shifts it leftwards
     Any lost pixel data is wrapped back to the right
     Rectangle's Width and Height are determined from offset
-
     Consider an array like so-
     [[ 0, 1, 2, 3],
     [ 4, 5, 6, 7],
@@ -73,7 +72,6 @@ def glitch_right(offset):
     Grabs a rectange from inputarr and shifts it rightwards
     Any lost pixel data is wrapped back to the left
     Rectangle's Width and Height are determined from offset
-
     Consider an array like so-
     [[ 0, 1, 2, 3],
     [ 4, 5, 6, 7],

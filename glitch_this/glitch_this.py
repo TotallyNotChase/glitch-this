@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import numpy as np
 from random import randint
 from PIL import Image
@@ -16,7 +16,7 @@ class ImageGlitcher:
         self.inputarr = None
         self.outputarr = None
 
-    def glitch_image(self, src_img_path, glitch_amount, color_offset=False, scan_lines=False):
+    def glitch_image(self, src_img_path, glitch_amount, color_offset=False, scan_lines=False, gif=False):
         """
          Sets up values needed for glitching the image
          Returns created Image object
@@ -45,8 +45,25 @@ class ImageGlitcher:
         self.outputarr = np.array(src_img)
 
         # Glitching begins here
-        return self.get_glitched_img(glitch_amount, color_offset, scan_lines)
+        if not gif:
+            # Return glitched image
+            return self.get_glitched_img(glitch_amount, color_offset, scan_lines)   
 
+        # Return glitched GIF
+        # Set up directory for storing glitched images
+        if os.path.isdir('Glitched GIF'):
+            shutil.rmtree('Glitched GIF')
+        os.mkdir('Glitched GIF')
+
+        for i in range(args.frames):
+            glitched_img  = self.get_glitched_image(glitch_amount, color_offset, scan_lines)
+            glitched_img.save(os.path.join('Glitched GIF', 'glitched_{}.png'.format(str(i))))
+        os.chdir('Glitched GIF')
+        glitched_imgs = [Image.open(f) for f in os.listdir(os.getcwd())]
+        os.chdir('..')
+        shutil.rmtree('GLitched GIF')
+        return glitched_imgs
+  
     def get_glitched_img(self, glitch_amount, color_offset, scan_lines):
         """
          Glitches the image located at given path
