@@ -57,7 +57,7 @@ Now that you have the library installed, all you need to do is invoke the script
 
 `glitch_this [IMAGE PATH] [GLITCH_LEVEL]`
 
-![quick_basic](https://github.com/TotallyNotChase/glitch-this/blob/master/example/basic_usage.gif)
+![quick_basic](https://github.com/TotallyNotChase/glitch-this/blob/master/example/basic_command.gif)
 
 Try `glitch_this -h` for more info! Directly from your commandline!
 
