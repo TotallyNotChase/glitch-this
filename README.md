@@ -2,6 +2,8 @@
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
+**NOW EASIER THAN EVER TO USE!**
+
 If you like using this tool, please consider **starring on Github**!
 
 ![demo](./example/glitched2.gif)
@@ -48,6 +50,21 @@ pip install glitch-this
 ```
 pip3 install glitch-this
 ```
+
+## Quick Start
+
+Now that you have the library installed, all you need to do is invoke the script and pass in the params
+
+`glitch_this [IMAGE PATH] [GLITCH_LEVEL]`
+
+Try `glitch_this -h` for more info! Directly from your commandline!
+
+Or, Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation/)!
+
+## DOCS! WHERE TO?!
+
+Read the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation/)!
+
 ## Whoa! Cool Glitches
 Here's some glitched images generated from this script - of different intensity levels!
 
