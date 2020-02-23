@@ -12,22 +12,21 @@ if __name__=='__main__':
         if os.path.isdir('Collections'):
             shutil.rmtree('Collections')
         os.mkdir('Collections')
-        logtxt = open('Collections/imglog.txt', 'w')
-        while(1):
-            t0 = time()
-            level = randint(1, 10)
-            # glitch_image() will return a PIL.Image.Image object
-            # Make sure to supply the full/relative path to the image as well as glitch level
-            # Set `color_offset` to True for color channel offset, otherwise leave it
-            # Set `scan_lines` to True for scan lines effect, otherwise leave it empty
-            glitch_img = glitcher.glitch_image('test.png', level, color_offset=True)
-            # You can then save it or do anything else you want with it
-            glitch_img.save('Collections/glitched_test_{}.png'.format(str(count)))
-            t1 = time()
-            logtxt.write('img_num: {}, level: {}\n'.format(count, level))
-            count += 1
-            sum += (t1 - t0)
-            print('Time taken: ' + str(t1 - t0))
+        with open('Collections/imglog.txt', 'w') as logtxt:
+            while(1):
+                t0 = time()
+                level = randint(1, 10)
+                # glitch_image() will return a PIL.Image.Image object
+                # Make sure to supply the full/relative path to the image as well as glitch level
+                # Set `color_offset` to True for color channel offset, otherwise leave it
+                # Set `scan_lines` to True for scan lines effect, otherwise leave it empty
+                glitch_img = glitcher.glitch_image('test.png', level, color_offset=True)
+                # You can then save it or do anything else you want with it
+                glitch_img.save('Collections/glitched_test_{}.png'.format(str(count)))
+                t1 = time()
+                logtxt.write('img_num: {}, level: {}\n'.format(count, level))
+                count += 1
+                sum += (t1 - t0)
+                print('Time taken: ' + str(t1 - t0))
     except KeyboardInterrupt:
-        logtxt.close()
         print('Average time: ' + str(sum / count))
