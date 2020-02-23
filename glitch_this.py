@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-import os, argparse, shutil
-import numpy as np
+import os, argparse
 from pathlib import Path
-from random import randint
 from time import time
-from PIL import Image
+from glitch_this import ImageGlitcher
 
 # Add commandline arguments parser
 argparser = argparse.ArgumentParser(description='Glitchify images to static images and GIFs!')
@@ -34,209 +32,29 @@ if not args.frames > 0:
 if not args.duration > 0:
     raise ValueError('Duration must be greather than 0')
 
-def glitch_left(offset):
-    """
-    Grabs a rectange from inputarr and shifts it leftwards
-    Any lost pixel data is wrapped back to the right
-    Rectangle's Width and Height are determined from offset
-    Consider an array like so-
-    [[ 0, 1, 2, 3],
-    [ 4, 5, 6, 7],
-    [ 8, 9, 10, 11],
-    [12, 13, 14, 15]]
-    If we were to left shift the first row only, starting from the 1st index;
-    i.e a rectangle of width = 3, height = 1, starting at (0, 0)
-    We'd grab [1, 2, 3] and left shift it until the start of row
-    so it'd look like [[1, 2, 3, 3]]
-    Now we wrap around the lost values, i.e 0
-    now it'd look like [[1, 2, 3, 0]]
-    That's the end result!
-    """
-    start_y = randint(0, img_height)
-    chunk_height = randint(1, int(img_height / 4))
-    chunk_height = min(chunk_height, img_height - start_y)
-    stop_y = start_y + chunk_height
-
-    # For copy
-    start_x = offset
-    # For paste
-    stop_x = img_width - start_x
-
-    left_chunk = inputarr[start_y : stop_y, start_x : ]
-    wrap_chunk = inputarr[start_y : stop_y, : start_x]
-    outputarr[start_y : stop_y, : stop_x] = left_chunk
-    outputarr[start_y : stop_y, stop_x : ] = wrap_chunk
-
-def glitch_right(offset):
-    """
-    Grabs a rectange from inputarr and shifts it rightwards
-    Any lost pixel data is wrapped back to the left
-    Rectangle's Width and Height are determined from offset
-    Consider an array like so-
-    [[ 0, 1, 2, 3],
-    [ 4, 5, 6, 7],
-    [ 8, 9, 10, 11],
-    [12, 13, 14, 15]]
-    If we were to left shift the first row only, starting from the 1st index;
-    i.e a rectangle of width = 3, height = 1, starting at (0, 0)
-    We'd grab [0, 1, 2] and right shift it until the end of row
-    so it'd look like [[0, 0, 1, 2]]
-    Now we wrap around the lost values, i.e 3
-    now it'd look like [[3, 0, 1, 2]]
-    That's the end result!
-    """
-    start_y = randint(0, img_height)
-    chunk_height = randint(1, int(img_height / 4))
-    chunk_height = min(chunk_height, img_height - start_y)
-    stop_y = start_y + chunk_height
-
-    # For copy
-    stop_x = img_width - offset
-    # For paste
-    start_x = offset
-
-    right_chunk = inputarr[start_y : stop_y, : stop_x]
-    wrap_chunk = inputarr[start_y : stop_y, stop_x : ]
-    outputarr[start_y : stop_y, start_x : ] = right_chunk
-    outputarr[start_y : stop_y, : start_x] = wrap_chunk
-
-def add_scan_lines():
-    # Make every other row have only black pixels
-    outputarr[::2, :, :3] = [0, 0, 0]
-
-def color_offset(offset_x, offset_y, channel_index):
-    """
-     Takes the given channel's color value from inputarr, starting from (0, 0)
-     and puts it in the same channel's slot in outputarr, starting from (offset_y, offset_x)
-    """
-        # Make sure offset_x isn't negative in the actual algo
-    offset_x = offset_x if offset_x >= 0 else img_width + offset_x
-    offset_y = offset_y if offset_y >= 0 else img_height + offset_y
-
-    # Assign values from 0th row of inputarr to offset_y th
-    # row of outputarr
-    # If outputarr's columns run out before inputarr's does,
-    # wrap the remaining values around
-    outputarr[offset_y,
-              offset_x:,
-              channel_index] = inputarr[0,
-                                        :img_width - offset_x,
-                                        channel_index]
-    outputarr[offset_y,
-              :offset_x,
-              channel_index] = inputarr[0,
-                                        img_width - offset_x:,
-                                        channel_index]
-
-    # Continue afterwards till end of outputarr
-    # Make sure the width and height match for both slices
-    outputarr[offset_y + 1:,
-              :,
-              channel_index] = inputarr[1 : img_height - offset_y,
-                                        :,
-                                        channel_index]
-
-    # Restart from 0th row of outputarr and go until the offset_y th row
-    # This will assign the remaining values in inputarr to outputarr
-    outputarr[:offset_y,
-              :,
-              channel_index] = inputarr[img_height - offset_y:,
-                                        :,
-                                        channel_index]
-
-def get_random_channel():
-    # Returns a random index from 0 to pixel_tuple_len
-    # For an RGB image, a 0th index represents the RED channel
-    return randint(0, pixel_tuple_len - 1)
-
-def get_glitched_image():
-    """
-     Glitches the image located at given path
-     Intensity of glitch depends on glitch_amount
-    """
-    max_offset = int((glitch_amount ** 2 / 100) * img_width)
-    for _ in range(0, glitch_amount * 2):
-        # Setting up values needed for the randomized glitching
-        current_offset = randint(-max_offset, max_offset)
-
-        if current_offset == 0:
-            # Can't wrap left OR right when offset is 0, End of Array
-            continue
-        if current_offset < 0:
-            # Grab a rectangle of specific width and heigh, shift it left
-            # by a specified offset
-            # Wrap around the lost pixel data from the right
-            glitch_left(-current_offset)
-        else:
-            # Grab a rectangle of specific width and height, shift it right
-            # by a specified offset
-            # Wrap around the lost pixel data from the left
-            glitch_right(current_offset)
-
-    if args.color:
-        # Add color channel offset if checked true
-        color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
-                     randint(-glitch_amount * 2, glitch_amount * 2),
-                     get_random_channel())
-
-    if args.scan_lines:
-        # Add scan lines if checked true
-        add_scan_lines()
-
-    # Creating glitched image from output array
-    return Image.fromarray(outputarr, img_mode)
-
 if __name__ == '__main__':
-    try:
-        src_img_path = Path(args.src_img_path)
-        if args.src_img_path.endswith('.png'):
-            src_img = Image.open(src_img_path).convert('RGBA')
-        else:
-            src_img = Image.open(src_img_path).convert('RGB')
-    except:
-        raise TypeError('File format not supported - must be an image file')
-
     t0 = time()
     # Fetching image attributes
-    pixel_tuple_len = len(src_img.getbands())
-    img_width, img_height = src_img.size
-    img_path, img_file = os.path.split(src_img_path)
+    img_path, img_file = os.path.split(Path(args.src_img_path))
     img_filename, img_fileex = img_file.rsplit('.', 1)
-    img_mode = src_img.mode
-
-    # Creating 3D arrays with pixel data
-    inputarr = np.asarray(src_img)
-    outputarr = np.array(src_img)
 
     # Glitching begins here
-    glitch_amount = args.glitch_level
+    glitcher = ImageGlitcher()
+    glitch_img = glitcher.glitch_image(args.src_img_path, args.glitch_level, scan_lines=args.scan_lines, color_offset=args.color, gif=args.gif)
     if not args.gif:
-        glitch_img = get_glitched_image()
         full_path = os.path.join(img_path, 'glitched_' + img_file)
         glitch_img.save(full_path)
         t1 = time()
         print('Glitched image saved in "{}"'.format(full_path))
         print('Time taken: ' + str(t1 - t0))
     else:
-        # Set up directory for storing glitched images
-        if os.path.isdir('Glitched GIF'):
-            shutil.rmtree('Glitched GIF')
-        os.mkdir('Glitched GIF')
-
-        for i in range(args.frames):
-            glitched_img  = get_glitched_image()
-            glitched_img.save(os.path.join('Glitched GIF', 'glitched_{}_{}.{}'.format(img_filename, str(i), img_fileex)))
-        os.chdir('Glitched GIF')
-        glitched_imgs = [Image.open(f) for f in os.listdir(os.getcwd())]
-        os.chdir('..')
         full_path = os.path.join(img_path, 'glitched_{}.gif'.format(img_filename))
-        glitched_imgs[0].save(full_path,
+        glitch_img[0].save(full_path,
                               format='GIF',
-                              append_images=glitched_imgs[1:],
+                              append_images=glitch_img[1:],
                               save_all=True,
                               duration=args.duration,
                               loop=0)
         t1 = time()
         print('Glitched GIF saved in "{}"\nFrames = {}, Duration = {}'.format(full_path, args.frames, args.duration))
         print('Time taken: ' + str(t1 - t0))
-        shutil.rmtree('Glitched GIF')
