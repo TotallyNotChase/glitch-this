@@ -6,7 +6,7 @@ Featuring *10 different levels of glitching intensity*! The algorithm used to cr
 
 If you like using this tool, please consider **starring on Github**!
 
-![demo](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched2.gif)
+![demo](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.gif)
 
 What are you waiting for? Import the library and get glitching!
 
@@ -57,7 +57,7 @@ Now that you have the library installed, all you need to do is invoke the script
 
 `glitch_this [IMAGE PATH] [GLITCH_LEVEL]`
 
-![quick_basic](https://github.com/TotallyNotChase/glitch-this/blob/master/example/basic_command.gif)
+![quick_basic](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/basic_command.gif)
 
 Try `glitch_this -h` for more info! Directly from your commandline!
 
@@ -80,23 +80,23 @@ Here's some glitched images generated from this script - of different intensity 
 
 #### Original image for reference:-
 
-![og_img](https://github.com/TotallyNotChase/glitch-this/blob/master/example/source.png)
+![og_img](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/source.png)
 
 #### Glitched version - Level 2:-
 
-![glitched_2](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched2.png)
+![glitched_2](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.png)
 
 *Not badly glitched now is it?*
 
 #### Glitched version - Level 5:-
 
-![glitched_5](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched5.png)
+![glitched_5](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5.png)
 
 *Well it's certainly starting to get glitchy*
 
 #### Glitched version - Level 8:-
 
-![glitched_8](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched8.png)
+![glitched_8](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8.png)
 
 *I don't know what I'm looking at*
 
@@ -104,15 +104,15 @@ Let's get some **scan lines** on there!
 
 #### Glitched version (scan_lines)- Level 2:-
 
-![glitched_2_scan](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched2scan.png)
+![glitched_2_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2scan.png)
 
 #### Glitched version (scan_lines) - Level 5:-
 
-![glitched_5_scan](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched5scan.png)
+![glitched_5_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5scan.png)
 
 #### Glitched version (scan_lines) - Level 8:-
 
-![glitched_8_scan](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched8scan.png)
+![glitched_8_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8scan.png)
 
 That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
@@ -120,12 +120,12 @@ That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
 #### Glitched GIF - Level 2:-
 
-![glitched_gif2](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched2.gif)
+![glitched_gif2](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.gif)
 
 #### Glitched GIF - Level 5:-
 
-![glitched_gif5](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched5.gif)
+![glitched_gif5](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5.gif)
 
 #### Glitched GIF - Level 8:-
 
-![glitched_gif8](https://github.com/TotallyNotChase/glitch-this/blob/master/example/glitched8.gif)
+![glitched_gif8](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8.gif)
