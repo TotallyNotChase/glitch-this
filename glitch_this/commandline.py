@@ -27,7 +27,7 @@ def glitch_script(src_img_path, glitch_level, scan_lines, color, gif, frames, du
 
     # Glitching begins here
     glitcher = ImageGlitcher()
-    glitch_img = glitcher.glitch_image(src_img_path, glitch_level, scan_lines=scan_lines, color_offset=color, gif=gif)
+    glitch_img = glitcher.glitch_image(src_img_path, glitch_level, scan_lines=scan_lines, color_offset=color, gif=gif, frames=frames)
     if not gif:
         full_path = os.path.join(img_path, 'glitched_' + img_file)
         glitch_img.save(full_path)
