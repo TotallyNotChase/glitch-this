@@ -2,7 +2,7 @@
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
-**NOW EASIER THAN EVER TO USE! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation)!**
+**NOW EASIER THAN EVER TO USE! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
 
 If you like using this tool, please consider **starring on Github**!
 
@@ -61,11 +61,17 @@ Now that you have the library installed, all you need to do is invoke the script
 
 Try `glitch_this -h` for more info! Directly from your commandline!
 
-Or, Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation/)!
+Or, Check out the [script docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-commandline-script)!
+
+Interested in the library? Check out the [library docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-glitch-this-library)!
 
 ## DOCS! WHERE TO?!
 
-Read the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation/)!
+Read the [script docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-commandline-script)!
+
+Read the [library docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-glitch-this-library)!
+
+Check out a [full example](https://github.com/TotallyNotChase/glitch-this/blob/master/test_script.py) using the library!
 
 ## Whoa! Cool Glitches
 Here's some glitched images generated from this script - of different intensity levels!
