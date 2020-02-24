@@ -17,3 +17,7 @@
   Simply use `glitch_this args` from the commandline after `pip3 install glitch-this`!
 
   Add **Glitching an image to GIF support** in the library! Now you can specify the necessary arguments to get a list of frames that you can use to make a GIF as well as normal images!
+
+* 0.0.7 -> Implement **version checker** in commandline script
+
+  The commandline tool will now inform you if the package is out of date!
