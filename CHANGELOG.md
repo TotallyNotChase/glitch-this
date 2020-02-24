@@ -23,3 +23,5 @@
   The commandline tool will now inform you if the package is out of date!
 
 * 0.0.7.1 -> Fix a script breaking bug
+
+* 0.0.7.2 -> Fix missing frames argument
