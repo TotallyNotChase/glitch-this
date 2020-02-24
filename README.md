@@ -1,6 +1,7 @@
 <h1 align="center">glitch-this!</h1>
 <p align="center"><i>Create glitched images and GIFs, with highly customizable options!</i></p>
 <hr><p align="center">
+  <a href="https://pypi.org/project/glitch-this"><img alt="Pypi release" src="https://img.shields.io/pypi/v/glitch-this?color=red&label=pypi%20release&logo=pypi&logoColor=blue" /></a>
   <a href="https://twitter.com/totally_chase"><img alt="Twitter" src="https://img.shields.io/twitter/follow/totally_chase?style=social" /></a>
   <img alt="Stars" src="https://img.shields.io/github/stars/TotallyNotChase/glitch-this.svg?label=Stars&style=flat" />
   <a href="http://www.python.org/download/"><img alt="Python 3" src="https://img.shields.io/badge/Python-3-yellow.svg"></a>
