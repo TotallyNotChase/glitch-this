@@ -1,4 +1,14 @@
-## Glitch This!
+<h1 align="center">glitch-this!</h1>
+<p align="center"><i>Create glitched images and GIFs, with highly customizable options!</i></p>
+<hr><p align="center">
+  <a href="https://twitter.com/totally_chase"><img alt="Twitter" src="https://img.shields.io/twitter/follow/totally_chase?style=social" /></a>
+  <img alt="Stars" src="https://img.shields.io/github/stars/TotallyNotChase/glitch-this.svg?label=Stars&style=flat" />
+  <a href="http://www.python.org/download/"><img alt="Python 3" src="https://img.shields.io/badge/Python-3-yellow.svg"></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/TotallyNotChase/glitch-this.svg"/></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/TotallyNotChase/glitch-this"></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/TotallyNotChase/glitch-this.svg" alt="License"/></a>
+</p>
+
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
