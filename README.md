@@ -6,7 +6,7 @@
   <a href="http://www.python.org/download/"><img alt="Python 3" src="https://img.shields.io/badge/Python-3-yellow.svg"></a>
   <a href="https://github.com/TotallyNotChase/glitch-this/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/TotallyNotChase/glitch-this.svg"/></a>
   <a href="https://github.com/TotallyNotChase/glitch-this/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/TotallyNotChase/glitch-this"></a>
-  <a href="https://github.com/TotallyNotChase/glitch-this/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/TotallyNotChase/glitch-this.svg" alt="License"/></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/blob/master/LICENSE"><img src="https://img.shields.io/github/license/TotallyNotChase/glitch-this.svg" alt="License"/></a>
 </p>
 
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
