@@ -25,3 +25,13 @@
 * 0.0.7.1 -> Fix a script breaking bug
 
 * 0.0.7.2 -> Fix missing frames argument
+
+* 0.0.8 -> **MAJOR CHANGES**
+
+  Add support for `Image` object input, now you can directly pass an `Image` object to the library!
+
+  Add support for glitching GIFs to GIFs, That's right! You can now input a GIF to turn it into a **GLITCHED GIF**!
+
+  Cleanup code
+
+  Add more docs

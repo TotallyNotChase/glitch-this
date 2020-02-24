@@ -1,12 +1,12 @@
 import os, shutil
 import numpy as np
 from random import randint
-from PIL import Image
+from PIL import Image, ImageSequence
 
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
 
-    __version__ = '0.0.7.2'
+    __version__ = '0.0.8'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -18,55 +18,184 @@ class ImageGlitcher:
         self.inputarr = None
         self.outputarr = None
 
-    def glitch_image(self, src_img_path, glitch_amount, color_offset=False, scan_lines=False, gif=False, frames=23):
+        # Getting PATH of temp folders
+        self.lib_path = os.path.split(os.path.abspath(__file__))[0]
+        self.gif_dirpath = os.path.join(self.lib_path, 'Glitched GIF')
+
+    def isgif(self, img):
+        # Returns true if input image is a GIF and/or animated
+        if isinstance(img, str):
+            return img.endswith('.gif')
+        index = 0
+        for frame in ImageSequence.Iterator(img):
+            # More than one frames means image is animated
+            index += 1
+            if index >= 2:
+                return True
+        return False
+
+    def open_image(self, img_path):
+        # Returns an Image object
+        # Will throw exception if img_path doesn't point to Image
+        if img_path.endswith('.gif'):
+            # Do not convert GIF file
+            return Image.open(img_path)
+        elif img_path.endswith('.png'):
+            # Convert the Image to RGBA if it's png
+            return Image.open(img_path).convert('RGBA')
+        else:
+            # Otherwise convert it to RGB
+            return Image.open(img_path).convert('RGB')
+
+    def fetch_image(self, src_img, gif_allowed):
+        """
+         The following code resolves whether input was a path or an Image
+         Then returns an Image object
+
+         Raises an exception if `img` param is not an Image
+        """
+        if isinstance(src_img, str) and (gif_allowed or not src_img.endswith('.gif')):
+            """
+             An str object was passed
+
+             If GIF is not allowed and the Image path is a GIF
+             the function will raise an Exception
+             If GIF is allowed, any Image path is good to go
+            """
+            # Sanity Check if the path exists
+            if not os.path.exists(src_img):
+                raise FileNotFoundError('No image found at given path')
+            try:
+                # Open the image at given path
+                img = self.open_image(src_img)
+            except:
+                # File is not an Image
+                raise Exception('Wrong format')
+        elif isinstance(src_img, Image.Image) and (gif_allowed or not self.isgif(src_img)):
+            """
+             An Image object was passed
+
+             If GIF is not allowed and the Image object is a GIF
+             the function will raise an Exception
+             If GIF is allowed, any Image object is good to go
+            """
+            if src_img.format == 'GIF':
+                # Do not convert GIF file
+                return src_img
+            elif src_img.format == 'PNG':
+                # Convert the Image to RGBA if it's png
+                img = src_img.convert('RGBA')
+            else:
+                # Otherwise convert it to RGB
+                img = src_img.convert('RGB')
+        else:
+            # File is not an Image
+            # OR it's a GIF but GIF is not allowed
+
+            # Raise the GENERIC exception here
+            raise Exception('Wrong format')
+        return img
+
+    def glitch_image(self, src_img, glitch_amount, color_offset=False, scan_lines=False, gif=False, frames=23):
         """
          Sets up values needed for glitching the image
-         Returns created Image object
+         Returns created Image object if gif=False
+         Returns a list of PngImage objects if gif=True
+
+         PARAMETERS:-
+         src_img: Either the path to input Image or an Image object itself
+         glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
+
+         color_offset: Specify True if color_offset effect should be applied
+         scan_lines: Specify True if scan_lines effect should be applied
+         gif: True if output should be ready to be saved as GIF
+         frames: How many glitched frames should be generated for GIF
         """
         # Sanity checking the inputs
         if not 1 <= glitch_amount <= 10:
             raise ValueError('glitch_amount parameter must be in range 1 to 10, inclusive')
-        if not os.path.exists(src_img_path):
-            raise FileNotFoundError('No image found at given path')
 
         try:
-            if src_img_path.endswith('.png'):
-                src_img = Image.open(src_img_path).convert('RGBA')
-            else:
-                src_img = Image.open(src_img_path).convert('RGB')
+            # Get Image, whether input was an str path or Image object
+            # GIF input is NOT allowed in this method
+            img = self.fetch_image(src_img, False)
         except:
-            raise Exception('File format not supported - must be an image file')
+            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
+            raise Exception('File format not supported - must be a non-animated image file')
 
         # Fetching image attributes
-        self.pixel_tuple_len = len(src_img.getbands())
-        self.img_width, self.img_height = src_img.size
-        self.img_mode = src_img.mode
+        self.pixel_tuple_len = len(img.getbands())
+        self.img_width, self.img_height = img.size
+        self.img_mode = img.mode
 
         # Assigning the 3D arrays with pixel data
-        self.inputarr = np.asarray(src_img)
-        self.outputarr = np.array(src_img)
+        self.inputarr = np.asarray(img)
+        self.outputarr = np.array(img)
 
         # Glitching begins here
         if not gif:
             # Return glitched image
-            return self.get_glitched_img(glitch_amount, color_offset, scan_lines)   
+            return self.get_glitched_img(glitch_amount, color_offset, scan_lines)
 
         # Return glitched GIF
         # Set up directory for storing glitched images
-        lib_path = os.path.split(os.path.abspath(__file__))[0]
-        gif_dirpath = os.path.join(lib_path, 'Glitched GIF')
-        if os.path.isdir(gif_dirpath):
-            shutil.rmtree(gif_dirpath)
-        os.mkdir(gif_dirpath)
+        if os.path.isdir(self.gif_dirpath):
+            shutil.rmtree(self.gif_dirpath)
+        os.mkdir(self.gif_dirpath)
 
         glitched_imgs = []
         for i in range(frames):
             glitched_img  = self.get_glitched_img(glitch_amount, color_offset, scan_lines)
-            file_path = os.path.join(gif_dirpath, 'glitched_{}.png'.format(str(i)))
+            file_path = os.path.join(self.gif_dirpath, 'glitched_{}.png'.format(str(i)))
             glitched_img.save(file_path)
             glitched_imgs.append(Image.open(file_path))
         return glitched_imgs
-  
+
+    def glitch_gif(self, src_gif, glitch_amount, color_offset=False, scan_lines=False):
+        """
+         Glitch each frame of input GIF
+         Returns a list of PngImage objects if gif=True
+
+         NOTE: This is a time consuming process, especially for large GIFs
+               with many frames
+         PARAMETERS:-
+         src_img: Either the path to input Image or an Image object itself
+         glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
+
+         color_offset: Specify True if color_offset effect should be applied
+         scan_lines: Specify True if scan_lines effect should be applied
+        """
+        # Sanity checking the inputs
+        if not 1 <= glitch_amount <= 10:
+            raise ValueError('glitch_amount parameter must be in range 1 to 10, inclusive')
+        if not self.isgif(src_gif):
+            raise Exception('Input image must be a path to a GIF or be a GIF Image object')
+
+        try:
+            # Get Image, whether input was an str path or Image object
+            # GIF input is allowed in this method
+            gif = self.fetch_image(src_gif, True)
+        except:
+            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
+            raise Exception('File format not supported - must be an image file')
+
+        # Set up directory for storing glitched images
+        if os.path.isdir(self.gif_dirpath):
+            shutil.rmtree(self.gif_dirpath)
+        os.mkdir(self.gif_dirpath)
+
+        i = 0
+        glitched_imgs = []
+        for frame in ImageSequence.Iterator(gif):
+            file_path = os.path.join(self.gif_dirpath, 'frame.png')
+            frame.save(file_path)
+            glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset, scan_lines)
+            file_path = os.path.join(self.gif_dirpath, 'glitched_{}.png'.format(str(i)))
+            glitched_img.save(file_path)
+            glitched_imgs.append(Image.open(file_path))
+            i += 1
+        return glitched_imgs
+
     def get_glitched_img(self, glitch_amount, color_offset, scan_lines):
         """
          Glitches the image located at given path
