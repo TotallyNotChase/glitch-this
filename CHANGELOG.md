@@ -21,3 +21,5 @@
 * 0.0.7 -> Implement **version checker** in commandline script
 
   The commandline tool will now inform you if the package is out of date!
+
+* 0.0.7.1 -> Fix a script breaking bug
