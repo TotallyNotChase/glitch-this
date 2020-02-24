@@ -3,6 +3,7 @@ import os, argparse
 from pathlib import Path
 from time import time
 from glitch_this import ImageGlitcher
+from check_version import is_uptodate
 
 def glitch_script(src_img_path, glitch_level, scan_lines, color, gif, frames, duration):
     t0 = time()
@@ -62,6 +63,10 @@ def main():
 
     # Call the actual script
     glitch_script(args.src_img_path, args.glitch_level, args.scan_lines, args.color, args.gif, args.frames, args.duration)
+
+    # Let the user know if new version is available
+    if not is_uptodate(ImageGlitcher.__version__):
+        print('A new version of "glitch-this" is available. Please consider upgrading via `pip install --upgrade glitch-this`')
 
 if __name__=='__main__':
     main()

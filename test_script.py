@@ -20,6 +20,7 @@ def test_loop():
                  since gif is set to False
 
                  Check DOCS for more info!
+                 https://github.com/TotallyNotChase/glitch-this/wiki
                 """
                 glitch_img = glitcher.glitch_image('test.png', level)
                 # You can then save it or do anything else you want with it
