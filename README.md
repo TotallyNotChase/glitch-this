@@ -36,7 +36,7 @@ View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/ma
 * `pillow`
 * `numpy`
 
-You can install the required packages all at once through the included `requirements.txt`
+These will be automatically installed when you install the library! (assuming you have `python3`)
 ## Installation
 
 Simply install `glitch-this` from [pypi](https://pypi.org/project/glitch-this/)!
