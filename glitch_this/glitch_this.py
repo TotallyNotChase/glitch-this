@@ -63,7 +63,7 @@ class ImageGlitcher:
              If GIF is allowed, any Image path is good to go
             """
             # Sanity Check if the path exists
-            if not os.path.exists(src_img):
+            if not os.path.isfile(src_img):
                 raise FileNotFoundError('No image found at given path')
             try:
                 # Open the image at given path
@@ -105,7 +105,7 @@ class ImageGlitcher:
          PARAMETERS:-
          src_img: Either the path to input Image or an Image object itself
          glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
-         
+
          color_offset: Specify True if color_offset effect should be applied
          scan_lines: Specify True if scan_lines effect should be applied
          gif: True if output should be ready to be saved as GIF
@@ -168,7 +168,7 @@ class ImageGlitcher:
          PARAMETERS:-
          src_img: Either the path to input Image or an Image object itself
          glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
-         
+
          color_offset: Specify True if color_offset effect should be applied
          scan_lines: Specify True if scan_lines effect should be applied
         """
@@ -199,7 +199,7 @@ class ImageGlitcher:
              * Save each frame in the temp folder (always png)
              * Glitch the saved image
              * Append a copy of the glitched image to the list
-            """ 
+            """
             duration += frame.info['duration']
             file_path = os.path.join(self.gif_dirpath, 'frame.png')
             frame.save(file_path)
@@ -211,7 +211,7 @@ class ImageGlitcher:
         # Cleanup
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs, duration / i, i
-  
+
     def __get_glitched_img(self, glitch_amount, color_offset, scan_lines):
         """
          Glitches the image located at given path

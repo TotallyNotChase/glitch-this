@@ -54,6 +54,8 @@ def main():
         raise ValueError('Loop must be greater than or equal to 0')
     if not args.frames > 0:
         raise ValueError('Frames must be greater than 0')
+    if not os.path.isfile(args.src_img_path):
+        raise FileNotFoundError('No image found at given path')
 
     # Set up full_path, for output saving location
     out_path, out_file = os.path.split(Path(args.src_img_path))
@@ -112,7 +114,7 @@ def main():
     print('Time taken to glitch: ' + str(t1 - t0))
     print('Time taken to save: ' + str(t3 - t2))
     print('Total Time taken: ' + str(t3 - t0))
-    
+
     # Let the user know if new version is available
     if not islatest(ImageGlitcher.__version__):
         print('A new version of "glitch-this" is available. Please consider upgrading via `pip install --upgrade glitch-this`')
