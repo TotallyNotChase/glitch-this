@@ -145,6 +145,12 @@ class ImageGlitcher:
 
         glitched_imgs = []
         for _ in range(frames):
+            """
+             * Glitch the image for n times
+             * Where n is 0,1,2...frames
+             * Save the image the in temp directory
+             * Open the image and append a copy of it to the list
+            """
             glitched_img  = self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
             glitched_img.save(file_path)
@@ -196,9 +202,10 @@ class ImageGlitcher:
         glitched_imgs = []
         for frame in ImageSequence.Iterator(gif):
             """
-             * Save each frame in the temp folder (always png)
+             * Save each frame in the temp directory (always png)
              * Glitch the saved image
-             * Append a copy of the glitched image to the list
+             * Save the glitched image in temp directory
+             * Open the image and append a copy of it to the list
             """
             duration += frame.info['duration']
             file_path = os.path.join(self.gif_dirpath, 'frame.png')

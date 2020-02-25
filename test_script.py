@@ -16,8 +16,8 @@ def test_loop():
                 """
                  Example of getting a glitched image and saving it,
                  with all default params
-                 
-                 glitch_image() will return a PIL.Image.Image object 
+
+                 glitch_image() will return a PIL.Image.Image object
                  since gif is set to False
 
                  Check DOCS for more info!
