@@ -4,6 +4,11 @@ from pathlib import Path
 from time import time
 from glitch_this import ImageGlitcher
 
+def check_path_exists(full_path):
+    if os.path.exists(full_path):
+        print('File {} already exits. Please use --force to overwrite the file anyway'.format(full_path))
+        exit(1)
+
 def islatest(version):
     from urllib import request
     import json
@@ -19,7 +24,7 @@ def islatest(version):
 
     return version == latest_version
 
-def glitch_gif(src_img_path, glitch_level, scan_lines, color, duration):
+def glitch_gif(src_img_path, glitch_level, scan_lines, color, duration, force_overwrite):
     t0 = time()
     # Fetching image attributes
     img_path, img_file = os.path.split(Path(src_img_path))
@@ -29,6 +34,8 @@ def glitch_gif(src_img_path, glitch_level, scan_lines, color, duration):
     # Glitching begins here
     glitcher = ImageGlitcher()
     glitch_imgs = glitcher.glitch_gif(src_img_path, glitch_level, scan_lines=scan_lines, color_offset=color)
+    if not force_overwrite:
+        check_path_exists(full_path)
     glitch_imgs[0].save(full_path,
                               format='GIF',
                               append_images=glitch_imgs[1:],
@@ -39,7 +46,7 @@ def glitch_gif(src_img_path, glitch_level, scan_lines, color, duration):
     print('Glitched GIF saved in "{}"\nDuration = {}'.format(full_path, duration))
     print('Time taken: ' + str(t1 - t0))
 
-def glitch_image(src_img_path, glitch_level, scan_lines, color, gif, frames, duration):
+def glitch_image(src_img_path, glitch_level, scan_lines, color, gif, frames, duration, force_overwrite):
     t0 = time()
     # Fetching image attributes
     img_path, img_file = os.path.split(Path(src_img_path))
@@ -50,12 +57,16 @@ def glitch_image(src_img_path, glitch_level, scan_lines, color, gif, frames, dur
     glitch_img = glitcher.glitch_image(src_img_path, glitch_level, scan_lines=scan_lines, color_offset=color, gif=gif, frames=frames)
     if not gif:
         full_path = os.path.join(img_path, 'glitched_' + img_file)
+        if not force_overwrite:
+            check_path_exists(full_path)
         glitch_img.save(full_path)
         t1 = time()
         print('Glitched image saved in "{}"'.format(full_path))
         print('Time taken: ' + str(t1 - t0))
     else:
         full_path = os.path.join(img_path, 'glitched_{}.gif'.format(img_filename))
+        if not force_overwrite:
+            check_path_exists(full_path)
         glitch_img[0].save(full_path,
                               format='GIF',
                               append_images=glitch_img[1:],
@@ -86,6 +97,8 @@ def main():
     argparser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
                            help='If input image is GIF, use for glitching GIFs to GIFs!\
                            Defaults to False\nNOTE: This is a slow process')
+    argparser.add_argument('--force', dest='force_overwrite', action='store_true',
+                           help='Whether or not force overwriting existing files, defaults to False')
     args = argparser.parse_args()
 
     # Sanity checking the inputs
@@ -94,9 +107,9 @@ def main():
 
     # Call the actual script
     if not args.input_gif:
-        glitch_image(args.src_img_path, args.glitch_level, args.scan_lines, args.color, args.gif, args.frames, args.duration)
+        glitch_image(args.src_img_path, args.glitch_level, args.scan_lines, args.color, args.gif, args.frames, args.duration, args.force_overwrite)
     else:
-        glitch_gif(args.src_img_path, args.glitch_level, args.scan_lines, args.color, args.duration)
+        glitch_gif(args.src_img_path, args.glitch_level, args.scan_lines, args.color, args.duration, args.force_overwrite)
 
     # Let the user know if new version is available
     if not islatest(ImageGlitcher.__version__):
