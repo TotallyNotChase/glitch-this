@@ -4,7 +4,6 @@ from time import time
 from PIL import Image
 from glitch_this import ImageGlitcher
 
-
 def test_loop():
     # A method to stress test
     count = 0
@@ -17,8 +16,8 @@ def test_loop():
                 """
                  Example of getting a glitched image and saving it,
                  with all default params
-
-                 glitch_image() will return a PIL.Image.Image object
+                 
+                 glitch_image() will return a PIL.Image.Image object 
                  since gif is set to False
 
                  Check DOCS for more info!
@@ -75,6 +74,8 @@ def test_image_to_gif():
     """
 
     DURATION = 200      # Set this to however many centiseconds each frame should be visible for
+    LOOP = 0            # Set this to how many times the gif should loop
+                        # LOOP = 0 means infinite loop
 
     # All default params (i.e FRAMES = 23, color_offset = False, scan_lines = False)
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True)
@@ -83,7 +84,7 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
     # Now try with scan_lines set to true
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True, scan_lines=True)
     glitch_imgs[0].save('Collections/glitched_test_scan.gif',
@@ -91,7 +92,7 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # Now try with color_offset set to true
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True, color_offset=True)
@@ -100,7 +101,7 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # Now try with 10 frames
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True, frames=10)
@@ -109,7 +110,7 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # How about all of the above?
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True, scan_lines=True, color_offset=True, frames=10)
@@ -118,7 +119,7 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # You can also pass an Image object inplace of the path
     # Applicable in all of the examples above
@@ -129,12 +130,16 @@ def test_image_to_gif():
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
 def test_gif_to_gif():
     """
      Example of getting a glitched GIF (from another GIF)
      and saving it
+
+     **`glitch_gif` also returns the duration (of each frame)
+     in centiseconds and the number of frames in the given GIF, you may
+     use these when saving your GIF too!**
 
      We use glitch_level = 2 in this example
      We also are making infinitely looping GIFs
@@ -143,52 +148,54 @@ def test_gif_to_gif():
     """
 
     DURATION = 200      # Set this to however many centiseconds each frame should be visible for
+    LOOP = 0            # Set this to how many times the gif should loop
+                        # LOOP = 0 means infinite loop
 
     # All default params (i.e color_offset = False, scan_lines = False)
-    glitch_imgs = glitcher.glitch_gif('test.gif', 2)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2)
     glitch_imgs[0].save('Collections/glitched_test_default.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
     # Now try with scan_lines set to true
-    glitch_imgs = glitcher.glitch_gif('test.gif', 2, scan_lines=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, scan_lines=True)
     glitch_imgs[0].save('Collections/glitched_test_scan.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # Now try with color_offset set to true
-    glitch_imgs = glitcher.glitch_gif('test.gif', 2, color_offset=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, color_offset=True)
     glitch_imgs[0].save('Collections/glitched_test_color.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # How about all of the above?
-    glitch_imgs = glitcher.glitch_gif('test.gif', 2, scan_lines=True, color_offset=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, scan_lines=True, color_offset=True)
     glitch_imgs[0].save('Collections/glitched_test_all.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
     # You can also pass an Image object inplace of the path
     # Applicable in all of the examples above
     img = Image.open('test.gif')
-    glitch_imgs = glitcher.glitch_gif(img, 2, scan_lines=True, color_offset=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(img, 2, scan_lines=True, color_offset=True)
     glitch_imgs[0].save('Collections/glitched_test_all_obj.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
                         save_all=True,
                         duration=DURATION,
-                        loop=0)
+                        loop=LOOP)
 
 if __name__=='__main__':
     # Create the ImageGlitcher object
@@ -213,11 +220,15 @@ if __name__=='__main__':
     # Start Testing
     fmt = 'png'
     print('Testing image to image glitching....')
+    t0 = time()
     test_image_to_image()
-    print('Done!')
+    t1 = time()
+    print('Done! Time taken: ', str(t1-t0))
     print('Testing image to GIF glitching....')
+    t0 = time()
     test_image_to_gif()
-    print('Done!')
+    t1 = time()
+    print('Done! Time taken: ', str(t1-t0))
     print('Testing infinite stress test.....\nNOTE: Use ctrl+c to stop the test')
     test_loop()
     print('Done!')
