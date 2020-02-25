@@ -3,6 +3,7 @@
 */.mypy_cache
 *.__pycache__
 */__pycache__
+*/Glitched GIF
 Collections/
 build/
 dist/

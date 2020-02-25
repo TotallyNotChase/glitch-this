@@ -5,7 +5,7 @@ with open('README.md', 'r') as file:
 
 setup(
     name='glitch_this',
-    version='0.0.5',
+    version='0.0.8',
     author='TotallyNotChase',
     author_email='44284917+TotallyNotChase@users.noreply.github.com',
     description='A package to glitch images',
@@ -13,6 +13,9 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/TotallyNotChase/Glitch-and-Gif',
     packages=find_packages(),
+    entry_points={
+        'console_scripts':['glitch_this=glitch_this.commandline:main'],
+    },
     install_requires=[
         'Pillow>=6.2.1',
         'numpy>=1.18.1',

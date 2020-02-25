@@ -1,12 +1,33 @@
-## Glitch This!
+<h1 align="center">glitch-this!</h1>
+<p align="center"><i>Create glitched images and GIFs, with highly customizable options!</i></p>
+<hr><p align="center">
+  <a href="https://pypi.org/project/glitch-this"><img alt="Pypi release" src="https://img.shields.io/pypi/v/glitch-this?color=red&label=pypi%20release&logo=pypi&logoColor=blue" /></a>
+  <a href="https://twitter.com/totally_chase"><img alt="Twitter" src="https://img.shields.io/twitter/follow/totally_chase?style=social" /></a>
+  <img alt="Stars" src="https://img.shields.io/github/stars/TotallyNotChase/glitch-this.svg?label=Stars&style=flat" />
+  <a href="http://www.python.org/download/"><img alt="Python 3" src="https://img.shields.io/badge/Python-3-yellow.svg"></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/TotallyNotChase/glitch-this.svg"/></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/TotallyNotChase/glitch-this"></a>
+  <a href="https://github.com/TotallyNotChase/glitch-this/blob/master/LICENSE"><img src="https://img.shields.io/github/license/TotallyNotChase/glitch-this.svg" alt="License"/></a>
+</p>
+
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
+**NOW WITH GIF TO GLITCHED GIF SUPPORT! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
+
 If you like using this tool, please consider **starring on Github**!
 
-![demo](./example/glitched2.gif)
+![demo](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.gif)
+
+What are you waiting for? Import the library and get glitching!
 
 **NOTE** : Works best with RGB/RGBA images
+
+## What others have to say ~
+* [#1 hot in r/python](https://www.reddit.com/r/Python/comments/f7taiy/my_python_imagegif_glitching_library_is_now_on/)
+* [#1 hot in r/programming](https://www.reddit.com/r/programming/comments/f7q2q3/i_made_a_commandline_script_to_make_glitched/)
+* [#1 hot in r/broken_gifs](https://www.reddit.com/r/brokengifs/comments/f7pyqw/i_made_a_commandline_script_to_make_glitched_gifs/)
+* [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
 
 ## Changelog
 View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)
@@ -26,33 +47,10 @@ View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/ma
 * `pillow`
 * `numpy`
 
-You can install the required packages all at once through the included `requirements.txt`
-## Installation - The script
-* Download or clone this repo to a local folder
-  ```
-  cd /path/to/clone-folder
-  git clone https://github.com/TotallyNotChase/glitch-this.git
-  ```
-* While inside the folder, install the `requirements.txt`
+These will be automatically installed when you install the library! (assuming you have `python3`)
+## Installation
 
-  ```
-  pip install -r requirements.txt
-  ```
-
-  (OR)
-
-  ```
-  pip3 install -r requirements.txt
-  ```
-
-*OR*, if you're a wizard and don't need no help, download just the `glitch_this.py` standalone script and invoke it!
-
-That's it! You can now use the script and/or the library!
-
-## Installation - The library
-If you'd like to use the `glitch_this` module as a library, all you have to do is install it from [pypi](https://pypi.org/project/glitch-this/)!
-
-Just make sure `wheel` is installed first and run
+Simply install `glitch-this` from [pypi](https://pypi.org/project/glitch-this/)!
 
 ```
 pip install glitch-this
@@ -64,106 +62,27 @@ pip install glitch-this
 pip3 install glitch-this
 ```
 
-## Usage - `glitch_this.py`
-The script is designed to be used from the terminal, you can invoke it using `python ./glitch_this.py` and pass in the required/optional parameters.
+## Quick Start
 
-### TL;DR - Basic Usage
+Now that you have the library installed, all you need to do is invoke the script and pass in the params
 
-Simply pass in the **image path** and **glitch level**!
+`glitch_this [IMAGE PATH] [GLITCH_LEVEL]`
 
-![basic](./example/basic_usage.gif)
+![quick_basic](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/basic_command.gif)
 
-### TL; DR - GIF creation
+Try `glitch_this -h` for more info! Directly from your commandline!
 
-Same as last time, just include the `-g` option
+Or, Check out the [script docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-commandline-script)!
 
-![gif](./example/gif_usage.gif)
+Interested in the library? Check out the [library docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-glitch-this-library)!
 
-Here's some points about the parameters - and what they do!
+## DOCS! WHERE TO?!
 
-* `-h` : Shows help text, use this to get used to the parameters!
+Read the [script docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-commandline-script)!
 
-  Ex - `python ./glitch_this.py -h`
+Read the [library docs](https://github.com/TotallyNotChase/glitch-this/wiki/Documentation:-The-glitch-this-library)!
 
-  (OR) `python3 ./glitch_this.py -h`
-#### Required Parameters
-  * `IMAGE_PATH` : The script needs to know, what file you want to glitchify right?
-
-    That's *exactly* what this is for, you supply the full/relative path to the image you want to glitchify.
-
-    Remember, the path **must** *exist as an image file*. `PNG`, `JPEG` are certainly preferred.
-
-    Ex - `python ./glitch_this.py test.png`
-
-    (OR) `python3 ./glitch_this.py test.png`
-
-  * `GLITCH_LEVEL` : An integer between 1 to 10 (including both 1 and 10), signifying *how glitched* the output image should be.
-
-    1 stands for "you call this glitched?", 10 stands for "good luck understanding this one"
-
-    *my personal favorite is 2 if anyone cares :P*
-
-    Ex - `python ./glitch_this.py 2`
-
-    (OR) `python3 ./glitch_this.py 2`
-
-So, with all the required parameters in place, this is how the command should look like - `python ./glitch_this.py test.png 2`
-#### Optional Parameters
-
-  * `-c` : If included, the glitched image will have a color offset, **more realistic** glitching!
-
-    Ex - `python ./glitch_this.py -c test.png 2`
-
-    (OR) `python3 ./glitch_this.py -c test.png 2`
-
-  * `-s` : If included, the glitched image will have scan lines
-
-    Ex - `python ./glitch_this.py -s test.png 2`
-
-    (OR) `python3 ./glitch_this.py -s test.png 2`
-  * `-g` : If included, the output will be GIF
-
-    Ex - `python ./glitch_this.py -g test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g test.png 2`
-
-  * `-f FRAMES` : Specify the number of glitched images to be used in GIF
-
-    Defaults to 23
-
-    Ex - `python ./glitch_this.py -g -f 10 test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g -f 10 test.png 2`
-
-  * `-d DURATION` : Specify the time (in centiseconds - hundredths of a second), a single frame is visible
-
-    Defaults to 200
-
-    Ex - `python ./glitch_this.py -g -d 500 test.png 2`
-
-    (OR) `python3 ./glitch_this.py -g -d 500 test.png 2`
-
-    *tip : if you want the GIF to be slower, supply a bigger duration value*
-
-## Usage - `glitch_this` library
-A full example of how you can use the class is in `test_script.py`
-
-The function `glitch_image` in `ImageGlitcher` takes 3 parameters:-
-  * `src_img_path` : Full/Relative path to image
-
-  * `glitch_amount`: Intensity/Level of glitching, must be between 1 to 10 (including both 1 and 10)
-
-  * `color_offset` : Set to `True` if you want **color offset** to be added to output image, *more realistic* glitching!
-
-     Defaults to `False`
-
-  * `scan_lines` : Set to `True` if you want **scan lines** effect to be added to output image
-
-     Defaults to `False`
-
-## Peformance
-The algorithm is pretty fast, however larger image files will take longer to glitch
-It is recommended to keep the `FRAMES` parameter as low as possible, especially for large images. Simply for memory and performance concerns
+Check out a [full example](https://github.com/TotallyNotChase/glitch-this/blob/master/test_script.py) using the library!
 
 ## Whoa! Cool Glitches
 Here's some glitched images generated from this script - of different intensity levels!
@@ -172,23 +91,23 @@ Here's some glitched images generated from this script - of different intensity 
 
 #### Original image for reference:-
 
-![og_img](./example/source.png)
+![og_img](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/source.png)
 
 #### Glitched version - Level 2:-
 
-![glitched_2](./example/glitched2.png)
+![glitched_2](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.png)
 
 *Not badly glitched now is it?*
 
 #### Glitched version - Level 5:-
 
-![glitched_5](./example/glitched5.png)
+![glitched_5](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5.png)
 
 *Well it's certainly starting to get glitchy*
 
 #### Glitched version - Level 8:-
 
-![glitched_8](./example/glitched8.png)
+![glitched_8](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8.png)
 
 *I don't know what I'm looking at*
 
@@ -196,15 +115,15 @@ Let's get some **scan lines** on there!
 
 #### Glitched version (scan_lines)- Level 2:-
 
-![glitched_2_scan](./example/glitched2scan.png)
+![glitched_2_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2scan.png)
 
 #### Glitched version (scan_lines) - Level 5:-
 
-![glitched_5_scan](./example/glitched5scan.png)
+![glitched_5_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5scan.png)
 
 #### Glitched version (scan_lines) - Level 8:-
 
-![glitched_8_scan](./example/glitched8scan.png)
+![glitched_8_scan](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8scan.png)
 
 That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
@@ -212,12 +131,12 @@ That's neat, but how about some GIFs? Here's some GIFs from the same image:-
 
 #### Glitched GIF - Level 2:-
 
-![glitched_gif2](./example/glitched2.gif)
+![glitched_gif2](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched2.gif)
 
 #### Glitched GIF - Level 5:-
 
-![glitched_gif5](./example/glitched5.gif)
+![glitched_gif5](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched5.gif)
 
 #### Glitched GIF - Level 8:-
 
-![glitched_gif8](./example/glitched8.gif)
+![glitched_gif8](https://raw.githubusercontent.com/TotallyNotChase/glitch-this/master/example/glitched8.gif)
