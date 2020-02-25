@@ -35,3 +35,26 @@
   Cleanup code
 
   Add more docs
+
+* 0.0.9 -> **Script Overhaul**
+
+  The library will now cleanup after itself when making glitched GIFs
+
+  NEW Parameters for `commandline.py`:-
+
+  * `-l, --loop`: Specify how many times the GIF should loop
+
+    Defaults to 0, i.e infinite loop
+
+  * `-f, --force`: The script will no longer automatically overwrite existing files, you need to include `-f` for it do so
+
+    Defaults to False
+  * `-o, --outfile`: Specify a full/relative path to write the output file to
+
+  Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki) for information on how to use these!
+
+  Add more sanity checks in `commandline.py`
+
+  Reduce compression level from 6 to 3 in `commandline.py` (improves performance significantly)
+
+  `-f,--frames` has been renamed to `-fr, --frames`

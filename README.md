@@ -13,7 +13,7 @@
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
 Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
-**NOW EASIER THAN EVER TO USE! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
+**NOW WITH GIF TO GLITCHED GIF SUPPORT! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
 
 If you like using this tool, please consider **starring on Github**!
 
