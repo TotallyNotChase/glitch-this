@@ -6,7 +6,7 @@ from PIL import Image, ImageSequence
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
 
-    __version__ = '0.0.9'
+    __version__ = '0.0.9.1'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -153,7 +153,7 @@ class ImageGlitcher:
             """
             glitched_img  = self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
-            glitched_img.save(file_path)
+            glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
 
         # Cleanup
@@ -209,10 +209,10 @@ class ImageGlitcher:
             """
             duration += frame.info['duration']
             file_path = os.path.join(self.gif_dirpath, 'frame.png')
-            frame.save(file_path)
+            frame.save(file_path, compress_level=3)
             glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset, scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_{}.png'.format(str(i)))
-            glitched_img.save(file_path)
+            glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
             i += 1
         # Cleanup
