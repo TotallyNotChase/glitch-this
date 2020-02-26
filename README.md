@@ -23,14 +23,13 @@ What are you waiting for? Import the library and get glitching!
 
 **NOTE** : Works best with RGB/RGBA images
 
+Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), courtesy of @[pahefu](https://github.com/pahefu)
+
 ## What others have to say ~
 * [#1 hot in r/python](https://www.reddit.com/r/Python/comments/f7taiy/my_python_imagegif_glitching_library_is_now_on/)
 * [#1 hot in r/programming](https://www.reddit.com/r/programming/comments/f7q2q3/i_made_a_commandline_script_to_make_glitched/)
 * [#1 hot in r/broken_gifs](https://www.reddit.com/r/brokengifs/comments/f7pyqw/i_made_a_commandline_script_to_make_glitched_gifs/)
 * [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
-
-## Changelog
-View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)
 
 ## FEATURES!
 * Choose from *10 gradually different levels* of **glitching intensity**!
@@ -41,6 +40,9 @@ View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/ma
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
 * Add **scan lines** for a retro CRT effect!
 * Oh and did I mention, **color offset**? Just like [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), this tool *glitches the color channels* as well as the pixels - for **very convincing** looking glitched images!
+
+## Changelog
+View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)
 
 ## Requirements
 * `python 3`
