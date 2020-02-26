@@ -52,5 +52,5 @@
 * Reduce compression level from 6 to 3 in `commandline.py` (improves performance significantly)
 * `-f,--frames` has been renamed to `-fr, --frames`
 
-## Version 0.0.9 - Patch
+## Version 0.0.9.1 - Patch
 * Reduce compression level from 6 to 3 `glitch_this.py` (improves performance)
