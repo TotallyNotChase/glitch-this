@@ -29,7 +29,7 @@ class ImageGlitcher:
     def __isgif(self, img):
         # Returns true if input image is a GIF and/or animated
         if isinstance(img, str):
-            return img.endswith('.gif')
+            img = Image.open(img)
         index = 0
         for frame in ImageSequence.Iterator(img):
             # More than one frames means image is animated
@@ -196,8 +196,6 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive integer '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not step >= 0 or not isinstance(step, int):
-            raise ValueError('step parameter must be a positive integer value')
         if not self.__isgif(src_gif):
             raise Exception('Input image must be a path to a GIF or be a GIF Image object')
 
