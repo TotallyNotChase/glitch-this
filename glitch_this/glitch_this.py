@@ -172,7 +172,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs
 
-    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, step=1):
+    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False):
         """
          Glitch each frame of input GIF
          Returns the following:
@@ -224,19 +224,16 @@ class ImageGlitcher:
              * Save the glitched image in temp directory
              * Open the image and append a copy of it to the list
             """
-            if not i % step:
-                # Skip frames by given step
-                continue
             duration += frame.info['duration']
             file_path = os.path.join(self.gif_dirpath, 'frame.png')
             frame.save(file_path, compress_level=3)
             glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset, scan_lines)
-            file_path = os.path.join(self.gif_dirpath, 'glitched_{}.png'.format(str(i)))
+            file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
             glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
             i += 1
             # Change glitch_amount by given value
-            glitch_amount += self.__change_glitch(glitch_amount, glitch_change, cycle)
+            glitch_amount = self.__change_glitch(glitch_amount, glitch_change, cycle)
         # Cleanup
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs, duration / i, i

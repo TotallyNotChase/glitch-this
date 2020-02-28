@@ -7,5 +7,7 @@
 Collections/
 build/
 dist/
-glitched_test.png
-glitched_test.gif
+*.png
+*.gif
+*.jpg
+!test.png
