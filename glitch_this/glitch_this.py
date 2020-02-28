@@ -225,7 +225,7 @@ class ImageGlitcher:
             duration += frame.info['duration']
             file_path = os.path.join(self.gif_dirpath, 'frame.png')
             frame.save(file_path, compress_level=3)
-            glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset, scan_lines)
+            glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset=color_offset, scan_lines=scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
             glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
