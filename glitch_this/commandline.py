@@ -74,7 +74,7 @@ def main():
     if not args.loop >= 0:
         raise ValueError('Loop must be greater than or equal to 0')
     if not args.frames > 0:
-        raise ValueError('Loop must be greater than 0')
+        raise ValueError('Frames must be greater than 0')
     if not os.path.isfile(args.src_img_path):
         raise FileNotFoundError('No image found at given path')
 
