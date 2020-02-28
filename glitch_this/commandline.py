@@ -20,57 +20,36 @@ def islatest(version):
     return version == latest_version
 
 def main():
-    glitch_min, glitch_max = 1, 10
-
     # Add commandline arguments parser
     argparser = argparse.ArgumentParser(description='Glitchify images to static images and GIFs!')
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help='Relative or Absolute string path to source image')
     argparser.add_argument('glitch_level', metavar='Glitch_Level', type=int,
-                           help='Integer between {} and {}, inclusive, ' +
-                                'representing amount of glitchiness'.format(glitch_min,
-                                                                            glitch_max))
+                           help='Integer between 1 and 10, inclusive, representing amount of glitchiness')
     argparser.add_argument('-c', '--color', dest='color', action='store_true',
                            help='Whether or not to add color offset, defaults to False')
     argparser.add_argument('-s', '--scan', dest='scan_lines', action='store_true',
                            help='Whether or not to add scan lines effect, defaults to False')
     argparser.add_argument('-g', '--gif', dest='gif', action='store_true',
-                           help='Include if you want a GIF instead of static image\n' +
-                                'NOTE: Does nothing if input image is GIF, i.e when using `-ig`')
+                           help='Include if you want a GIF instead of static image'
+                           '\nNOTE: Does nothing if input image is GIF, i.e when using `-ig`')
     argparser.add_argument('-fr', '--frames', dest='frames', metavar='Frames', type=int, default=23,
-                           help='How many frames to include in GIF\n' +
-                                'Defaults to 23\n' +
-                                'NOTE: Does nothing if input image is GIF, i.e when using `-ig`')
-    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=int, default=0,
-                           help='Increment glitch_amount by given value after glitching every frame\n' +
-                                'Defaults to 0\n' +
-                                'NOTE: Only works when creating glitched GIFs')
-    argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
-                           help='Cycle glitch_amount back to {} or {} '.format(glitch_min,
-                                                                               glitch_max) +
-                                'if it over/underflows\n' +
-                                'Defaults to False, i.e glitch_amount will stay at {}/{}'.format(glitch_min,
-                                                                                                 glitch_max) +
-                                'if it under/overflows')
+                           help='How many frames to include in GIF, defaults to 23'
+                           '\nNOTE: Does nothing if input image is GIF, i.e when using `-ig`')
     argparser.add_argument('-d', '--duration', dest='duration', metavar='Duration', type=int, default=200,
                            help='How long to display each frame (in centiseconds), defaults to 200')
-    argparser.add_argument('-rd', '--relative_duration', dest='rel_duration', metavar='Relative_Duration', type=float,
-                           help='Use a duration relative to the input GIF\'s original duration\n' +
-                                'The given value is multiplied by the input GIF\'s original duration\n' +
-                                'If a value is provided, -d Duration is ignored\n' +
-                                'NOTE: Only works with -ig param')
     argparser.add_argument('-l', '--loop', dest='loop', metavar='Loop_Count', type=int, default=0,
-                           help='How many times the glitched GIF should loop, defaults to 0 ' +
-                                '(i.e infinite loop)')
+                           help='How many times the glitched GIF should loop, defaults to 0 '
+                           '(i.e infinite loop)')
     argparser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
-                           help='If input image is GIF, use for glitching GIFs to GIFs!\n' +
-                                'Defaults to False\nNOTE: This is a slow process')
+                           help='If input image is GIF, use for glitching GIFs to GIFs! '
+                           'Defaults to False\nNOTE: This is a slow process')
     argparser.add_argument('-f', '--force', dest='force', action='store_true',
-                           help='If included, overwrites existing output file of same name (if found)\n' +
-                                'Defaults to False')
+                           help='If included, overwrites existing output file of same name (if found)'
+                           '\nDefaults to False')
     argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
-                           help='Explictly supply the full or relative `path/filename\n' +
-                                'Defaults to ./glitched_src_image_path')
+                           help='Explictly supply the full or relative `path/filename`\
+                           \nDefaults to ./glitched_src_image_path')
     args = argparser.parse_args()
 
     # Sanity check inputs
@@ -109,8 +88,6 @@ def main():
     if not args.input_gif:
         # Get glitched image or GIF (from image)
         glitch_img = glitcher.glitch_image(args.src_img_path, args.glitch_level,
-                                           glitch_change=args.increment,
-                                           cycle=args.cycle,
                                            scan_lines=args.scan_lines,
                                            color_offset=args.color,
                                            gif=args.gif,
@@ -118,14 +95,9 @@ def main():
     else:
         # Get glitched image or GIF (from GIF)
         glitch_img, src_duration, args.frames = glitcher.glitch_gif(args.src_img_path, args.glitch_level,
-                                                                    glitch_change=args.increment,
-                                                                    cycle=args.cycle,
-                                                                    scan_lines=args.scan_lines,
-                                                                    color_offset=args.color)
-        # Set args.gif to true if it isn't already in this case
-        args.gif = True
-        # Set args.duration to src_duration * relative duration, if one was given
-        args.duration = args.duration if not args.rel_duration else int(args.rel_duration * src_duration)
+                                                                     scan_lines=args.scan_lines,
+                                                                     color_offset=args.color)
+        args.gif = True     # Set args.gif to true if it isn't already in this case
     t1 = time()
     # End of glitching
     t2 = time()
