@@ -44,7 +44,7 @@ def main():
                            help='Increment glitch_amount by given value after glitching every frame'
                                 '\nDefaults to 0'
                                 '\nNOTE: Only works when creating glitched GIFs')
-    argparser.add_argument('-cy', '--cycle', dest='cycle', action='strore_true',
+    argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
                            help='Cycle glitch_amount back to {} or {} '
                                 'if it over/underflows'
                                 '\nDefaults to False, i.e glitch_amount will stay at {}/{}'
@@ -54,6 +54,11 @@ def main():
                                                                glitch_max))
     argparser.add_argument('-d', '--duration', dest='duration', metavar='Duration', type=int, default=200,
                            help='How long to display each frame (in centiseconds), defaults to 200')
+    argparser.add_argument('-rd', '--relative_duration', dest='rel_duration', metavar='Relative_Duration', type=float,
+                           help='Use a duration relative to the input GIF\'s original duration'
+                                '\nThe given value is multiplied by the input GIF\'s original duration'
+                                '\nIf a value is provided, -d Duration is ignored'
+                                '\nNOTE: Only works with -ig param')
     argparser.add_argument('-l', '--loop', dest='loop', metavar='Loop_Count', type=int, default=0,
                            help='How many times the glitched GIF should loop, defaults to 0 '
                                 '(i.e infinite loop)')
@@ -117,7 +122,10 @@ def main():
                                                                     cycle=args.cycle,
                                                                     scan_lines=args.scan_lines,
                                                                     color_offset=args.color)
-        args.gif = True     # Set args.gif to true if it isn't already in this case
+        # Set args.gif to true if it isn't already in this case
+        args.gif = True
+        # Set args.duration to src_duration * relative duration, if one was given
+        args.duration = args.duration if not args.rel_duration else int(args.rel_duration * src_duration)
     t1 = time()
     # End of glitching
     t2 = time()
