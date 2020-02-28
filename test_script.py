@@ -116,7 +116,7 @@ def test_image_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll just stay at glitch_max for the remaining duration since cycle = False
-    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=1, gif=True, frames=10)
+    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=1, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_increment.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -128,7 +128,7 @@ def test_image_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll cycle back to 1 after that and keep incrementing by glitch_change again
-    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=1, cycle=True, gif=True, frames=10)
+    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_increment_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -141,7 +141,7 @@ def test_image_to_gif():
     # in this case that's 1
     # It'll cycle back to 10 after that and keep incrementing (actually decrementing, in this case)
     # by glitch_change again
-    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=-1, cycle=True, gif=True, frames=10)
+    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=-1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_decrement_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
