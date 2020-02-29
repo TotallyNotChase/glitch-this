@@ -23,53 +23,52 @@ def get_help(glitch_min, glitch_max):
     help_text = dict()
     help_text['path'] = 'Relative or Absolute string path to source image'
     help_text['level'] = """
-                          Integer between {} and {}, inclusive,
-                          representing amount of glitchiness
+                          Integer between {} and {}, inclusive, representing amount of glitchiness
                          """.format(glitch_min, glitch_max)
-    help_text['color'] = 'Whether or not to add color offset\nDefaults to False'
-    help_text['scan'] = 'Whether or not to add scan lines effect\nDefaults to False'
+    help_text['color'] = 'Whether or not to add color offset.\nDefaults to False'
+    help_text['scan'] = 'Whether or not to add scan lines effect.\nDefaults to False'
     help_text['gif'] = """
-                        Include if you want a GIF instead of static image
+                        Include if you want a GIF instead of static image.
                         NOTE: Does nothing if input image is GIF, i.e when using `-ig`
                        """
     help_text['frames'] = """
-                           How many frames to include in GIF
-                           Defaults to 23
+                           How many frames to include in GIF.
+                           Defaults to 23.
                            NOTE: Does nothing if input image is GIF, i.e when using `-ig`
                           """
     help_text['step'] = """
-                         If provided, will glitch every step'th frame
-                         Defaults to 1, i.e glitch all frames
-                         Only works if -ig or -g is included
+                         If provided, will glitch every step'th frame.
+                         Defaults to 1, i.e glitch all frames.
+                         Only works if -ig or -g is included.
                         """
     help_text['increment'] = """
-                              Increment glitch_amount by given value after glitching every frame
-                              Defaults to 0
-                              NOTE: Only works when creating glitched GIFs
+                              Increment glitch_amount by given value after glitching every frame.
+                              Defaults to 0.
+                              NOTE: Only works when creating glitched GIFs.
                              """
     help_text['cycle'] = """
-                          Cycle glitch_amount back to {} or {} if it over/underflows
-                          Defaults to False, i.e glitch_amount will stay at {}/{} if it under/overflows
+                          Cycle glitch_amount back to {} or {} if it over/underflows.
+                          Defaults to False, i.e glitch_amount will stay at {}/{} if it under/overflows.
                          """.format(glitch_min, glitch_max, glitch_min, glitch_max)
     help_text['duration'] = 'How long to display each frame (in centiseconds), defaults to 200'
     help_text['relative_duration'] = """
-                                      Use a duration relative to the input GIF's original duration
-                                      The given value is multiplied by the input GIF's original duration
-                                      If a value is provided, -d Duration is ignored
-                                      NOTE: Only works with -ig param
+                                      Use a duration relative to the input GIF's original duration.
+                                      The given value is multiplied by the input GIF's original duration.
+                                      If a value is provided, -d Duration is ignored.
+                                      NOTE: Only works with -ig param.
                                      """
     help_text['loop'] = 'How many times the glitched GIF should loop, defaults to 0 (i.e infinite loop)'
     help_text['inputgif'] = """
                              If input image is GIF, use for glitching GIFs to GIFs!
-                             Defaults to False
-                             NOTE: This is a slow process
+                             Defaults to False.
+                             NOTE: This is a slow process.
                             """
     help_text['force'] = """
-                          If included, overwrites existing output file of same name (if found)
-                          Defaults to False
+                          If included, overwrites existing output file of same name (if found).
+                          Defaults to False.
                          """
     help_text['out'] = """
-                        Explictly supply the full or relative path/filename
+                        Explictly supply the full or relative path/filename.
                         Defaults to ./glitched_src_image_path
                        """
     return help_text

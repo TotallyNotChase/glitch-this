@@ -88,3 +88,6 @@
   * `step`: Glitch every step'th frame, instead of all of them
 
   * `relative_duration`: Use a duration relative to the source GIFs duration
+
+## Version 0.1.1 - Patch
+* Add punctuation to help text
