@@ -168,7 +168,6 @@ class ImageGlitcher:
                 # Only every step'th frame should be glitched
                 # Other frames will be appended as they are
                 glitched_imgs.append(img.copy())
-                i += 1
                 continue
             glitched_img = self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
