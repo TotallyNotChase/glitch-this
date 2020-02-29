@@ -37,6 +37,11 @@ def get_help(glitch_min, glitch_max):
                            Defaults to 23
                            NOTE: Does nothing if input image is GIF, i.e when using `-ig`
                           """
+    help_text['step'] = """
+                         If provided, will glitch every step'th frame
+                         Defaults to 1, i.e glitch all frames
+                         Only works if -ig or -g is included
+                        """
     help_text['increment'] = """
                               Increment glitch_amount by given value after glitching every frame
                               Defaults to 0
@@ -86,6 +91,8 @@ def main():
                            help=help_text['gif'])
     argparser.add_argument('-fr', '--frames', dest='frames', metavar='Frames', type=int, default=23,
                            help=help_text['frames'])
+    argparser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
+                           help=help_text['step'])
     argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=int, default=0,
                            help=help_text['increment'])
     argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
@@ -145,14 +152,16 @@ def main():
                                            scan_lines=args.scan_lines,
                                            color_offset=args.color,
                                            gif=args.gif,
-                                           frames=args.frames)
+                                           frames=args.frames,
+                                           step=args.step)
     else:
         # Get glitched image or GIF (from GIF)
         glitch_img, src_duration, args.frames = glitcher.glitch_gif(args.src_img_path, args.glitch_level,
                                                                     glitch_change=args.increment,
                                                                     cycle=args.cycle,
                                                                     scan_lines=args.scan_lines,
-                                                                    color_offset=args.color)
+                                                                    color_offset=args.color,
+                                                                    step=args.step)
         # Set args.gif to true if it isn't already in this case
         args.gif = True
         # Set args.duration to src_duration * relative duration, if one was given

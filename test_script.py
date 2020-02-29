@@ -149,8 +149,19 @@ def test_image_to_gif():
                         duration=DURATION,
                         loop=LOOP)
 
+    # Now try with glitching only every 2nd frame
+    # There will still be the specified number of frames (23 in this case)
+    # But only every 2nd of the frames will be glitched
+    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, step=2, gif=True)
+    glitch_imgs[0].save('Collections/glitched_test_step.gif',
+                        format='GIF',
+                        append_images=glitch_imgs[1:],
+                        save_all=True,
+                        duration=DURATION,
+                        loop=LOOP)
+
     # How about all of the above?
-    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=-1, cycle=True, gif=True, scan_lines=True, color_offset=True, frames=10)
+    glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=-1, cycle=True, gif=True, scan_lines=True, color_offset=True, frames=10, step=2)
     glitch_imgs[0].save('Collections/glitched_test_all.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -251,8 +262,19 @@ def test_gif_to_gif():
                         duration=DURATION,
                         loop=LOOP)
 
+    # Now try with glitching only every 2nd frame
+    # There will still be the same number of frames as in the source gif
+    # But only every 2nd of the frames will be glitched
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, step=2)
+    glitch_imgs[0].save('Collections/glitched_gif_step.gif',
+                        format='GIF',
+                        append_images=glitch_imgs[1:],
+                        save_all=True,
+                        duration=DURATION,
+                        loop=LOOP)
+
     # How about all of the above?
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True, scan_lines=True, color_offset=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True, scan_lines=True, color_offset=True, step=2)
     glitch_imgs[0].save('Collections/glitched_gif_all.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],

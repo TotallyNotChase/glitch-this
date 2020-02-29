@@ -100,7 +100,7 @@ class ImageGlitcher:
             raise Exception('Wrong format')
         return img
 
-    def glitch_image(self, src_img, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23):
+    def glitch_image(self, src_img, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1):
         """
          Sets up values needed for glitching the image
          Returns created Image object if gif=False
@@ -117,6 +117,7 @@ class ImageGlitcher:
          scan_lines: Specify True if scan_lines effect should be applied
          gif: True if output should be ready to be saved as GIF
          frames: How many glitched frames should be generated for GIF
+         step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
         # Sanity checking the inputs
         if (not self.glitch_min <= glitch_amount <= self.glitch_max
@@ -124,6 +125,8 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive integer '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
+        if not step > 0 or not isinstance(step, int):
+            raise ValueError('step parameter must be a positive integer value greater than 0')
 
         try:
             # Get Image, whether input was an str path or Image object
@@ -154,14 +157,20 @@ class ImageGlitcher:
         os.mkdir(self.gif_dirpath)
 
         glitched_imgs = []
-        for _ in range(frames):
+        for i in range(frames):
             """
              * Glitch the image for n times
              * Where n is 0,1,2...frames
              * Save the image the in temp directory
              * Open the image and append a copy of it to the list
             """
-            glitched_img  = self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
+            if not i % step == 0:
+                # Only every step'th frame should be glitched
+                # Other frames will be appended as they are
+                glitched_imgs.append(img.copy())
+                i += 1
+                continue
+            glitched_img = self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
             glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
@@ -172,7 +181,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs
 
-    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False):
+    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, step=1):
         """
          Glitch each frame of input GIF
          Returns the following:
@@ -187,8 +196,12 @@ class ImageGlitcher:
          src_img: Either the path to input Image or an Image object itself
          glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
 
+         glitch_change: Increment/Decrement in glitch_amount after every glitch
+         cycle: Whether or not to cycle glitch_amount back to glitch_min or glitch_max
+                if it over/underflows
          color_offset: Specify True if color_offset effect should be applied
          scan_lines: Specify True if scan_lines effect should be applied
+         step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
         # Sanity checking the inputs
         if (not self.glitch_min <= glitch_amount <= self.glitch_max
@@ -196,6 +209,8 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive integer '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
+        if not step > 0 or not isinstance(step, int):
+            raise ValueError('step parameter must be a positive integer value greater than 0')
         if not self.__isgif(src_gif):
             raise Exception('Input image must be a path to a GIF or be a GIF Image object')
 
@@ -223,15 +238,21 @@ class ImageGlitcher:
              * Open the image and append a copy of it to the list
             """
             duration += frame.info['duration']
-            file_path = os.path.join(self.gif_dirpath, 'frame.png')
-            frame.save(file_path, compress_level=3)
-            glitched_img  = self.glitch_image(file_path, glitch_amount, color_offset=color_offset, scan_lines=scan_lines)
+            src_frame_path = os.path.join(self.gif_dirpath, 'frame.png')
+            frame.save(src_frame_path, compress_level=3)
+            if not i % step == 0:
+                # Only every step'th frame should be glitched
+                # Other frames will be appended as they are
+                glitched_imgs.append(Image.open(src_frame_path).copy())
+                i += 1
+                continue
+            glitched_img = self.glitch_image(src_frame_path, glitch_amount, color_offset=color_offset, scan_lines=scan_lines)
             file_path = os.path.join(self.gif_dirpath, 'glitched_frame.png')
             glitched_img.save(file_path, compress_level=3)
             glitched_imgs.append(Image.open(file_path).copy())
-            i += 1
             # Change glitch_amount by given value
             glitch_amount = self.__change_glitch(glitch_amount, glitch_change, cycle)
+            i += 1
         # Cleanup
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs, duration / i, i
