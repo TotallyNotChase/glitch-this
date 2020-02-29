@@ -77,7 +77,7 @@ def test_image_to_gif():
     LOOP = 0            # Set this to how many times the gif should loop
                         # LOOP = 0 means infinite loop
 
-    # All default params (i.e glitch_change = 0, Frames = 23, color_offset = False, scan_lines = False)
+    # All default params (i.e step = 1, glitch_change = 0, cycle = False, glitch_change = 0, Frames = 23, color_offset = False, scan_lines = False)
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_default.gif',
                         format='GIF',
@@ -199,7 +199,7 @@ def test_gif_to_gif():
     LOOP = 0            # Set this to how many times the gif should loop
                         # LOOP = 0 means infinite loop
 
-    # All default params (i.e color_offset = False, scan_lines = False)
+    # All default params (i.e step = 1, glitch_change = 0, cycle = False, color_offset = False, scan_lines = False)
     glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2)
     glitch_imgs[0].save('Collections/glitched_gif_default.gif',
                         format='GIF',
@@ -309,9 +309,9 @@ if __name__=='__main__':
      The examples given in the method however are pre-tested
      and perfectly valid!
     """
-    print('Testing GIF to GIF glitching....')
-    test_gif_to_gif()
-    print('Done!')
+    #print('Testing GIF to GIF glitching....')
+    #test_gif_to_gif()
+    #print('Done!')
 
     # Start Testing
     fmt = 'png'
