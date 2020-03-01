@@ -29,6 +29,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 * [#1 hot in r/programming](https://www.reddit.com/r/programming/comments/f7q2q3/i_made_a_commandline_script_to_make_glitched/)
 * [#1 hot in r/broken_gifs](https://www.reddit.com/r/brokengifs/comments/f7pyqw/i_made_a_commandline_script_to_make_glitched_gifs/)
 * [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
+* [#4 product of the day in producthunt](https://www.producthunt.com/posts/glitch-this)
 
 ## FEATURES!
 * Choose from *10 gradually different levels* of **glitching intensity**!
