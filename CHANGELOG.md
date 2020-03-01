@@ -91,3 +91,6 @@
 
 ## Version 0.1.1 - Patch
 * Add punctuation to help text
+
+## Version 0.1.2 - Patch
+* Fix version name
