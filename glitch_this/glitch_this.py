@@ -68,7 +68,7 @@ class ImageGlitcher:
             """
             # Sanity Check if the path exists
             if not os.path.isfile(src_img):
-                raise FileNotFoundError('No image found at given path')
+                raise FileNotFoundError('Path not found')
             try:
                 # Open the image at given path
                 img = self.__open_image(src_img)
@@ -120,12 +120,24 @@ class ImageGlitcher:
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
         # Sanity checking the inputs
-        if (not self.glitch_min <= glitch_amount <= self.glitch_max
-            or not (isinstance(glitch_amount, float)
+        if not (self.glitch_min <= glitch_amount <= self.glitch_max
+                and (isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))):
             raise ValueError('glitch_amount parameter must be a positive number '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
+        if not (isinstance(glitch_change, float) or isinstance(glitch_change, int)):
+            raise ValueError('glitch_change parameter must be a number')
+        if not isinstance(cycle, bool):
+            raise ValueError('cycle param must be a boolean')
+        if not isinstance(color_offset, bool):
+            raise ValueError('color_offset param must be a boolean')
+        if not isinstance(scan_lines, bool):
+            raise ValueError('scan_lines param must be a boolean')
+        if not isinstance(gif, bool):
+            raise ValueError('gif param must be a boolean')
+        if not (frames > 0 and isinstance(frames, int)):
+            raise ValueError('frames param must be a positive integer value greater than 0')
         if not step > 0 or not isinstance(step, int):
             raise ValueError('step parameter must be a positive integer value greater than 0')
 
@@ -133,6 +145,9 @@ class ImageGlitcher:
             # Get Image, whether input was an str path or Image object
             # GIF input is NOT allowed in this method
             img = self.__fetch_image(src_img, False)
+        except FileNotFoundError:
+            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
+            raise FileNotFoundError('No image found at given path: ' + src_img)
         except:
             # Throw DETAILED exception here (Traceback will be present from previous exceptions)
             raise Exception('File format not supported - must be a non-animated image file')
@@ -203,22 +218,33 @@ class ImageGlitcher:
          scan_lines: Specify True if scan_lines effect should be applied
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
-        # Sanity checking the inputs
-        if (not self.glitch_min <= glitch_amount <= self.glitch_max
-            or not (isinstance(glitch_amount, float)
+        # Sanity checking the params
+        if not (self.glitch_min <= glitch_amount <= self.glitch_max
+                and (isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))):
             raise ValueError('glitch_amount parameter must be a positive number '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not step > 0 or not isinstance(step, int):
-            raise ValueError('step parameter must be a positive integer value greater than 0')
+        if not (isinstance(glitch_change, float) or isinstance(glitch_change, int)):
+            raise ValueError('glitch_change parameter must be a number')
+        if not isinstance(cycle, bool):
+            raise ValueError('cycle param must be a boolean')
+        if not isinstance(color_offset, bool):
+            raise ValueError('color_offset param must be a boolean')
+        if not isinstance(scan_lines, bool):
+            raise ValueError('scan_lines param must be a boolean')
         if not self.__isgif(src_gif):
             raise Exception('Input image must be a path to a GIF or be a GIF Image object')
+        if not step > 0 or not isinstance(step, int):
+            raise ValueError('step parameter must be a positive integer value greater than 0')
 
         try:
             # Get Image, whether input was an str path or Image object
             # GIF input is allowed in this method
             gif = self.__fetch_image(src_gif, True)
+        except FileNotFoundError:
+            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
+            raise FileNotFoundError('No image found at given path: ' + src_img)
         except:
             # Throw DETAILED exception here (Traceback will be present from previous exceptions)
             raise Exception('File format not supported - must be an image file')
