@@ -6,7 +6,7 @@ from PIL import Image, ImageSequence
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
 
-    __version__ = '0.1.2'
+    __version__ = '0.1.3'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -23,8 +23,8 @@ class ImageGlitcher:
         self.gif_dirpath = os.path.join(self.lib_path, 'Glitched GIF')
 
         # Setting glitch_amount max and min
-        self.glitch_max = 10
-        self.glitch_min = 1
+        self.glitch_max = 10.0
+        self.glitch_min = 1.0
 
     def __isgif(self, img):
         # Returns true if input image is a GIF and/or animated
@@ -121,8 +121,9 @@ class ImageGlitcher:
         """
         # Sanity checking the inputs
         if (not self.glitch_min <= glitch_amount <= self.glitch_max
-            or not isinstance(glitch_amount, int)):
-            raise ValueError('glitch_amount parameter must be a positive integer '
+            or not (isinstance(glitch_amount, float)
+                    or isinstance(glitch_amount, int))):
+            raise ValueError('glitch_amount parameter must be a positive number '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
         if not step > 0 or not isinstance(step, int):
@@ -204,8 +205,9 @@ class ImageGlitcher:
         """
         # Sanity checking the inputs
         if (not self.glitch_min <= glitch_amount <= self.glitch_max
-            or not isinstance(glitch_amount, int)):
-            raise ValueError('glitch_amount parameter must be a positive integer '\
+            or not (isinstance(glitch_amount, float)
+                    or isinstance(glitch_amount, int))):
+            raise ValueError('glitch_amount parameter must be a positive number '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
         if not step > 0 or not isinstance(step, int):
@@ -267,7 +269,7 @@ class ImageGlitcher:
         if glitch_amount > self.glitch_max:
             # If it's more, it will be cycled back to min when cycle=True
             # Otherwise, it'll stay at the max possible value -> glitch_max
-            glitch_amount = glitch_amount%self.glitch_max if cycle else self.glitch_max
+            glitch_amount = glitch_amount % self.glitch_max if cycle else self.glitch_max
         return glitch_amount
 
     def __get_glitched_img(self, glitch_amount, color_offset, scan_lines):
@@ -276,7 +278,8 @@ class ImageGlitcher:
          Intensity of glitch depends on glitch_amount
         """
         max_offset = int((glitch_amount ** 2 / 100) * self.img_width)
-        for _ in range(0, glitch_amount * 2):
+        doubled_glitch_amount = int(glitch_amount * 2)
+        for _ in range(0, doubled_glitch_amount):
             # Setting up offset needed for the randomized glitching
             current_offset = randint(-max_offset, max_offset)
 
@@ -296,8 +299,8 @@ class ImageGlitcher:
 
         if color_offset:
             # Add color channel offset if checked true
-            self.__color_offset(randint(-glitch_amount * 2, glitch_amount * 2),
-                              randint(-glitch_amount * 2, glitch_amount * 2),
+            self.__color_offset(randint(-doubled_glitch_amount, doubled_glitch_amount),
+                              randint(-doubled_glitch_amount, doubled_glitch_amount),
                               self.__get_random_channel())
 
         if scan_lines:
@@ -308,9 +311,9 @@ class ImageGlitcher:
         return Image.fromarray(self.outputarr, self.img_mode)
 
     def __add_scan_lines(self):
-
         # Make every other row have only black pixels
-
+        # Only the R, G, and B channels are assigned 0 values
+        # Alpha is left untouched (if present)
         self.outputarr[::2, :, :3] = [0, 0, 0]
 
     def __glitch_left(self, offset):
