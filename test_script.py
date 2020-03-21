@@ -1,8 +1,31 @@
 import os, shutil
-from random import randint
+from random import choice
 from time import time
 from PIL import Image
 from glitch_this import ImageGlitcher
+
+"""
+Tester Script for the glitch_this library (not script)
+
+This provides practical examples and tutorials of the
+library commands as well
+
+For an in-depth tutorial please refer to docs: https://github.com/TotallyNotChase/glitch-this/wiki
+"""
+
+# Set up glitch_amount values that will be used
+# Float numbers from 1 to 10, upto a single decimal precision
+from decimal import getcontext, Decimal
+# Setting floating point precision to 1 (after decimal point)
+getcontext().prec = 2
+amount_list = []
+start = Decimal(1.0)
+for i in range(91):
+    amount_list.append(float(start))
+    start += Decimal(0.1)
+
+def get_random_glitch_amount():
+    return choice(amount_list)
 
 def test_loop():
     # A method to stress test
@@ -12,7 +35,7 @@ def test_loop():
         with open('Collections/imglog.txt', 'w') as logtxt:
             while(1):
                 t0 = time()
-                level = randint(1, 10)
+                level = get_random_glitch_amount()
                 """
                  Example of getting a glitched image and saving it,
                  with all default params
@@ -68,6 +91,10 @@ def test_image_to_gif():
      Example of getting a glitched GIF and saving it
 
      We use glitch_level = 2 in this example
+     Please note you can use any number in between 1 and 10
+     Including floats, floats with one or two decimal precision
+     will work the best
+
      We also are making infinitely looping GIFs
      i.e loop = 0
      You may change these to whatever you'd like
@@ -77,7 +104,7 @@ def test_image_to_gif():
     LOOP = 0            # Set this to how many times the gif should loop
                         # LOOP = 0 means infinite loop
 
-    # All default params (i.e step = 1, glitch_change = 0, cycle = False, glitch_change = 0, Frames = 23, color_offset = False, scan_lines = False)
+    # All default params (i.e step = 1, glitch_change = 0, cycle = False, Frames = 23, color_offset = False, scan_lines = False)
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_default.gif',
                         format='GIF',
@@ -309,6 +336,7 @@ if __name__=='__main__':
      The examples given in the method however are pre-tested
      and perfectly valid!
     """
+
     #print('Testing GIF to GIF glitching....')
     #test_gif_to_gif()
     #print('Done!')

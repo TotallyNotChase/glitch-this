@@ -126,8 +126,8 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive number '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not (isinstance(glitch_change, float) or isinstance(glitch_change, int)):
-            raise ValueError('glitch_change parameter must be a number')
+        if not isinstance(glitch_change, int):
+            raise ValueError('glitch_change parameter must be an integer')
         if not isinstance(cycle, bool):
             raise ValueError('cycle param must be a boolean')
         if not isinstance(color_offset, bool):
@@ -225,8 +225,8 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive number '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not (isinstance(glitch_change, float) or isinstance(glitch_change, int)):
-            raise ValueError('glitch_change parameter must be a number')
+        if not isinstance(glitch_change, int):
+            raise ValueError('glitch_change parameter must be an integer')
         if not isinstance(cycle, bool):
             raise ValueError('cycle param must be a boolean')
         if not isinstance(color_offset, bool):
