@@ -109,3 +109,6 @@
 * Add more sanity checks in `glitch_this.py`
 
 * Improve Exception handling and Exception messages
+
+## Version 0.1.3.1 - Patch
+* Fix help text formatting in `commandline.py`
