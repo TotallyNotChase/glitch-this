@@ -120,9 +120,9 @@ class ImageGlitcher:
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
         # Sanity checking the inputs
-        if not (self.glitch_min <= glitch_amount <= self.glitch_max
-                and (isinstance(glitch_amount, float)
-                    or isinstance(glitch_amount, int))):
+        if not ((isinstance(glitch_amount, float)
+                    or isinstance(glitch_amount, int))
+                and self.glitch_min <= glitch_amount <= self.glitch_max):
             raise ValueError('glitch_amount parameter must be a positive number '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
@@ -219,9 +219,9 @@ class ImageGlitcher:
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
         """
         # Sanity checking the params
-        if not (self.glitch_min <= glitch_amount <= self.glitch_max
-                and (isinstance(glitch_amount, float)
-                    or isinstance(glitch_amount, int))):
+        if not ((isinstance(glitch_amount, float)
+                    or isinstance(glitch_amount, int))
+                and self.glitch_min <= glitch_amount <= self.glitch_max):
             raise ValueError('glitch_amount parameter must be a positive number '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))

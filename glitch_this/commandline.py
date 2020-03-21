@@ -53,7 +53,7 @@ def main():
                                         formatter_class=argparse.RawTextHelpFormatter)
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help=help_text['path'])
-    argparser.add_argument('glitch_level', metavar='Glitch_Level', type=int,
+    argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
                            help=help_text['level'])
     argparser.add_argument('-c', '--color', dest='color', action='store_true',
                            help=help_text['color'])
@@ -162,7 +162,7 @@ def main():
 
     # Let the user know if new version is available
     if not islatest(ImageGlitcher.__version__):
-        print('A new version of "glitch-this" is available. Please consider upgrading via `pip install --upgrade glitch-this`')
+        print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
 
 if __name__=='__main__':
     main()

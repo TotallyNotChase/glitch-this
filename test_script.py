@@ -343,6 +343,7 @@ if __name__=='__main__':
 
     # Start Testing
     fmt = 'png'
+
     print('Testing image to image glitching....')
     t0 = time()
     test_image_to_image()

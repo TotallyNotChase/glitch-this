@@ -94,3 +94,18 @@
 
 ## Version 0.1.2 - Patch
 * Fix version name
+
+## Version 0.1.3 - **MAJOR**
+* Add support for float type numbers for glitch_amount
+
+  You can now supply floats as glitch_amount! This works best when using floats with maximum of 1-2 decimal places
+
+  Read the [docs](https://github.com/TotallyNotChase/glitch-this/wiki) for more info!
+
+* Redesign help text for the commandline script
+
+* Add a more detailed description for the commandline script
+
+* Add more sanity checks in `glitch_this.py`
+
+* Improve Exception handling and Exception messages
