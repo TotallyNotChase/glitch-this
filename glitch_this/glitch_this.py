@@ -1,12 +1,13 @@
 import os, shutil
 import numpy as np
 from random import randint
+from decimal import getcontext, Decimal
 from PIL import Image, ImageSequence
 
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
 
-    __version__ = '0.1.3.1'
+    __version__ = '0.1.4'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -24,7 +25,7 @@ class ImageGlitcher:
 
         # Setting glitch_amount max and min
         self.glitch_max = 10.0
-        self.glitch_min = 1.0
+        self.glitch_min = 0.1
 
     def __isgif(self, img):
         # Returns true if input image is a GIF and/or animated
@@ -100,7 +101,7 @@ class ImageGlitcher:
             raise Exception('Wrong format')
         return img
 
-    def glitch_image(self, src_img, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1):
+    def glitch_image(self, src_img, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1):
         """
          Sets up values needed for glitching the image
          Returns created Image object if gif=False
@@ -108,7 +109,7 @@ class ImageGlitcher:
 
          PARAMETERS:-
          src_img: Either the path to input Image or an Image object itself
-         glitch_amount: Level of glitch intensity, [glitch_min, glitch_max] (inclusive)
+         glitch_amount: Level of glitch intensity, [0.1, 10.0] (inclusive)
 
          glitch_change: Increment/Decrement in glitch_amount after every glitch
          cycle: Whether or not to cycle glitch_amount back to glitch_min or glitch_max
@@ -126,8 +127,10 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive number '
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not isinstance(glitch_change, int):
-            raise ValueError('glitch_change parameter must be an integer')
+        if not ((isinstance(glitch_change, float)
+                 or isinstance(glitch_change, int))
+                and -self.glitch_max <= glitch_change <= self.glitch_max):
+            raise ValueError('glitch_change parameter must be a number between 0.0 and 10.0 or -0.0 and -10.0')
         if not isinstance(cycle, bool):
             raise ValueError('cycle param must be a boolean')
         if not isinstance(color_offset, bool):
@@ -172,6 +175,10 @@ class ImageGlitcher:
             shutil.rmtree(self.gif_dirpath)
         os.mkdir(self.gif_dirpath)
 
+        # Set up decimal precision for glitch_change
+        original_prec = getcontext().prec
+        getcontext().prec = 4
+
         glitched_imgs = []
         for i in range(frames):
             """
@@ -192,11 +199,13 @@ class ImageGlitcher:
             # Change glitch_amount by given value
             glitch_amount = self.__change_glitch(glitch_amount, glitch_change, cycle)
 
+        # Set decimal precision back to original value
+        getcontext().prec = original_prec
         # Cleanup
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs
 
-    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0, cycle=False, color_offset=False, scan_lines=False, step=1):
+    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, step=1):
         """
          Glitch each frame of input GIF
          Returns the following:
@@ -209,7 +218,7 @@ class ImageGlitcher:
                with many frames
          PARAMETERS:-
          src_img: Either the path to input Image or an Image object itself
-         glitch_amount: Level of glitch intensity, [1, 10] (inclusive)
+         glitch_amount: Level of glitch intensity, [0.1, 10.0] (inclusive)
 
          glitch_change: Increment/Decrement in glitch_amount after every glitch
          cycle: Whether or not to cycle glitch_amount back to glitch_min or glitch_max
@@ -225,8 +234,10 @@ class ImageGlitcher:
             raise ValueError('glitch_amount parameter must be a positive number '\
                              'in range {} to {}, inclusive'.format(self.glitch_min,
                                                                    self.glitch_max))
-        if not isinstance(glitch_change, int):
-            raise ValueError('glitch_change parameter must be an integer')
+        if not ((isinstance(glitch_change, float)
+                 or isinstance(glitch_change, int))
+                and -self.glitch_max <= glitch_change <= self.glitch_max):
+            raise ValueError('glitch_change parameter must be a number between 0.0 and 10.0 or -0.0 and -10.0')
         if not isinstance(cycle, bool):
             raise ValueError('cycle param must be a boolean')
         if not isinstance(color_offset, bool):
@@ -254,6 +265,10 @@ class ImageGlitcher:
             shutil.rmtree(self.gif_dirpath)
         os.mkdir(self.gif_dirpath)
 
+        # Set up decimal precision for glitch_change
+        original_prec = getcontext().prec
+        getcontext().prec = 4
+
         i = 0
         duration = 0
         glitched_imgs = []
@@ -280,22 +295,25 @@ class ImageGlitcher:
             # Change glitch_amount by given value
             glitch_amount = self.__change_glitch(glitch_amount, glitch_change, cycle)
             i += 1
+
+        # Set decimal precision back to original value
+        getcontext().prec = original_prec
         # Cleanup
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs, duration / i, i
 
     def __change_glitch(self, glitch_amount, glitch_change, cycle):
         # A function to change glitch_amount by given increment/decrement
-        glitch_amount += glitch_change
+        glitch_amount = float(Decimal(glitch_amount) + Decimal(glitch_change))
         # glitch_amount must be between glith_min and glitch_max
         if glitch_amount < self.glitch_min:
             # If it's less, it will be cycled back to max when cycle=True
             # Otherwise, it'll stay at the least possible value -> glitch_min
-            glitch_amount = self.glitch_max + glitch_amount if cycle else self.glitch_min
+            glitch_amount = float(Decimal(self.glitch_max) + Decimal(glitch_amount)) if cycle else self.glitch_min
         if glitch_amount > self.glitch_max:
             # If it's more, it will be cycled back to min when cycle=True
             # Otherwise, it'll stay at the max possible value -> glitch_max
-            glitch_amount = glitch_amount % self.glitch_max if cycle else self.glitch_max
+            glitch_amount = float(Decimal(glitch_amount) % Decimal(self.glitch_max)) if cycle else self.glitch_max
         return glitch_amount
 
     def __get_glitched_img(self, glitch_amount, color_offset, scan_lines):

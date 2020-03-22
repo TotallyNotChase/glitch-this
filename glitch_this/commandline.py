@@ -17,6 +17,7 @@ def islatest(version):
     data = json.loads(contents)
     latest_version = data['info']['version']
 
+    print('Current version: {} | Latest version: {}'.format(version, latest_version))
     return version == latest_version
 
 def get_help(glitch_min, glitch_max):
@@ -43,7 +44,7 @@ def get_help(glitch_min, glitch_max):
     return help_text
 
 def main():
-    glitch_min, glitch_max = 1.0, 10.0
+    glitch_min, glitch_max = 0.1, 10.0
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
     argparser = argparse.ArgumentParser(description=
@@ -66,7 +67,7 @@ def main():
                            help=help_text['frames'])
     argparser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
                            help=help_text['step'])
-    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=int, default=0,
+    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=float, default=0.0,
                            help=help_text['increment'])
     argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
                            help=help_text['cycle'])

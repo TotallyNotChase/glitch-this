@@ -10,7 +10,7 @@
 </p>
 
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
-Featuring *Many different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
+Featuring *100 gradually different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
 **NOW WITH GIF TO GLITCHED GIF SUPPORT! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
 
@@ -32,7 +32,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 * [#4 product of the day in producthunt](https://www.producthunt.com/posts/glitch-this)
 
 ## FEATURES!
-* Choose any **glitching intensity** between 1.0 and 10.0, yes those are floats!
+* Choose any **glitching intensity** between 0.1 and 10.0, yes those are floats!
 
   *Each level is gradually different*!
 

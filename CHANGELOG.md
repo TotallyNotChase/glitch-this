@@ -112,3 +112,10 @@
 
 ## Version 0.1.3.1 - Patch
 * Fix help text formatting in `commandline.py`
+
+## Version 0.1.4 - **MAJOR**
+* Add support for floats as Increment/Decrement (`glitch_change`)
+
+  You can now use a value between +-0.0 and +-10.0 (inclusive)
+
+* Glitching intensity can now be in range 0.1 to 10.0 (inclusive)
