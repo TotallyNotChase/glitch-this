@@ -119,3 +119,10 @@
   You can now use a value between +-0.0 and +-10.0 (inclusive)
 
 * Glitching intensity can now be in range 0.1 to 10.0 (inclusive)
+
+## Version 0.1.5
+* Improve version checking efficiency
+
+The version is only checked once every few days and saved into a local file. This file is checked afterwards. Eliminates the need to send request to pypi
+
+* Add `--version` argument to the commandline script

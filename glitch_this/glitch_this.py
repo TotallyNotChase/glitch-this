@@ -7,7 +7,7 @@ from PIL import Image, ImageSequence
 class ImageGlitcher:
 # Handles Image/GIF Glitching Operations
 
-    __version__ = '0.1.4'
+    __version__ = '0.1.5'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -32,7 +32,7 @@ class ImageGlitcher:
         if isinstance(img, str):
             img = Image.open(img)
         index = 0
-        for frame in ImageSequence.Iterator(img):
+        for _ in ImageSequence.Iterator(img):
             # More than one frames means image is animated
             index += 1
             if index >= 2:

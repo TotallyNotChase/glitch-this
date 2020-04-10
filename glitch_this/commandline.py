@@ -4,18 +4,40 @@ from pathlib import Path
 from time import time
 from glitch_this import ImageGlitcher
 
-def islatest(version):
+def read_version():
+    with open(version_filepath, 'r') as file:
+        content = file.read()
+    return content.strip()
+
+def write_version(version):
+    with open(version_filepath, 'w') as file:
+        file.write(version + '\n')
+
+def is_expired(filepath):
+    # Check if the file has been created 2 weeks prior
+    from datetime import datetime
+    file_creation = datetime.fromtimestamp(os.stat(filepath).st_mtime)
+    now = datetime.now()
+    return (now - file_creation).days > 14
+
+def is_latest(version):
     # Check pypi for the latest version number
     from urllib import request
     import json
-    try:
-        contents = request.urlopen('https://pypi.org/pypi/glitch-this/json').read()
-    except:
-        # Connection issue
-        # Silenty return True, update check failed
-        return True
-    data = json.loads(contents)
-    latest_version = data['info']['version']
+    if os.path.isfile(version_filepath) and not is_expired(version_filepath):
+        # If a version log already exists and it's not more than 14 days old
+        latest_version = read_version()
+    else:
+        # Either version log does not exist or is outdated
+        try:
+            contents = request.urlopen('https://pypi.org/pypi/glitch-this/json').read()
+        except:
+            # Connection issue
+            # Silenty return True, update check failed
+            return True
+        data = json.loads(contents)
+        latest_version = data['info']['version']
+        write_version(latest_version)
 
     print('Current version: {} | Latest version: {}'.format(version, latest_version))
     return version == latest_version
@@ -32,8 +54,6 @@ def get_help(glitch_min, glitch_max):
     help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
     help_text['increment'] = 'Increment glitch_amount by given value after glitching every frame of output GIF'
     help_text['cycle'] = 'Include if glitch_amount should be cycled back to {} or {} if it over/underflows'.format(glitch_min,
-                                                                                                                   glitch_max,
-                                                                                                                   glitch_min,
                                                                                                                    glitch_max)
     help_text['duration'] = 'How long to display each frame (in centiseconds), default - 200'
     help_text['relative_duration'] = 'Multiply given value to input GIF\'s original duration and use that as duration'
@@ -45,14 +65,16 @@ def get_help(glitch_min, glitch_max):
 
 def main():
     glitch_min, glitch_max = 0.1, 10.0
+    version = ImageGlitcher.__version__
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
     argparser = argparse.ArgumentParser(description=
                                         'glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
                                         '* Website: https://github.com/TotallyNotChase/glitch-this \n'
-                                        '* Version: ' + ImageGlitcher.__version__ + '\n'
+                                        '* Version: ' + version + '\n'
                                         '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
                                         formatter_class=argparse.RawTextHelpFormatter)
+    argparser.add_argument('--version', action='version', version='glitch_this {}'.format(version))
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help=help_text['path'])
     argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
@@ -117,6 +139,8 @@ def main():
 
     # Actual work begins here
     glitcher = ImageGlitcher()
+    global version_filepath
+    version_filepath = os.path.join(glitcher.lib_path, 'version.info')
     t0 = time()
     if not args.input_gif:
         # Get glitched image or GIF (from image)
@@ -163,7 +187,7 @@ def main():
     print('Total Time taken: ' + str(t3 - t0))
 
     # Let the user know if new version is available
-    if not islatest(ImageGlitcher.__version__):
+    if not is_latest(version):
         print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
 
 if __name__=='__main__':
