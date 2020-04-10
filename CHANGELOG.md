@@ -123,6 +123,6 @@
 ## Version 0.1.5
 * Improve version checking efficiency
 
-The version is only checked once every few days and saved into a local file. This file is checked afterwards. Eliminates the need to send request to pypi
+  The version is only checked once every few days and saved into a local file. This file is checked afterwards. Eliminates the need to send request to pypi
 
 * Add `--version` argument to the commandline script
