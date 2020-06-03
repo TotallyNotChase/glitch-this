@@ -1,8 +1,29 @@
 import os, shutil
-from random import randint
+from random import choice
 from time import time
 from PIL import Image
 from glitch_this import ImageGlitcher
+
+"""
+Tester Script for the glitch_this library (not script)
+
+This provides practical examples and tutorials of the
+library commands as well
+
+For an in-depth tutorial please refer to docs: https://github.com/TotallyNotChase/glitch-this/wiki
+"""
+
+# Set up glitch_amount values that will be used
+# Float numbers from 1 to 10, upto a single decimal precision
+from decimal import getcontext, Decimal
+# Setting floating point precision to 1 (after decimal point)
+
+getcontext().prec = 2
+amount_list = []
+start = Decimal(0.1)
+for i in range(100):
+    amount_list.append(float(start))
+    start += Decimal(0.1)
 
 def test_loop():
     # A method to stress test
@@ -12,7 +33,7 @@ def test_loop():
         with open('Collections/imglog.txt', 'w') as logtxt:
             while(1):
                 t0 = time()
-                level = randint(1, 10)
+                level = choice(amount_list)
                 """
                  Example of getting a glitched image and saving it,
                  with all default params
@@ -68,6 +89,10 @@ def test_image_to_gif():
      Example of getting a glitched GIF and saving it
 
      We use glitch_level = 2 in this example
+     Please note you can use any number in between 1 and 10
+     Including floats, floats with one or two decimal precision
+     will work the best
+
      We also are making infinitely looping GIFs
      i.e loop = 0
      You may change these to whatever you'd like
@@ -77,7 +102,7 @@ def test_image_to_gif():
     LOOP = 0            # Set this to how many times the gif should loop
                         # LOOP = 0 means infinite loop
 
-    # All default params (i.e step = 1, glitch_change = 0, cycle = False, glitch_change = 0, Frames = 23, color_offset = False, scan_lines = False)
+    # All default params (i.e step = 1, glitch_change = 0, cycle = False, Frames = 23, color_offset = False, scan_lines = False)
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_default.gif',
                         format='GIF',
@@ -127,7 +152,7 @@ def test_image_to_gif():
     # Now try with increasing the glitch_amount by 1 every time, with cycle set to True
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
-    # It'll cycle back to 1 after that and keep incrementing by glitch_change again
+    # It'll cycle back to glitch_min after that and keep incrementing by glitch_change again
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_increment_cycle.gif',
                         format='GIF',
@@ -139,7 +164,7 @@ def test_image_to_gif():
     # Now try with increasing the glitch_amount by -1 every time, with cycle set to True
     # glitch_amount will reach glitch_min after (glitch_min - glitch_amount)/glitch_change glitches
     # in this case that's 1
-    # It'll cycle back to 10 after that and keep incrementing (actually decrementing, in this case)
+    # It'll cycle back to glitch_max after that and keep incrementing (actually decrementing, in this case)
     # by glitch_change again
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, glitch_change=-1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_decrement_cycle.gif',
@@ -185,9 +210,9 @@ def test_gif_to_gif():
      Example of getting a glitched GIF (from another GIF)
      and saving it
 
-     **`glitch_gif` also returns the duration (of each frame)
+     `glitch_gif` also returns the duration (of each frame)
      in centiseconds and the number of frames in the given GIF, you may
-     use these when saving your GIF too!**
+     use these when saving your GIF too!
 
      We use glitch_level = 2 in this example
      We also are making infinitely looping GIFs
@@ -240,7 +265,7 @@ def test_gif_to_gif():
     # Now try with increasing the glitch_amount by 1 every time, with cycle set to True
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
-    # It'll cycle back to 1 after that and keep incrementing by glitch_change again
+    # It'll cycle back to glitch_min after that and keep incrementing by glitch_change again
     glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=1, cycle=True)
     glitch_imgs[0].save('Collections/glitched_gif_increment_cycle.gif',
                         format='GIF',
@@ -252,7 +277,7 @@ def test_gif_to_gif():
     # Now try with increasing the glitch_amount by -1 every time, with cycle set to True
     # glitch_amount will reach glitch_min after (glitch_min - glitch_amount)/glitch_change glitches
     # in this case that's 1
-    # It'll cycle back to 10 after that and keep incrementing (actually decrementing, in this case)
+    # It'll cycle back to glitch_max after that and keep incrementing (actually decrementing, in this case)
     # by glitch_change again
     glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True)
     glitch_imgs[0].save('Collections/glitched_gif_decrement_cycle.gif',
@@ -292,7 +317,7 @@ def test_gif_to_gif():
                         save_all=True,
                         duration=DURATION,
                         loop=LOOP)
-
+                        
 if __name__=='__main__':
     # Create the ImageGlitcher object
     glitcher = ImageGlitcher()
@@ -309,12 +334,14 @@ if __name__=='__main__':
      The examples given in the method however are pre-tested
      and perfectly valid!
     """
+
     #print('Testing GIF to GIF glitching....')
     #test_gif_to_gif()
     #print('Done!')
 
     # Start Testing
     fmt = 'png'
+
     print('Testing image to image glitching....')
     t0 = time()
     test_image_to_image()

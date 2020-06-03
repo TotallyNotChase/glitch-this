@@ -4,84 +4,80 @@ from pathlib import Path
 from time import time
 from glitch_this import ImageGlitcher
 
-def islatest(version):
+def read_version():
+    with open(version_filepath, 'r') as file:
+        content = file.read()
+    return content.strip()
+
+def write_version(version):
+    with open(version_filepath, 'w') as file:
+        file.write(version + '\n')
+
+def is_expired(filepath):
+    # Check if the file has been created 2 weeks prior
+    from datetime import datetime
+    file_creation = datetime.fromtimestamp(os.stat(filepath).st_mtime)
+    now = datetime.now()
+    return (now - file_creation).days > 14
+
+def is_latest(version):
     # Check pypi for the latest version number
     from urllib import request
     import json
-    try:
-        contents = request.urlopen('https://pypi.org/pypi/glitch-this/json').read()
-    except:
-        # Connection issue
-        # Silenty return True, update check failed
-        return True
-    data = json.loads(contents)
-    latest_version = data['info']['version']
+    if os.path.isfile(version_filepath) and not is_expired(version_filepath):
+        # If a version log already exists and it's not more than 14 days old
+        latest_version = read_version()
+    else:
+        # Either version log does not exist or is outdated
+        try:
+            contents = request.urlopen('https://pypi.org/pypi/glitch-this/json').read()
+        except:
+            # Connection issue
+            # Silenty return True, update check failed
+            return True
+        data = json.loads(contents)
+        latest_version = data['info']['version']
+        write_version(latest_version)
 
+    print('Current version: {} | Latest version: {}'.format(version, latest_version))
     return version == latest_version
 
 def get_help(glitch_min, glitch_max):
     help_text = dict()
     help_text['path'] = 'Relative or Absolute string path to source image'
-    help_text['level'] = """
-                          Integer between {} and {}, inclusive,
-                          representing amount of glitchiness
-                         """.format(glitch_min, glitch_max)
-    help_text['color'] = 'Whether or not to add color offset\nDefaults to False'
-    help_text['scan'] = 'Whether or not to add scan lines effect\nDefaults to False'
-    help_text['gif'] = """
-                        Include if you want a GIF instead of static image
-                        NOTE: Does nothing if input image is GIF, i.e when using `-ig`
-                       """
-    help_text['frames'] = """
-                           How many frames to include in GIF
-                           Defaults to 23
-                           NOTE: Does nothing if input image is GIF, i.e when using `-ig`
-                          """
-    help_text['step'] = """
-                         If provided, will glitch every step'th frame
-                         Defaults to 1, i.e glitch all frames
-                         Only works if -ig or -g is included
-                        """
-    help_text['increment'] = """
-                              Increment glitch_amount by given value after glitching every frame
-                              Defaults to 0
-                              NOTE: Only works when creating glitched GIFs
-                             """
-    help_text['cycle'] = """
-                          Cycle glitch_amount back to {} or {} if it over/underflows
-                          Defaults to False, i.e glitch_amount will stay at {}/{} if it under/overflows
-                         """.format(glitch_min, glitch_max, glitch_min, glitch_max)
-    help_text['duration'] = 'How long to display each frame (in centiseconds), defaults to 200'
-    help_text['relative_duration'] = """
-                                      Use a duration relative to the input GIF's original duration
-                                      The given value is multiplied by the input GIF's original duration
-                                      If a value is provided, -d Duration is ignored
-                                      NOTE: Only works with -ig param
-                                     """
-    help_text['loop'] = 'How many times the glitched GIF should loop, defaults to 0 (i.e infinite loop)'
-    help_text['inputgif'] = """
-                             If input image is GIF, use for glitching GIFs to GIFs!
-                             Defaults to False
-                             NOTE: This is a slow process
-                            """
-    help_text['force'] = """
-                          If included, overwrites existing output file of same name (if found)
-                          Defaults to False
-                         """
-    help_text['out'] = """
-                        Explictly supply the full or relative path/filename
-                        Defaults to ./glitched_src_image_path
-                       """
+    help_text['level'] = 'Number between {} and {}, inclusive, representing amount of glitchiness'.format(glitch_min,
+                                                                                                          glitch_max)
+    help_text['color'] = 'Include if you want to add color offset'
+    help_text['scan'] = 'Include if you want to add scan lines effect\nDefaults to False'
+    help_text['gif'] = 'Include if you want output to be a GIF'
+    help_text['frames'] = 'Number of frames to include in output GIF, default - 23'
+    help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
+    help_text['increment'] = 'Increment glitch_amount by given value after glitching every frame of output GIF'
+    help_text['cycle'] = 'Include if glitch_amount should be cycled back to {} or {} if it over/underflows'.format(glitch_min,
+                                                                                                                   glitch_max)
+    help_text['duration'] = 'How long to display each frame (in centiseconds), default - 200'
+    help_text['relative_duration'] = 'Multiply given value to input GIF\'s original duration and use that as duration'
+    help_text['loop'] = 'How many times the glitched GIF should loop, default - 0 (infinite loop)'
+    help_text['inputgif'] = 'Include if input image is GIF'
+    help_text['force'] = 'Forcefully overwrite output file'
+    help_text['out'] = 'Explcitly supply full/relative path to output file'
     return help_text
 
 def main():
-    glitch_min, glitch_max = 1, 10
+    glitch_min, glitch_max = 0.1, 10.0
+    version = ImageGlitcher.__version__
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
-    argparser = argparse.ArgumentParser(description='Glitchify images to static images and GIFs!')
+    argparser = argparse.ArgumentParser(description=
+                                        'glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
+                                        '* Website: https://github.com/TotallyNotChase/glitch-this \n'
+                                        '* Version: ' + version + '\n'
+                                        '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
+                                        formatter_class=argparse.RawTextHelpFormatter)
+    argparser.add_argument('--version', action='version', version='glitch_this {}'.format(version))
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help=help_text['path'])
-    argparser.add_argument('glitch_level', metavar='Glitch_Level', type=int,
+    argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
                            help=help_text['level'])
     argparser.add_argument('-c', '--color', dest='color', action='store_true',
                            help=help_text['color'])
@@ -93,7 +89,7 @@ def main():
                            help=help_text['frames'])
     argparser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
                            help=help_text['step'])
-    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=int, default=0,
+    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=float, default=0.0,
                            help=help_text['increment'])
     argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
                            help=help_text['cycle'])
@@ -143,6 +139,8 @@ def main():
 
     # Actual work begins here
     glitcher = ImageGlitcher()
+    global version_filepath
+    version_filepath = os.path.join(glitcher.lib_path, 'version.info')
     t0 = time()
     if not args.input_gif:
         # Get glitched image or GIF (from image)
@@ -189,8 +187,8 @@ def main():
     print('Total Time taken: ' + str(t3 - t0))
 
     # Let the user know if new version is available
-    if not islatest(ImageGlitcher.__version__):
-        print('A new version of "glitch-this" is available. Please consider upgrading via `pip install --upgrade glitch-this`')
+    if not is_latest(version):
+        print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
 
 if __name__=='__main__':
     main()

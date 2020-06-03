@@ -10,7 +10,7 @@
 </p>
 
 A commandline tool + `python` library to glitchify images and **even make GIFs** out of them!
-Featuring *10 different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
+Featuring *100 gradually different levels of glitching intensity*! The algorithm used to create glitched images is a slightly modifed version of the popular [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/) tool's algorithm, so you can expect the glitched images to look really cool!
 
 **NOW WITH GIF TO GLITCHED GIF SUPPORT! Check out the [docs](https://github.com/TotallyNotChase/glitch-this/wiki/Home)!**
 
@@ -29,16 +29,28 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 * [#1 hot in r/programming](https://www.reddit.com/r/programming/comments/f7q2q3/i_made_a_commandline_script_to_make_glitched/)
 * [#1 hot in r/broken_gifs](https://www.reddit.com/r/brokengifs/comments/f7pyqw/i_made_a_commandline_script_to_make_glitched_gifs/)
 * [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
+* [#4 product of the day in producthunt](https://www.producthunt.com/posts/glitch-this)
 
 ## FEATURES!
-* Choose from *10 gradually different levels* of **glitching intensity**!
+* Choose any **glitching intensity** between 0.1 and 10.0, yes those are floats!
+
+  *Each level is gradually different*!
+
   Want just a tiny bit of glitching, enough to make your image look cool? - use level 2 (my favorite)!
+* Add **scan lines** for a retro CRT effect! Add **color offset** for even cooler glitching!
 * Create **Glitched GIFs** from a normal image!
+
   That's right, before this tool, I had to manually download each image from [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), save them, and then head to a GIF creation website.
+
   Now you can do it *all* at once!
+* Glitch **GIFs** into **Glitched GIFs**!
+* Customize **step** of glitching, you can glitch *every step'th frame* instead of all frames!
+* **Increment/Decrement glitching intensity** while glitching every frame!
+
+  So you can have a frame *glitched with intensity 2*, but the *next can be 5*, the *next to that can be 8* and so on!
+
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
-* Add **scan lines** for a retro CRT effect!
-* Oh and did I mention, **color offset**? Just like [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), this tool *glitches the color channels* as well as the pixels - for **very convincing** looking glitched images!
+* Set how many times the GIF should **loop**!
 
 ## Changelog
 View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)

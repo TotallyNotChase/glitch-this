@@ -7,7 +7,9 @@
 Collections/
 build/
 dist/
+glitch_env/
 *.png
 *.gif
 *.jpg
+*.info
 !test.png
