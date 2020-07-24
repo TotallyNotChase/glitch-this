@@ -43,7 +43,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
   That's right, before this tool, I had to manually download each image from [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), save them, and then head to a GIF creation website.
 
   Now you can do it *all* at once!
-* Glitch **GIFs** into **Glitched GIFs**!
+* Glitch normal **GIFs** into **glitched GIFs**!
 * Customize **step** of glitching, you can glitch *every step'th frame* instead of all frames!
 * **Increment/Decrement glitching intensity** while glitching every frame!
 
