@@ -1,17 +1,22 @@
+# Ignore package setup generated files
 *.egg-info/
-*.mypy_cache
-*/.mypy_cache
-*.__pycache__
-*/__pycache__
-*/Glitched GIF
-.vscode/
-Collections/
 build/
 dist/
-glitch_env/
+# Ignore pycache
+*/__pycache__
+# Ignore script generated temporary directory
+*/Glitched GIF
+# Ignore venv
+glitchenv/
+# Ignore vscode specific files
+.vscode/
+# Ignore script generated outputs
+Collections/
+# Ignore some file formats (usually present for the user)
 *.png
 *.gif
 *.jpg
 *.info
+# Except the test.png and test.gif files
 !test.png
 !test.gif
