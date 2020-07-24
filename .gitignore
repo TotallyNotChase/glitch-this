@@ -14,3 +14,4 @@ glitch_env/
 *.jpg
 *.info
 !test.png
+!test.gif
