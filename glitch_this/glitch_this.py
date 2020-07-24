@@ -1,5 +1,6 @@
 import os, shutil
 import numpy as np
+import random
 from random import randint
 from decimal import getcontext, Decimal
 from PIL import Image, ImageSequence
@@ -103,7 +104,7 @@ class ImageGlitcher:
             raise Exception('Wrong format')
         return img
 
-    def glitch_image(self, src_img, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1):
+    def glitch_image(self, src_img, glitch_amount, color_offset=False, scan_lines=False, seed=None, gif=False, glitch_change=0.0, cycle=False, frames=23, step=1):
         """
          Sets up values needed for glitching the image
          Returns created Image object if gif=False
@@ -121,7 +122,18 @@ class ImageGlitcher:
          gif: True if output should be ready to be saved as GIF
          frames: How many glitched frames should be generated for GIF
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
+         seed: Set a random seed for generating similar images across runs,
+               defaults to None (random seed).
+               No effect when gif=True
         """
+
+        self.seed = seed
+        if self.seed and not gif:
+            # Set the seed if it was given
+            # The seed is ignored if gif is also set to True
+            # This is because every generated frame will be the same
+            self.__reset_rng_seed()
+
         # Sanity checking the inputs
         if not ((isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))
@@ -207,7 +219,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs
 
-    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, step=1):
+    def glitch_gif(self, src_gif, glitch_amount, color_offset=False, scan_lines=False, seed=None, glitch_change=0.0, cycle=False, step=1):
         """
          Glitch each frame of input GIF
          Returns the following:
@@ -219,7 +231,7 @@ class ImageGlitcher:
          NOTE: This is a time consuming process, especially for large GIFs
                with many frames
          PARAMETERS:-
-         src_img: Either the path to input Image or an Image object itself
+         src_gif: Either the path to input Image or an Image object itself
          glitch_amount: Level of glitch intensity, [0.1, 10.0] (inclusive)
 
          glitch_change: Increment/Decrement in glitch_amount after every glitch
@@ -228,7 +240,15 @@ class ImageGlitcher:
          color_offset: Specify True if color_offset effect should be applied
          scan_lines: Specify True if scan_lines effect should be applied
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
+         seed: Set a random seed for generating similar images across runs,
+               defaults to None (random seed)
         """
+
+        self.seed = seed
+        if self.seed:
+            # Set the seed if it was given
+            self.__reset_rng_seed()
+
         # Sanity checking the params
         if not ((isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))
@@ -254,7 +274,7 @@ class ImageGlitcher:
         try:
             # Get Image, whether input was an str path or Image object
             # GIF input is allowed in this method
-            gif = self.__fetch_image(src_gif, True)
+            gif = self.__fetch_image(src_gif, gif_allowed=True)
         except FileNotFoundError:
             # Throw DETAILED exception here (Traceback will be present from previous exceptions)
             raise FileNotFoundError('No image found at given path: ' + src_gif)
@@ -325,7 +345,14 @@ class ImageGlitcher:
         """
         max_offset = int((glitch_amount ** 2 / 100) * self.img_width)
         doubled_glitch_amount = int(glitch_amount * 2)
-        for _ in range(0, doubled_glitch_amount):
+        for shift_number in range(0, doubled_glitch_amount):
+            
+            if self.seed:
+                # This is not deterministic as glitch amount changes the amount of shifting,
+                # so get the same values on each iteration on a new pseudo-seed that is
+                # offseted by the index we're iterating
+                self.__reset_rng_seed(offset=shift_number)
+
             # Setting up offset needed for the randomized glitching
             current_offset = randint(-max_offset, max_offset)
 
@@ -343,11 +370,20 @@ class ImageGlitcher:
                 # Wrap around the lost pixel data from the left
                 self.__glitch_right(current_offset)
 
+        if self.seed:
+            # Get the same channels on the next call, we have to reset the rng seed
+            # as the previous loop isn't fixed in size of iterations and depends on glitch amount
+            self.__reset_rng_seed()
+
         if color_offset:
+            # Get the next random channel we'll offset, needs to be outside those randints
+            # arguments at the next function because those numbers can change and we want
+            # consistent random channels if a seed is set
+            random_channel = self.__get_random_channel()
             # Add color channel offset if checked true
             self.__color_offset(randint(-doubled_glitch_amount, doubled_glitch_amount),
                               randint(-doubled_glitch_amount, doubled_glitch_amount),
-                              self.__get_random_channel())
+                              random_channel)
 
         if scan_lines:
             # Add scan lines if checked true
@@ -478,4 +514,15 @@ class ImageGlitcher:
     def __get_random_channel(self):
         # Returns a random index from 0 to pixel_tuple_len
         # For an RGB image, a 0th index represents the RED channel
+
         return randint(0, self.pixel_tuple_len - 1)
+
+    def __reset_rng_seed(self, offset=0):
+        """
+        Calls random.seed() with self.seed variable
+
+        offset is for looping and getting new positions for each iteration that cointains the
+        previous one, otherwise we would get the same position on every loop and different 
+        results afterwards on non fixed size loops
+        """
+        random.seed(self.seed + offset)

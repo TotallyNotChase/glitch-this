@@ -74,14 +74,19 @@ def test_image_to_image():
     glitch_img = glitcher.glitch_image('test.{}'.format(fmt), 2, color_offset=True)
     glitch_img.save('Collections/glitched_test_color.{}'.format(fmt))
 
+    # Now try glitching with a seed
+    # This will base the RNG used within the glitching on given seed
+    glitch_img = glitcher.glitch_image('test.{}'.format(fmt), 2, seed=42)
+    glitch_img.save('Collections/glitched_test_seed.{}'.format(fmt))
+
     # How about all of them?
-    glitch_img = glitcher.glitch_image('test.{}'.format(fmt), 2, color_offset=True, scan_lines=True)
+    glitch_img = glitcher.glitch_image('test.{}'.format(fmt), 2, color_offset=True, scan_lines=True, seed=42)
     glitch_img.save('Collections/glitched_test_all.{}'.format(fmt))
 
     # You can also pass an Image object inplace of the path
     # Applicable in all of the examples above
     img = Image.open('test.{}'.format(fmt))
-    glitch_img = glitcher.glitch_image(img, 2, color_offset=True, scan_lines=True)
+    glitch_img = glitcher.glitch_image(img, 2, color_offset=True, scan_lines=True, seed = 42)
     glitch_img.save('Collections/glitched_test_all_obj.{}'.format(fmt))
 
 def test_image_to_gif():
@@ -110,6 +115,7 @@ def test_image_to_gif():
                         save_all=True,
                         duration=DURATION,
                         loop=LOOP)
+
     # Now try with scan_lines set to true
     glitch_imgs = glitcher.glitch_image('test.{}'.format(fmt), 2, gif=True, scan_lines=True)
     glitch_imgs[0].save('Collections/glitched_test_scan.gif',
@@ -298,8 +304,18 @@ def test_gif_to_gif():
                         duration=DURATION,
                         loop=LOOP)
 
+    # Now try glitching with a seed
+    # This will base the RNG used within the glitching on given seed
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, seed=42)
+    glitch_imgs[0].save('Collections/glitched_gif_seed.gif',
+                        format='GIF',
+                        append_images=glitch_imgs[1:],
+                        save_all=True,
+                        duration=DURATION,
+                        loop=LOOP)
+
     # How about all of the above?
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True, scan_lines=True, color_offset=True, step=2)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True, scan_lines=True, color_offset=True, step=2, seed=42)
     glitch_imgs[0].save('Collections/glitched_gif_all.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
