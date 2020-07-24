@@ -49,6 +49,7 @@ def get_help(glitch_min, glitch_max):
                                                                                                           glitch_max)
     help_text['color'] = 'Include if you want to add color offset'
     help_text['scan'] = 'Include if you want to add scan lines effect\nDefaults to False'
+    help_text['seed'] = 'Set a random seed for generating similar images across runs'
     help_text['gif'] = 'Include if you want output to be a GIF'
     help_text['frames'] = 'Number of frames to include in output GIF, default - 23'
     help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
@@ -85,6 +86,12 @@ def main():
                            help=help_text['scan'])
     argparser.add_argument('-g', '--gif', dest='gif', action='store_true',
                            help=help_text['gif'])
+    argparser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
+                           help=help_text['inputgif'])
+    argparser.add_argument('-f', '--force', dest='force', action='store_true',
+                           help=help_text['force'])
+    argparser.add_argument('-sd', '--seed', dest='seed', metavar='Seed', type=float, default=None,
+                           help=help_text['seed'])
     argparser.add_argument('-fr', '--frames', dest='frames', metavar='Frames', type=int, default=23,
                            help=help_text['frames'])
     argparser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
@@ -99,10 +106,6 @@ def main():
                            help=help_text['relative_duration'])
     argparser.add_argument('-l', '--loop', dest='loop', metavar='Loop_Count', type=int, default=0,
                            help=help_text['loop'])
-    argparser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
-                           help=help_text['inputgif'])
-    argparser.add_argument('-f', '--force', dest='force', action='store_true',
-                           help=help_text['force'])
     argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
                            help=help_text['out'])
     args = argparser.parse_args()
@@ -149,6 +152,7 @@ def main():
                                            cycle=args.cycle,
                                            scan_lines=args.scan_lines,
                                            color_offset=args.color,
+                                           seed=args.seed,
                                            gif=args.gif,
                                            frames=args.frames,
                                            step=args.step)
@@ -159,6 +163,7 @@ def main():
                                                                     cycle=args.cycle,
                                                                     scan_lines=args.scan_lines,
                                                                     color_offset=args.color,
+                                                                    seed=args.seed,
                                                                     step=args.step)
         # Set args.gif to true if it isn't already in this case
         args.gif = True
