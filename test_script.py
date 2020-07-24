@@ -341,33 +341,27 @@ if __name__=='__main__':
         shutil.rmtree('Collections')
     os.mkdir('Collections')
 
-
-    """
-     NOTE: GIF to GIF glitching is disabled by default
-     Reason 1: This is a time consuming process
-     Reason 2: No test.gif is supplied with the src (yet)
-
-     The examples given in the method however are pre-tested
-     and perfectly valid!
-    """
-
-    #print('Testing GIF to GIF glitching....')
-    #test_gif_to_gif()
-    #print('Done!')
-
     # Start Testing
     fmt = 'png'
+
+    print('Testing GIF to GIF glitching....')
+    t0 = time()
+    test_gif_to_gif()
+    t1 = time()
+    print('Done!', str(t1-t0))
 
     print('Testing image to image glitching....')
     t0 = time()
     test_image_to_image()
     t1 = time()
     print('Done! Time taken: ', str(t1-t0))
+
     print('Testing image to GIF glitching....')
     t0 = time()
     test_image_to_gif()
     t1 = time()
     print('Done! Time taken: ', str(t1-t0))
+
     print('Testing infinite stress test.....\nNOTE: Use ctrl+c to stop the test')
     test_loop()
     print('Done!')
