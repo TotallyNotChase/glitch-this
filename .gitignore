@@ -4,6 +4,7 @@
 *.__pycache__
 */__pycache__
 */Glitched GIF
+.vscode/
 Collections/
 build/
 dist/
