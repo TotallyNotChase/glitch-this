@@ -29,6 +29,8 @@ class ImageGlitcher:
 
     def __isgif(self, img):
         # Returns true if input image is a GIF and/or animated
+        if not os.path.isfile(img):
+            return False
         if isinstance(img, str):
             img = Image.open(img)
         index = 0
@@ -255,7 +257,7 @@ class ImageGlitcher:
             gif = self.__fetch_image(src_gif, True)
         except FileNotFoundError:
             # Throw DETAILED exception here (Traceback will be present from previous exceptions)
-            raise FileNotFoundError('No image found at given path: ' + src_img)
+            raise FileNotFoundError('No image found at given path: ' + src_gif)
         except:
             # Throw DETAILED exception here (Traceback will be present from previous exceptions)
             raise Exception('File format not supported - must be an image file')
