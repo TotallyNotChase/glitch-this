@@ -1,5 +1,6 @@
 import os, shutil
 import numpy as np
+import random
 from random import randint
 from decimal import getcontext, Decimal
 from PIL import Image, ImageSequence
@@ -101,7 +102,7 @@ class ImageGlitcher:
             raise Exception('Wrong format')
         return img
 
-    def glitch_image(self, src_img, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1):
+    def glitch_image(self, src_img, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, gif=False, frames=23, step=1, seed=None):
         """
          Sets up values needed for glitching the image
          Returns created Image object if gif=False
@@ -119,7 +120,14 @@ class ImageGlitcher:
          gif: True if output should be ready to be saved as GIF
          frames: How many glitched frames should be generated for GIF
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
+         seed: Set Python's RNG to that seed for generating equal images across runs,
+               defaults to None (random seed), expected integer / float number
         """
+
+        # Get the seed, None is random seed
+        self.seed = seed
+        self.__reset_rng_seed()
+
         # Sanity checking the inputs
         if not ((isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))
@@ -205,7 +213,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dirpath)
         return glitched_imgs
 
-    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, step=1):
+    def glitch_gif(self, src_gif, glitch_amount, glitch_change=0.0, cycle=False, color_offset=False, scan_lines=False, step=1, seed=None):
         """
          Glitch each frame of input GIF
          Returns the following:
@@ -226,7 +234,14 @@ class ImageGlitcher:
          color_offset: Specify True if color_offset effect should be applied
          scan_lines: Specify True if scan_lines effect should be applied
          step: Glitch every step'th frame, defaults to 1 (i.e all frames)
+         seed: Set Python's RNG to that seed for generating equal images across runs,
+               defaults to None (random seed), expected integer / float number
         """
+
+        # Get the seed, None is random seed
+        self.seed = seed
+        self.__reset_rng_seed()
+
         # Sanity checking the params
         if not ((isinstance(glitch_amount, float)
                     or isinstance(glitch_amount, int))
@@ -323,7 +338,13 @@ class ImageGlitcher:
         """
         max_offset = int((glitch_amount ** 2 / 100) * self.img_width)
         doubled_glitch_amount = int(glitch_amount * 2)
-        for _ in range(0, doubled_glitch_amount):
+        for shift_number in range(0, doubled_glitch_amount):
+            
+            # This is not deterministic as glitch amount changes the amount of shifting,
+            # so get the same values on each iteration on a new pseudo-seed that is
+            # offseted by the index we're iterating
+            self.__reset_rng_seed(offset=shift_number)
+
             # Setting up offset needed for the randomized glitching
             current_offset = randint(-max_offset, max_offset)
 
@@ -341,11 +362,19 @@ class ImageGlitcher:
                 # Wrap around the lost pixel data from the left
                 self.__glitch_right(current_offset)
 
+        # Get the same channels on the next call, we have to reset the rng seed
+        # as the previous loop isn't fixed in size of iterations and depends on glitch amount
+        self.__reset_rng_seed()
+
         if color_offset:
+            # Get the next random channel we'll offset, needs to be outside those randints
+            # arguments at the next function because those numbers can change and we want
+            # consistent random channels if a seed is set
+            random_channel = self.__get_random_channel()
             # Add color channel offset if checked true
             self.__color_offset(randint(-doubled_glitch_amount, doubled_glitch_amount),
                               randint(-doubled_glitch_amount, doubled_glitch_amount),
-                              self.__get_random_channel())
+                              random_channel)
 
         if scan_lines:
             # Add scan lines if checked true
@@ -476,4 +505,14 @@ class ImageGlitcher:
     def __get_random_channel(self):
         # Returns a random index from 0 to pixel_tuple_len
         # For an RGB image, a 0th index represents the RED channel
+
         return randint(0, self.pixel_tuple_len - 1)
+
+    def __reset_rng_seed(self, offset=0):
+        # Calls random.seed() with self.seed variable if user has set that value
+        # offset is for looping and getting new positions for each iteration that cointains the
+        # previous one, otherwise we would get the same position on every loop and different 
+        # results afterwards on non fixed size loops
+        if self.seed is not None:
+            random.seed(self.seed + offset)
+        
