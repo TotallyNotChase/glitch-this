@@ -7,7 +7,7 @@ setup(
     name='glitch_this',
     version='1.0.0',
     author='TotallyNotChase',
-    author_email='44284917+TotallyNotChase@users.noreply.github.com',
+    author_email='totallynotchase42@gmail.com',
     description='A package to glitch images and GIFs, with highly customizable options!',
     long_description=readme,
     long_description_content_type='text/markdown',
