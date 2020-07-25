@@ -1,26 +1,33 @@
 #!/usr/bin/env python3
-import os, argparse
+import argparse
+import os
+from datetime import datetime
 from pathlib import Path
 from time import time
+from typing import Dict
+
 from glitch_this import ImageGlitcher
 
-def read_version():
-    with open(version_filepath, 'r') as file:
-        content = file.read()
+
+def read_version() -> str:
+    with open(version_filepath, 'r') as version_file:
+        content = version_file.read()
     return content.strip()
 
-def write_version(version):
-    with open(version_filepath, 'w') as file:
-        file.write(version + '\n')
 
-def is_expired(filepath):
+def write_version(version: str):
+    with open(version_filepath, 'w') as version_file:
+        version_file.write(version + '\n')
+
+
+def is_expired(filepath: str) -> bool:
     # Check if the file has been created 2 weeks prior
-    from datetime import datetime
     file_creation = datetime.fromtimestamp(os.stat(filepath).st_mtime)
     now = datetime.now()
     return (now - file_creation).days > 14
 
-def is_latest(version):
+
+def is_latest(version: str) -> bool:
     # Check pypi for the latest version number
     from urllib import request
     import json
@@ -30,7 +37,8 @@ def is_latest(version):
     else:
         # Either version log does not exist or is outdated
         try:
-            contents = request.urlopen('https://pypi.org/pypi/glitch-this/json').read()
+            contents = request.urlopen(
+                'https://pypi.org/pypi/glitch-this/json').read()
         except:
             # Connection issue
             # Silenty return True, update check failed
@@ -39,14 +47,14 @@ def is_latest(version):
         latest_version = data['info']['version']
         write_version(latest_version)
 
-    print('Current version: {} | Latest version: {}'.format(version, latest_version))
+    print(f'Current version: {version} | Latest version: {latest_version}')
     return version == latest_version
 
-def get_help(glitch_min, glitch_max):
+
+def get_help(glitch_min: float, glitch_max: float) -> Dict:
     help_text = dict()
     help_text['path'] = 'Relative or Absolute string path to source image'
-    help_text['level'] = 'Number between {} and {}, inclusive, representing amount of glitchiness'.format(glitch_min,
-                                                                                                          glitch_max)
+    help_text['level'] = f'Number between {glitch_min} and {glitch_max}, inclusive, representing amount of glitchiness'
     help_text['color'] = 'Include if you want to add color offset'
     help_text['scan'] = 'Include if you want to add scan lines effect\nDefaults to False'
     help_text['seed'] = 'Set a random seed for generating similar images across runs'
@@ -54,8 +62,7 @@ def get_help(glitch_min, glitch_max):
     help_text['frames'] = 'Number of frames to include in output GIF, default - 23'
     help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
     help_text['increment'] = 'Increment glitch_amount by given value after glitching every frame of output GIF'
-    help_text['cycle'] = 'Include if glitch_amount should be cycled back to {} or {} if it over/underflows'.format(glitch_min,
-                                                                                                                   glitch_max)
+    help_text['cycle'] = f'Include if glitch_amount should be cycled back to {glitch_min} or {glitch_max} if it over/underflows'
     help_text['duration'] = 'How long to display each frame (in centiseconds), default - 200'
     help_text['relative_duration'] = 'Multiply given value to input GIF\'s original duration and use that as duration'
     help_text['loop'] = 'How many times the glitched GIF should loop, default - 0 (infinite loop)'
@@ -64,18 +71,19 @@ def get_help(glitch_min, glitch_max):
     help_text['out'] = 'Explcitly supply full/relative path to output file'
     return help_text
 
+
 def main():
     glitch_min, glitch_max = 0.1, 10.0
     version = ImageGlitcher.__version__
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
-    argparser = argparse.ArgumentParser(description=
-                                        'glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
+    argparser = argparse.ArgumentParser(description='glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
                                         '* Website: https://github.com/TotallyNotChase/glitch-this \n'
                                         '* Version: ' + version + '\n'
                                         '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
                                         formatter_class=argparse.RawTextHelpFormatter)
-    argparser.add_argument('--version', action='version', version='glitch_this {}'.format(version))
+    argparser.add_argument('--version', action='version',
+                           version=f'glitch_this {version}')
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help=help_text['path'])
     argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
@@ -131,11 +139,12 @@ def main():
         # Overwrite the previous values
         out_path, out_file = os.path.split(Path(args.outfile))
         if out_path != '' and not os.path.exists(out_path):
-            raise Exception('Given outfile path, ' + out_path + ', does not exist')
+            raise Exception('Given outfile path, ' +
+                            out_path + ', does not exist')
         # The extension in user provided outfile path is ignored
         out_filename = out_file.rsplit('.', 1)[0]
     # Now create the full path
-    full_path = os.path.join(out_path, '{}.{}'.format(out_filename, out_fileex))
+    full_path = os.path.join(out_path, f'{out_filename}.{out_fileex}')
     if os.path.exists(full_path) and not args.force:
         raise Exception(full_path + ' already exists\nCannot overwrite '
                         'existing file unless -f or --force is included\nProgram Aborted')
@@ -168,7 +177,8 @@ def main():
         # Set args.gif to true if it isn't already in this case
         args.gif = True
         # Set args.duration to src_duration * relative duration, if one was given
-        args.duration = args.duration if not args.rel_duration else int(args.rel_duration * src_duration)
+        args.duration = args.duration if not args.rel_duration else int(
+            args.rel_duration * src_duration)
     t1 = time()
     # End of glitching
     t2 = time()
@@ -179,21 +189,22 @@ def main():
         print('Glitched Image saved in "{}"'.format(full_path))
     else:
         glitch_img[0].save(full_path,
-                    format='GIF',
-                    append_images=glitch_img[1:],
-                    save_all=True,
-                    duration=args.duration,
-                    loop=args.loop,
-                    compress_level=3)
+                           format='GIF',
+                           append_images=glitch_img[1:],
+                           save_all=True,
+                           duration=args.duration,
+                           loop=args.loop,
+                           compress_level=3)
         t3 = time()
-        print('Glitched GIF saved in "{}"\nFrames = {}, Duration = {}, Loop = {}'.format(full_path, args.frames, args.duration, args.loop))
-    print('Time taken to glitch: ' + str(t1 - t0))
-    print('Time taken to save: ' + str(t3 - t2))
-    print('Total Time taken: ' + str(t3 - t0))
+        print(
+            f'Glitched GIF saved in "{full_path}"\nFrames = {args.frames}, Duration = {args.duration}, Loop = {args.loop}')
+    print(f'Time taken to glitch: {t1 - t0}')
+    print(f'Time taken to save: {t3 - t2}')
+    print(f'Total Time taken: {t3 - t0}')
 
     # Let the user know if new version is available
     if not is_latest(version):
         print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
