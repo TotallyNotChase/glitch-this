@@ -74,16 +74,16 @@ def get_help(glitch_min: float, glitch_max: float) -> Dict:
 
 def main():
     glitch_min, glitch_max = 0.1, 10.0
-    version = ImageGlitcher.__version__
+    current_version = ImageGlitcher.__version__
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
     argparser = argparse.ArgumentParser(description='glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
                                         '* Website: https://github.com/TotallyNotChase/glitch-this \n'
-                                        '* Version: ' + version + '\n'
+                                        f'* Version: {current_version}\n'
                                         '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
                                         formatter_class=argparse.RawTextHelpFormatter)
     argparser.add_argument('--version', action='version',
-                           version=f'glitch_this {version}')
+                           version=f'glitch_this {current_version}')
     argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
                            help=help_text['path'])
     argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
@@ -203,7 +203,7 @@ def main():
     print(f'Total Time taken: {t3 - t0}')
 
     # Let the user know if new version is available
-    if not is_latest(version):
+    if not is_latest(current_version):
         print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
 
 if __name__ == '__main__':
