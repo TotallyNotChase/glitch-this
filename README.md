@@ -51,6 +51,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
 * Set how many times the GIF should **loop**!
+* Set your own custom **seed** for a predictable RNG!
 
 ## Changelog
 View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)

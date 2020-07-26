@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
-with open('README.md', 'r') as file:
-    readme = file.read()
+with open('README.md', 'r') as readmefile:
+    readme = readmefile.read()
 
 setup(
     name='glitch_this',
-    version='0.1.5',
+    version='1.0.0',
     author='TotallyNotChase',
-    author_email='44284917+TotallyNotChase@users.noreply.github.com',
+    author_email='totallynotchase42@gmail.com',
     description='A package to glitch images and GIFs, with highly customizable options!',
     long_description=readme,
     long_description_content_type='text/markdown',
