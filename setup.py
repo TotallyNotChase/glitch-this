@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
-with open('README.md', 'r') as file:
-    readme = file.read()
+with open('README.md', 'r') as readmefile:
+    readme = readmefile.read()
 
 setup(
     name='glitch_this',
