@@ -31,6 +31,8 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 * [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
 * [#4 product of the day in producthunt](https://www.producthunt.com/posts/glitch-this)
 
+<a href="https://www.producthunt.com/posts/glitch-this?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-glitch-this" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=186201&theme=light" alt="glitch-this - Create highly customizable glitched images and GIFs! | Product Hunt Embed" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 ## FEATURES!
 * Choose any **glitching intensity** between 0.1 and 10.0, yes those are floats!
 
@@ -43,7 +45,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
   That's right, before this tool, I had to manually download each image from [ImageGlitcher](https://www.airtightinteractive.com/demos/js/imageglitcher/), save them, and then head to a GIF creation website.
 
   Now you can do it *all* at once!
-* Glitch **GIFs** into **Glitched GIFs**!
+* Glitch normal **GIFs** into **glitched GIFs**!
 * Customize **step** of glitching, you can glitch *every step'th frame* instead of all frames!
 * **Increment/Decrement glitching intensity** while glitching every frame!
 
@@ -51,6 +53,7 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 
 * Customize the **number of frames** in a GIF as well as their **duration** - all from the comfort of your terminal!
 * Set how many times the GIF should **loop**!
+* Set your own custom **seed** for a predictable RNG!
 
 ## Changelog
 View the changelog [here](https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md)

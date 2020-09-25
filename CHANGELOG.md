@@ -126,3 +126,12 @@
   The version is only checked once every few days and saved into a local file. This file is checked afterwards. Eliminates the need to send request to pypi
 
 * Add `--version` argument to the commandline script
+
+## Version 1.0.0 - **MAJOR**
+* NEW `glitch_image` and `glitch_gif` in `glitch_this.py`:-
+  * `seed`: Set a custom seed to be used by `random`, for generating similar images across runs
+* NEW parameters for `commandline.py`:-
+  * `-sd, --seed`: Set a custom seed to be used by `random`, for generating similar images across runs
+* Cleanup the codebase using fstrings
+* Add FULL **typing support** for providing a better experience to library users
+* Fix undefined variable in `glitch_gif`
