@@ -31,6 +31,8 @@ Checkout a web demo right [here](https://github.com/pahefu/web-glitch-this), cou
 * [#1 hot in r/glitch_art](https://www.reddit.com/r/glitch_art/comments/f7q0hc/i_made_a_script_to_make_glitched_images_and_gifs/)
 * [#4 product of the day in producthunt](https://www.producthunt.com/posts/glitch-this)
 
+<a href="https://www.producthunt.com/posts/glitch-this?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-glitch-this" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=186201&theme=light" alt="glitch-this - Create highly customizable glitched images and GIFs! | Product Hunt Embed" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 ## FEATURES!
 * Choose any **glitching intensity** between 0.1 and 10.0, yes those are floats!
 
