@@ -327,7 +327,15 @@ class ImageGlitcher:
              * Save the glitched image in temp directory
              * Open the image and append a copy of it to the list
             """
-            duration += frame.info['duration']
+            try:
+                duration += frame.info['duration']
+            except KeyError as e:
+                # Override error message to provide more info
+                e.args = (
+                    'The key "duration" does not exist in frame.'
+                    'This means PIL(pillow) could not extract necessary information from the input image',
+                )
+                raise
             src_frame_path = os.path.join(self.gif_dirpath, 'frame.png')
             frame.save(src_frame_path, compress_level=3)
             if not i % step == 0:
