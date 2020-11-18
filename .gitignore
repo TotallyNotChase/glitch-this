@@ -7,7 +7,7 @@ dist/
 # Ignore script generated temporary directory
 */Glitched GIF
 # Ignore venv
-glitchenv/
+*venv/
 # Ignore vscode specific files
 .vscode/
 # Ignore script generated outputs
