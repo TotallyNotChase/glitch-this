@@ -135,3 +135,7 @@
 * Cleanup the codebase using fstrings
 * Add FULL **typing support** for providing a better experience to library users
 * Fix undefined variable in `glitch_gif`
+
+## Version 1.0.1
+* Add better error message when `frame['duration']` in `glitch_gif` (from `glitch_this.py`) raises a key error
+  Suggested by [#32](https://github.com/TotallyNotChase/glitch-this/issues/32)
