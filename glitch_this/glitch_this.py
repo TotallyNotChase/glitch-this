@@ -11,7 +11,7 @@ from PIL import Image, ImageSequence
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
 
     def __init__(self):
         # Setting up global variables needed for glitching
