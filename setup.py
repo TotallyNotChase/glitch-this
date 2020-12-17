@@ -5,7 +5,7 @@ with open('README.md', 'r') as readmefile:
 
 setup(
     name='glitch_this',
-    version='1.0.1',
+    version='1.0.2',
     author='TotallyNotChase',
     author_email='totallynotchase42@gmail.com',
     description='A package to glitch images and GIFs, with highly customizable options!',
