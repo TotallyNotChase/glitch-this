@@ -62,7 +62,8 @@ def get_help(glitch_min: float, glitch_max: float) -> Dict:
     help_text['frames'] = 'Number of frames to include in output GIF, default - 23'
     help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
     help_text['increment'] = 'Increment glitch_amount by given value after glitching every frame of output GIF'
-    help_text['cycle'] = f'Include if glitch_amount should be cycled back to {glitch_min} or {glitch_max} if it over/underflows'
+    help_text[
+        'cycle'] = f'Include if glitch_amount should be cycled back to {glitch_min} or {glitch_max} if it over/underflows'
     help_text['duration'] = 'How long to display each frame (in centiseconds), default - 200'
     help_text['relative_duration'] = 'Multiply given value to input GIF\'s original duration and use that as duration'
     help_text['loop'] = 'How many times the glitched GIF should loop, default - 0 (infinite loop)'
@@ -77,46 +78,47 @@ def main():
     current_version = ImageGlitcher.__version__
     help_text = get_help(glitch_min, glitch_max)
     # Add commandline arguments parser
-    argparser = argparse.ArgumentParser(description='glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
-                                        '* Website: https://github.com/TotallyNotChase/glitch-this \n'
-                                        f'* Version: {current_version}\n'
-                                        '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
-                                        formatter_class=argparse.RawTextHelpFormatter)
-    argparser.add_argument('--version', action='version',
-                           version=f'glitch_this {current_version}')
-    argparser.add_argument('src_img_path', metavar='Image_Path', type=str,
-                           help=help_text['path'])
-    argparser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
-                           help=help_text['level'])
-    argparser.add_argument('-c', '--color', dest='color', action='store_true',
-                           help=help_text['color'])
-    argparser.add_argument('-s', '--scan', dest='scan_lines', action='store_true',
-                           help=help_text['scan'])
-    argparser.add_argument('-g', '--gif', dest='gif', action='store_true',
-                           help=help_text['gif'])
-    argparser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
-                           help=help_text['inputgif'])
-    argparser.add_argument('-f', '--force', dest='force', action='store_true',
-                           help=help_text['force'])
-    argparser.add_argument('-sd', '--seed', dest='seed', metavar='Seed', type=float, default=None,
-                           help=help_text['seed'])
-    argparser.add_argument('-fr', '--frames', dest='frames', metavar='Frames', type=int, default=23,
-                           help=help_text['frames'])
-    argparser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
-                           help=help_text['step'])
-    argparser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=float, default=0.0,
-                           help=help_text['increment'])
-    argparser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
-                           help=help_text['cycle'])
-    argparser.add_argument('-d', '--duration', dest='duration', metavar='Duration', type=int, default=200,
-                           help=help_text['duration'])
-    argparser.add_argument('-rd', '--relative_duration', dest='rel_duration', metavar='Relative_Duration', type=float,
-                           help=help_text['relative_duration'])
-    argparser.add_argument('-l', '--loop', dest='loop', metavar='Loop_Count', type=int, default=0,
-                           help=help_text['loop'])
-    argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
-                           help=help_text['out'])
-    args = argparser.parse_args()
+    arg_parser = argparse.ArgumentParser(
+        description='glitch_this: Glitchify images and GIFs, with highly customizable options!\n\n'
+                    '* Website: https://github.com/TotallyNotChase/glitch-this \n'
+                    f'* Version: {current_version}\n'
+                    '* Changelog: https://github.com/TotallyNotChase/glitch-this/blob/master/CHANGELOG.md',
+        formatter_class=argparse.RawTextHelpFormatter)
+    arg_parser.add_argument('--version', action='version',
+                            version=f'glitch_this {current_version}')
+    arg_parser.add_argument('src_img_path', metavar='Image_Path', type=str,
+                            help=help_text['path'])
+    arg_parser.add_argument('glitch_level', metavar='Glitch_Level', type=float,
+                            help=help_text['level'])
+    arg_parser.add_argument('-c', '--color', dest='color', action='store_true',
+                            help=help_text['color'])
+    arg_parser.add_argument('-s', '--scan', dest='scan_lines', action='store_true',
+                            help=help_text['scan'])
+    arg_parser.add_argument('-g', '--gif', dest='gif', action='store_true',
+                            help=help_text['gif'])
+    arg_parser.add_argument('-ig', '--inputgif', dest='input_gif', action='store_true',
+                            help=help_text['inputgif'])
+    arg_parser.add_argument('-f', '--force', dest='force', action='store_true',
+                            help=help_text['force'])
+    arg_parser.add_argument('-sd', '--seed', dest='seed', metavar='Seed', type=float, default=None,
+                            help=help_text['seed'])
+    arg_parser.add_argument('-fr', '--frames', dest='frames', metavar='Frames', type=int, default=23,
+                            help=help_text['frames'])
+    arg_parser.add_argument('-st', '--step', dest='step', metavar='Step', type=int, default=1,
+                            help=help_text['step'])
+    arg_parser.add_argument('-i', '--increment', dest='increment', metavar='Increment', type=float, default=0.0,
+                            help=help_text['increment'])
+    arg_parser.add_argument('-cy', '--cycle', dest='cycle', action='store_true',
+                            help=help_text['cycle'])
+    arg_parser.add_argument('-d', '--duration', dest='duration', metavar='Duration', type=int, default=200,
+                            help=help_text['duration'])
+    arg_parser.add_argument('-rd', '--relative_duration', dest='rel_duration', metavar='Relative_Duration', type=float,
+                            help=help_text['relative_duration'])
+    arg_parser.add_argument('-l', '--loop', dest='loop', metavar='Loop_Count', type=int, default=0,
+                            help=help_text['loop'])
+    arg_parser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
+                            help=help_text['out'])
+    args = arg_parser.parse_args()
 
     # Sanity check inputs
     if not args.duration > 0:
@@ -130,10 +132,10 @@ def main():
 
     # Set up full_path, for output saving location
     out_path, out_file = os.path.split(Path(args.src_img_path))
-    out_filename, out_fileex = out_file.rsplit('.', 1)
+    out_filename, out_filex = out_file.rsplit('.', 1)
     out_filename = 'glitched_' + out_filename
     # Output file extension should be '.gif' if output file is going to be a gif
-    out_fileex = 'gif' if args.gif else out_fileex
+    out_filex = 'gif' if args.gif else out_filex
     if args.outfile:
         # If output file path is already given
         # Overwrite the previous values
@@ -144,13 +146,14 @@ def main():
         # The extension in user provided outfile path is ignored
         out_filename = out_file.rsplit('.', 1)[0]
     # Now create the full path
-    full_path = os.path.join(out_path, f'{out_filename}.{out_fileex}')
+    full_path = os.path.join(out_path, f'{out_filename}.{out_filex}')
     if os.path.exists(full_path) and not args.force:
         raise Exception(full_path + ' already exists\nCannot overwrite '
-                        'existing file unless -f or --force is included\nProgram Aborted')
+                                    'existing file unless -f or --force is included\nProgram Aborted')
 
     # Actual work begins here
     glitcher = ImageGlitcher()
+
     global version_filepath
     version_filepath = os.path.join(glitcher.lib_path, 'version.info')
     t0 = time()
@@ -204,7 +207,10 @@ def main():
 
     # Let the user know if new version is available
     if not is_latest(current_version):
-        print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
+        print(
+            'A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade '
+            'glitch-this`')
+
 
 if __name__ == '__main__':
     main()
