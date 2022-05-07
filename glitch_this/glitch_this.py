@@ -56,9 +56,9 @@ def _convert_based_on_file_format(src_img: Image.Image) -> Image.Image:
     _format_map = {
         "GIF": lambda: src_img,
         "PNG": lambda: src_img.convert('RGBA'),
-        "RGB": lambda: src_img.convert('RGB'),
     }
-    return _format_map.get(src_img.format, "RGB")()
+
+    return _format_map.get(src_img.format, lambda: src_img.convert('RGB'))()
 
 
 def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.Image:
