@@ -6,6 +6,7 @@ from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image, ImageSequence
+from glitch_this.exceptions import WrongImageFormatException
 
 
 def _is_gif(img: Union[str, Image.Image]) -> bool:
@@ -17,18 +18,47 @@ def _is_gif(img: Union[str, Image.Image]) -> bool:
     return any(index >= 2 for index, _ in enumerate(ImageSequence.Iterator(img), start=1))
 
 
-def _open_image(img_path: str) -> Image.Image:
-    # Returns an Image object
-    # Will throw exception if img_path doesn't point to Image
+def _open_image_file(src: Union[str, Image.Image]) -> Optional[Image.Image]:
+    if isinstance(src, str):
+        try:
+            return _convert_based_on_file_extension(src)
+        except Exception as err:
+            # File is not an Image
+            raise WrongImageFormatException('Wrong format') from err
+    if isinstance(src, Image.Image):
+        return _convert_based_on_file_format(src)
+
+
+def _get_format_from_extension(img_path: str) -> str:
+    format_ = "RGB"
     if img_path.endswith('.gif'):
-        # Do not convert GIF file
-        return Image.open(img_path)
+        format_ = "GIF"
     elif img_path.endswith('.png'):
-        # Convert the Image to RGBA if it's png
-        return Image.open(img_path).convert('RGBA')
-    else:
-        # Otherwise, convert it to RGB
-        return Image.open(img_path).convert('RGB')
+        format_ = "PNG"
+    return format_
+
+
+def _convert_based_on_file_extension(img_path: str) -> Image.Image:
+    # Sanity Check if the path exists
+    if not os.path.isfile(img_path):
+        raise FileNotFoundError('Path not found')
+
+    _format_map = {
+        "GIF": lambda: Image.open(img_path),
+        "PNG": lambda: Image.open(img_path).convert('RGBA'),
+        "RGB": lambda: Image.open(img_path).convert('RGB')
+    }
+
+    return _format_map.get(_get_format_from_extension(img_path))()
+
+
+def _convert_based_on_file_format(src_img: Image.Image) -> Image.Image:
+    _format_map = {
+        "GIF": lambda: src_img,
+        "PNG": lambda: src_img.convert('RGBA'),
+        "RGB": lambda: src_img.convert('RGB'),
+    }
+    return _format_map.get(src_img.format, "RGB")()
 
 
 def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.Image:
@@ -38,47 +68,14 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
 
      Raises an exception if `img` param is not an Image
     """
-    if isinstance(src_img, str) and (gif_allowed or not src_img.endswith('.gif')):
-        """
-         An str object was passed
-
-         If GIF is not allowed and the Image path is a GIF
-         the function will raise an Exception
-         If GIF is allowed, any Image path is good to go
-        """
-        # Sanity Check if the path exists
-        if not os.path.isfile(src_img):
-            raise FileNotFoundError('Path not found')
-        try:
-            # Open the image at given path
-            img = _open_image(src_img)
-        except:
-            # File is not an Image
-            raise Exception('Wrong format')
-    elif isinstance(src_img, Image.Image) and (gif_allowed or not _is_gif(src_img)):
-        """
-         An Image object was passed
-
-         If GIF is not allowed and the Image object is a GIF
-         the function will raise an Exception
-         If GIF is allowed, any Image object is good to go
-        """
-        if src_img.format == 'GIF':
-            # Do not convert GIF file
-            return src_img
-        elif src_img.format == 'PNG':
-            # Convert the Image to RGBA if it's png
-            img = src_img.convert('RGBA')
-        else:
-            # Otherwise, convert it to RGB
-            img = src_img.convert('RGB')
+    if gif_allowed or (not src_img.endswith('.gif') or not _is_gif(src_img)):
+        return _open_image_file(src_img)
     else:
         # File is not an Image
         # OR it's a GIF but GIF is not allowed
 
         # Raise the GENERIC exception here
-        raise Exception('Wrong format')
-    return img
+        raise WrongImageFormatException('Wrong format')
 
 
 class ImageGlitcher:
