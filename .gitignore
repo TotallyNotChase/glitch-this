@@ -20,3 +20,4 @@ Collections/
 # Except the test.png and test.gif files
 !test.png
 !test.gif
+.idea
