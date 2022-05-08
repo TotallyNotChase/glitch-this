@@ -68,7 +68,7 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
 
      Raises an exception if `img` param is not an Image
     """
-    if gif_allowed or (not src_img.endswith('.gif') or not _is_gif(src_img)):
+    if gif_allowed or (not _is_gif(src_img) or not src_img.endswith('.gif')):
         return _open_image_file(src_img)
     else:
         # File is not an Image
