@@ -116,6 +116,20 @@ def _validate_if_number(number_map: dict[str, Union[int, float]]):
             raise ValueError(f'{argument_name} parameter must be a number')
 
 
+def glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step, glitch_min, glitch_max):
+    range_map = {
+        "glitch_amount": glitch_amount,
+        "glitch_change": glitch_change
+    }
+    positive_int_map = {"frames": frames, "step": step}
+    number_map = {
+        "seed": seed
+    }
+    _validate_in_range_positive_integer(range_map, glitch_min, glitch_max)
+    _validate_positive_integer(positive_int_map)
+    _validate_if_number(number_map)
+
+
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -241,26 +255,12 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
 
-    def glitch_image_validators(self, color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed, step):
+    def glitch_image_validators(self, color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines,
+                                seed, step):
         # Sanity checking the inputs
-        self.glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step)
+        glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step,
+                                           self.glitch_min, self.glitch_max)
         glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
-
-    def glitch_image_number_type_validator(self, frames, glitch_amount, glitch_change, seed, step):
-        range_map = {
-            "glitch_amount": glitch_amount,
-            "glitch_change": glitch_change
-        }
-        positive_int_map = {
-            "frames": frames,
-            "step": step
-        }
-        number_map = {
-            "seed": seed
-        }
-        _validate_in_range_positive_integer(range_map, self.glitch_min, self.glitch_max)
-        _validate_positive_integer(positive_int_map)
-        _validate_if_number(number_map)
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
