@@ -96,6 +96,13 @@ def glitch_image_bool_type_validator(color_offset: bool, cycle: bool, gif: bool,
     _boolean_type_validator(argument_map=map_)
 
 
+def _validate_in_range_positive_integer(range_argument_map: dict[str, Union[int, str]], glitch_min, glitch_max):
+    for argument_name, argument in range_argument_map.items():
+        if not (isinstance(argument, (float, int)) and glitch_min <= argument <= glitch_max):
+            raise ValueError(f'{argument_name} parameter must be a positive number '
+                             f'in range {glitch_min} to {glitch_max}, inclusive')
+
+
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -227,7 +234,11 @@ class ImageGlitcher:
         glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
 
     def glitch_image_number_type_validator(self, frames, glitch_amount, glitch_change, seed, step):
-        self._validate_in_range_positive_integer(glitch_amount, glitch_change)
+        range_map = {
+            "glitch_amount": glitch_amount,
+            "glitch_change": glitch_change
+        }
+        _validate_in_range_positive_integer(range_map, self.glitch_min, self.glitch_max)
         if seed and not isinstance(seed, (float, int)):
             raise ValueError('seed parameter must be a number')
         if frames <= 0 or not isinstance(frames, int):
@@ -236,14 +247,6 @@ class ImageGlitcher:
         if step <= 0 or not isinstance(step, int):
             raise ValueError(
                 'step parameter must be a positive integer value greater than 0')
-
-    def _validate_in_range_positive_integer(self, glitch_amount, glitch_change):
-        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
-            raise ValueError('glitch_amount parameter must be a positive number '
-                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
-        if not (isinstance(glitch_change, (float, int)) and -self.glitch_max <= glitch_change <= self.glitch_max):
-            raise ValueError(
-                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
