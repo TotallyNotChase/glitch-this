@@ -100,10 +100,7 @@ class ImageGlitcher:
         glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed,
                                 step, self.glitch_min, self.glitch_max)
 
-        self.seed = seed
-        if self.seed:
-            # Set the seed if it was given
-            self.__reset_rng_seed()
+        self._set_seed(seed)
 
         try:
             # Get Image, whether input was an str path or Image object
@@ -164,6 +161,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
 
+
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
                    color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
@@ -214,10 +212,7 @@ class ImageGlitcher:
             raise Exception(
                 'Input image must be a path to a GIF or be a GIF Image object')
 
-        self.seed = seed
-        if self.seed:
-            # Set the seed if it was given
-            self.__reset_rng_seed()
+        self._set_seed(seed)
 
         try:
             # Get Image, whether input was an str path or Image object
@@ -469,3 +464,10 @@ class ImageGlitcher:
         results afterwards on non-fixed size loops
         """
         random.seed(self.seed + offset)
+
+    def _set_seed(self, seed):
+        self.seed = seed
+        if self.seed:
+            # Set the seed if it was given
+            self.__reset_rng_seed()
+
