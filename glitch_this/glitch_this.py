@@ -116,9 +116,7 @@ class ImageGlitcher:
         img = _get_image(src_img)
         self._set_image_attributes(img)
 
-        # Assigning the 3D arrays with pixel data
-        self.input_array = np.asarray(img)
-        self.output_array = np.array(img)
+        self._set_3d_arrays_with_pixel_data(img)
 
         # Glitching begins here
         if not gif:
@@ -162,6 +160,11 @@ class ImageGlitcher:
         # Cleanup
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
+
+    def _set_3d_arrays_with_pixel_data(self, img):
+        # Assigning the 3D arrays with pixel data
+        self.input_array = np.asarray(img)
+        self.output_array = np.array(img)
 
     def _set_image_attributes(self, img):
         # Fetching image attributes
