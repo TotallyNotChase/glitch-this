@@ -7,6 +7,7 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from PIL import Image, ImageSequence
 from glitch_this.exceptions import WrongImageFormatException
+from glitch_this.validators import glitch_image_validators
 
 
 def _is_gif(img: Union[str, Image.Image]) -> bool:
@@ -78,58 +79,6 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
         raise WrongImageFormatException('Wrong format')
 
 
-def _boolean_type_validator(argument_map: dict[str, bool]):
-    boolean = 'param must be a boolean'
-    for argument_name, argument in argument_map.items():
-        if not isinstance(argument, bool):
-            raise ValueError(f'{argument_name} {boolean}')
-
-
-def glitch_image_bool_type_validator(color_offset: bool, cycle: bool, gif: bool, scan_lines: bool) -> None:
-    map_ = {
-        "cycle": cycle,
-        "color_offset": color_offset,
-        "scan_lines": scan_lines,
-        "gif": gif
-    }
-
-    _boolean_type_validator(argument_map=map_)
-
-
-def _validate_in_range_positive_integer(range_argument_map: dict[str, Union[int, str]], glitch_min, glitch_max):
-    for argument_name, argument in range_argument_map.items():
-        if not (isinstance(argument, (float, int)) and glitch_min <= argument <= glitch_max):
-            raise ValueError(f'{argument_name} parameter must be a positive number '
-                             f'in range {glitch_min} to {glitch_max}, inclusive')
-
-
-def _validate_positive_integer(positive_integer_map: dict[str, int]):
-    for argument_name, argument in positive_integer_map.items():
-        if argument <= 0 or not isinstance(argument, int):
-            raise ValueError(
-                f'{argument_name} param must be a positive integer value greater than 0')
-
-
-def _validate_if_number(number_map: dict[str, Union[int, float]]):
-    for argument_name, argument in number_map.items():
-        if argument and not isinstance(argument, (float, int)):
-            raise ValueError(f'{argument_name} parameter must be a number')
-
-
-def glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step, glitch_min, glitch_max):
-    range_map = {
-        "glitch_amount": glitch_amount,
-        "glitch_change": glitch_change
-    }
-    positive_int_map = {"frames": frames, "step": step}
-    number_map = {
-        "seed": seed
-    }
-    _validate_in_range_positive_integer(range_map, glitch_min, glitch_max)
-    _validate_positive_integer(positive_int_map)
-    _validate_if_number(number_map)
-
-
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -188,8 +137,8 @@ class ImageGlitcher:
          seed: Set a random seed for generating similar images across runs,
                defaults to None (random seed).
         """
-
-        self.glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed, step)
+        glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed,
+                                step, self.glitch_min, self.glitch_max)
 
         self.seed = seed
         if self.seed:
@@ -255,12 +204,7 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
 
-    def glitch_image_validators(self, color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines,
-                                seed, step):
-        # Sanity checking the inputs
-        glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step,
-                                           self.glitch_min, self.glitch_max)
-        glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
+
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
