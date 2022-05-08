@@ -1,4 +1,15 @@
+import os
+from PIL import Image, ImageSequence
 from typing import Union
+
+
+def is_gif(img: Union[str, Image.Image]) -> bool:
+    # Returns true if input image is a GIF and/or animated
+    if isinstance(img, str):
+        if not os.path.isfile(img):
+            return False
+        img = Image.open(img)
+    return any(index >= 2 for index, _ in enumerate(ImageSequence.Iterator(img), start=1))
 
 
 def _boolean_type_validator(argument_map: dict[str, bool]):

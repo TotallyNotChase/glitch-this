@@ -7,59 +7,19 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from PIL import Image, ImageSequence
 from glitch_this.exceptions import WrongImageFormatException
-from glitch_this.validators import glitch_image_validators
-
-
-def _is_gif(img: Union[str, Image.Image]) -> bool:
-    # Returns true if input image is a GIF and/or animated
-    if isinstance(img, str):
-        if not os.path.isfile(img):
-            return False
-        img = Image.open(img)
-    return any(index >= 2 for index, _ in enumerate(ImageSequence.Iterator(img), start=1))
+from glitch_this.validators import glitch_image_validators, is_gif
+from glitch_this.converters import convert_based_on_file_format, convert_based_on_file_extension
 
 
 def _open_image_file(src: Union[str, Image.Image]) -> Optional[Image.Image]:
     if isinstance(src, str):
         try:
-            return _convert_based_on_file_extension(src)
+            return convert_based_on_file_extension(src)
         except Exception as err:
             # File is not an Image
             raise WrongImageFormatException('Wrong format') from err
     if isinstance(src, Image.Image):
-        return _convert_based_on_file_format(src)
-
-
-def _get_format_from_extension(img_path: str) -> str:
-    format_ = "RGB"
-    if img_path.endswith('.gif'):
-        format_ = "GIF"
-    elif img_path.endswith('.png'):
-        format_ = "PNG"
-    return format_
-
-
-def _convert_based_on_file_extension(img_path: str) -> Image.Image:
-    # Sanity Check if the path exists
-    if not os.path.isfile(img_path):
-        raise FileNotFoundError('Path not found')
-
-    _format_map = {
-        "GIF": lambda: Image.open(img_path),
-        "PNG": lambda: Image.open(img_path).convert('RGBA'),
-        "RGB": lambda: Image.open(img_path).convert('RGB')
-    }
-
-    return _format_map.get(_get_format_from_extension(img_path))()
-
-
-def _convert_based_on_file_format(src_img: Image.Image) -> Image.Image:
-    _format_map = {
-        "GIF": lambda: src_img,
-        "PNG": lambda: src_img.convert('RGBA'),
-    }
-
-    return _format_map.get(src_img.format, lambda: src_img.convert('RGB'))()
+        return convert_based_on_file_format(src)
 
 
 def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.Image:
@@ -69,7 +29,7 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
 
      Raises an exception if `img` param is not an Image
     """
-    if gif_allowed or (not _is_gif(src_img) or not src_img.endswith('.gif')):
+    if gif_allowed or (not is_gif(src_img) or not src_img.endswith('.gif')):
         return _open_image_file(src_img)
     else:
         # File is not an Image
@@ -204,8 +164,6 @@ class ImageGlitcher:
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
 
-
-
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
                    color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
@@ -252,7 +210,7 @@ class ImageGlitcher:
             raise ValueError('color_offset param must be a boolean')
         if not isinstance(scan_lines, bool):
             raise ValueError('scan_lines param must be a boolean')
-        if not _is_gif(src_gif):
+        if not is_gif(src_gif):
             raise Exception(
                 'Input image must be a path to a GIF or be a GIF Image object')
 
@@ -482,12 +440,15 @@ class ImageGlitcher:
         # row of output_array
         # If output_array's columns run out before input_array's does,
         # wrap the remaining values around
-        self.output_array[offset_y, offset_x:, channel_index] = self.input_array[0, :self.img_width - offset_x, channel_index]
-        self.output_array[offset_y, :offset_x, channel_index] = self.input_array[0, self.img_width - offset_x:, channel_index]
+        self.output_array[offset_y, offset_x:, channel_index] = self.input_array[0, :self.img_width - offset_x,
+                                                                channel_index]
+        self.output_array[offset_y, :offset_x, channel_index] = self.input_array[0, self.img_width - offset_x:,
+                                                                channel_index]
 
         # Continue afterwards till end of output_array
         # Make sure the width and height match for both slices
-        self.output_array[offset_y + 1:, :, channel_index] = self.input_array[1:self.img_height - offset_y, :, channel_index]
+        self.output_array[offset_y + 1:, :, channel_index] = self.input_array[1:self.img_height - offset_y, :,
+                                                             channel_index]
 
         # Restart from 0th row of output_array and go until the offset_y th row
         # This will assign the remaining values in input_array to output_array
