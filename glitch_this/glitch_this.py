@@ -137,29 +137,7 @@ class ImageGlitcher:
                defaults to None (random seed).
         """
 
-        # Sanity checking the inputs
-        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
-            raise ValueError('glitch_amount parameter must be a positive number '
-                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
-        if not (isinstance(glitch_change, (float, int)) and -self.glitch_max <= glitch_change <= self.glitch_max):
-            raise ValueError(
-                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
-        if seed and not isinstance(seed, (float, int)):
-            raise ValueError('seed parameter must be a number')
-        if frames <= 0 or not isinstance(frames, int):
-            raise ValueError(
-                'frames param must be a positive integer value greater than 0')
-        if step <= 0 or not isinstance(step, int):
-            raise ValueError(
-                'step parameter must be a positive integer value greater than 0')
-        if not isinstance(cycle, bool):
-            raise ValueError('cycle param must be a boolean')
-        if not isinstance(color_offset, bool):
-            raise ValueError('color_offset param must be a boolean')
-        if not isinstance(scan_lines, bool):
-            raise ValueError('scan_lines param must be a boolean')
-        if not isinstance(gif, bool):
-            raise ValueError('gif param must be a boolean')
+        self.glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed, step)
 
         self.seed = seed
         if self.seed:
@@ -224,6 +202,37 @@ class ImageGlitcher:
         # Cleanup
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
+
+    def glitch_image_validators(self, color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed, step):
+        # Sanity checking the inputs
+        self.glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step)
+        self.glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
+
+    def glitch_image_number_type_validator(self, frames, glitch_amount, glitch_change, seed, step):
+        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
+            raise ValueError('glitch_amount parameter must be a positive number '
+                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
+        if not (isinstance(glitch_change, (float, int)) and -self.glitch_max <= glitch_change <= self.glitch_max):
+            raise ValueError(
+                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
+        if seed and not isinstance(seed, (float, int)):
+            raise ValueError('seed parameter must be a number')
+        if frames <= 0 or not isinstance(frames, int):
+            raise ValueError(
+                'frames param must be a positive integer value greater than 0')
+        if step <= 0 or not isinstance(step, int):
+            raise ValueError(
+                'step parameter must be a positive integer value greater than 0')
+
+    def glitch_image_bool_type_validator(self, color_offset, cycle, gif, scan_lines):
+        if not isinstance(cycle, bool):
+            raise ValueError('cycle param must be a boolean')
+        if not isinstance(color_offset, bool):
+            raise ValueError('color_offset param must be a boolean')
+        if not isinstance(scan_lines, bool):
+            raise ValueError('scan_lines param must be a boolean')
+        if not isinstance(gif, bool):
+            raise ValueError('gif param must be a boolean')
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
