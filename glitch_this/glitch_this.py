@@ -1,3 +1,4 @@
+import contextlib
 import os
 import shutil
 import random
@@ -124,24 +125,23 @@ class ImageGlitcher:
             return self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
 
         # Return glitched GIF
-        # Set up directory for storing glitched images
-        if os.path.isdir(self.gif_dir_path):
-            shutil.rmtree(self.gif_dir_path)
-        os.mkdir(self.gif_dir_path)
 
-        # Set up decimal precision for glitch_change
-        original_precision = getcontext().prec
-        getcontext().prec = 4
+        with self._set_directory_for_glitched_images():
+            with self._set_decimal_precision():
+                glitched_images = self._get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change,
+                                                            img, scan_lines, step)
+        return glitched_images
 
+    def _get_glitched_images(self, color_offset, cycle, frames, glitch_amount, glitch_change, img, scan_lines, step):
         glitched_images = []
-        for i in range(frames):
+        for frame in range(frames):
             """
              * Glitch the image for n times
              * Where n is 0,1,2...frames
              * Save the image the in temp directory
              * Open the image and append a copy of it to the list
             """
-            if i % step != 0:
+            if frame % step != 0:
                 # Only every step'th frame should be glitched
                 # Other frames will be appended as they are
                 glitched_images.append(img.copy())
@@ -154,12 +154,30 @@ class ImageGlitcher:
             # Change glitch_amount by given value
             glitch_amount = self.__change_glitch(
                 glitch_amount, glitch_change, cycle)
-
-        # Set decimal precision back to original value
-        getcontext().prec = original_precision
-        # Cleanup
-        shutil.rmtree(self.gif_dir_path)
         return glitched_images
+
+    @contextlib.contextmanager
+    def _set_directory_for_glitched_images(self):
+        try:
+            # Set up directory for storing glitched images
+            if os.path.isdir(self.gif_dir_path):
+                shutil.rmtree(self.gif_dir_path)
+            os.mkdir(self.gif_dir_path)
+            yield
+        finally:
+            # Cleanup
+            shutil.rmtree(self.gif_dir_path)
+
+    @contextlib.contextmanager
+    def _set_decimal_precision(self):
+        try:
+            # Set up decimal precision for glitch_change
+            original_precision = getcontext().prec
+            getcontext().prec = 4
+            yield
+        finally:
+            # Set decimal precision back to original value
+            getcontext().prec = original_precision
 
     def _set_3d_arrays_with_pixel_data(self, img):
         # Assigning the 3D arrays with pixel data
