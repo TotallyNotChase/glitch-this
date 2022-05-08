@@ -114,10 +114,7 @@ class ImageGlitcher:
         self._set_seed(seed)
 
         img = _get_image(src_img)
-        # Fetching image attributes
-        self.pixel_tuple_len = len(img.getbands())
-        self.img_width, self.img_height = img.size
-        self.img_mode = img.mode
+        self._set_image_attributes(img)
 
         # Assigning the 3D arrays with pixel data
         self.input_array = np.asarray(img)
@@ -165,6 +162,12 @@ class ImageGlitcher:
         # Cleanup
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
+
+    def _set_image_attributes(self, img):
+        # Fetching image attributes
+        self.pixel_tuple_len = len(img.getbands())
+        self.img_width, self.img_height = img.size
+        self.img_mode = img.mode
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
