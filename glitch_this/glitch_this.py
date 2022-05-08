@@ -39,6 +39,17 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
         raise WrongImageFormatException('Wrong format')
 
 
+def _get_image(src_img):
+    try:
+        # Get Image, whether input was an str path or Image object
+        # GIF input is NOT allowed in this method
+        img = _fetch_image(src_img, gif_allowed=False)
+    except FileNotFoundError:
+        # Throw DETAILED exception here (Traceback will be present from previous exceptions)
+        raise FileNotFoundError(f'No image found at given path: {src_img}')
+    return img
+
+
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -102,13 +113,7 @@ class ImageGlitcher:
 
         self._set_seed(seed)
 
-        try:
-            # Get Image, whether input was an str path or Image object
-            # GIF input is NOT allowed in this method
-            img = _fetch_image(src_img, gif_allowed=False)
-        except FileNotFoundError:
-            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
-            raise FileNotFoundError(f'No image found at given path: {src_img}')
+        img = _get_image(src_img)
         # Fetching image attributes
         self.pixel_tuple_len = len(img.getbands())
         self.img_width, self.img_height = img.size
@@ -160,7 +165,6 @@ class ImageGlitcher:
         # Cleanup
         shutil.rmtree(self.gif_dir_path)
         return glitched_images
-
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
