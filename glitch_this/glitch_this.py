@@ -110,6 +110,12 @@ def _validate_positive_integer(positive_integer_map: dict[str, int]):
                 f'{argument_name} param must be a positive integer value greater than 0')
 
 
+def _validate_if_number(number_map: dict[str, Union[int, float]]):
+    for argument_name, argument in number_map.items():
+        if argument and not isinstance(argument, (float, int)):
+            raise ValueError(f'{argument_name} parameter must be a number')
+
+
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -249,11 +255,12 @@ class ImageGlitcher:
             "frames": frames,
             "step": step
         }
+        number_map = {
+            "seed": seed
+        }
         _validate_in_range_positive_integer(range_map, self.glitch_min, self.glitch_max)
         _validate_positive_integer(positive_int_map)
-
-        if seed and not isinstance(seed, (float, int)):
-            raise ValueError('seed parameter must be a number')
+        _validate_if_number(number_map)
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
