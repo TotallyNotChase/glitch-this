@@ -78,6 +78,24 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
         raise WrongImageFormatException('Wrong format')
 
 
+def _boolean_type_validator(argument_map: dict[str, bool]):
+    boolean = 'param must be a boolean'
+    for argument_name, argument in argument_map.items():
+        if not isinstance(argument, bool):
+            raise ValueError(f'{argument_name} {boolean}')
+
+
+def glitch_image_bool_type_validator(color_offset: bool, cycle: bool, gif: bool, scan_lines: bool) -> None:
+    map_ = {
+        "cycle": cycle,
+        "color_offset": color_offset,
+        "scan_lines": scan_lines,
+        "gif": gif
+    }
+
+    _boolean_type_validator(argument_map=map_)
+
+
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
@@ -206,7 +224,7 @@ class ImageGlitcher:
     def glitch_image_validators(self, color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed, step):
         # Sanity checking the inputs
         self.glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step)
-        self.glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
+        glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
 
     def glitch_image_number_type_validator(self, frames, glitch_amount, glitch_change, seed, step):
         if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
@@ -223,16 +241,6 @@ class ImageGlitcher:
         if step <= 0 or not isinstance(step, int):
             raise ValueError(
                 'step parameter must be a positive integer value greater than 0')
-
-    def glitch_image_bool_type_validator(self, color_offset, cycle, gif, scan_lines):
-        if not isinstance(cycle, bool):
-            raise ValueError('cycle param must be a boolean')
-        if not isinstance(color_offset, bool):
-            raise ValueError('color_offset param must be a boolean')
-        if not isinstance(scan_lines, bool):
-            raise ValueError('scan_lines param must be a boolean')
-        if not isinstance(gif, bool):
-            raise ValueError('gif param must be a boolean')
 
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
