@@ -40,11 +40,11 @@ def _fetch_image(src_img: Union[str, Image.Image], gif_allowed: bool) -> Image.I
         raise WrongImageFormatException('Wrong format')
 
 
-def _get_image(src_img):
+def _get_image(src_img, gif_allowed=False):
     try:
         # Get Image, whether input was an str path or Image object
         # GIF input is NOT allowed in this method
-        img = _fetch_image(src_img, gif_allowed=False)
+        img = _fetch_image(src_img, gif_allowed=gif_allowed)
     except FileNotFoundError:
         # Throw DETAILED exception here (Traceback will be present from previous exceptions)
         raise FileNotFoundError(f'No image found at given path: {src_img}')
@@ -121,6 +121,138 @@ class ImageGlitcher:
 
         return self._wrap_and_get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change,
                                                   img, scan_lines, step)
+
+    def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
+                   seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
+                   color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
+                   step=1) -> Tuple[List[Image.Image], float, int]:
+        """
+         Glitch each frame of input GIF
+         Returns the following:
+         * List of PngImage objects,
+         * Average duration (in centi seconds)
+           of each frame in the original GIF,
+         * Number of frames in the original GIF
+
+         NOTE: This is a time-consuming process, especially for large GIFs
+               with many frames
+         PARAMETERS:-
+         src_gif: Either the path to input Image or an Image object itself
+         glitch_amount: Level of glitch intensity, [0.1, 10.0] (inclusive)
+
+         glitch_change: Increment/Decrement in glitch_amount after every glitch
+         cycle: Whether to cycle glitch_amount back to glitch_min or glitch_max
+                if it over/underflow's
+         color_offset: Specify True if color_offset effect should be applied
+         scan_lines: Specify True if scan_lines effect should be applied
+         step: Glitch every step'th frame, defaults to 1 (i.e all frames)
+         seed: Set a random seed for generating similar images across runs,
+               defaults to None (random seed)
+        """
+
+        # Sanity checking the params
+        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
+            raise ValueError('glitch_amount parameter must be a positive number '
+                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
+        if not isinstance(glitch_change, (float, int)) or not -self.glitch_max <= glitch_change <= self.glitch_max:
+            raise ValueError(
+                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
+        if seed and not isinstance(seed, (float, int)):
+            raise ValueError('seed parameter must be a number')
+        if step <= 0 or not isinstance(step, int):
+            raise ValueError(
+                'step parameter must be a positive integer value greater than 0')
+        if not isinstance(cycle, bool):
+            raise ValueError('cycle param must be a boolean')
+        if not isinstance(color_offset, bool):
+            raise ValueError('color_offset param must be a boolean')
+        if not isinstance(scan_lines, bool):
+            raise ValueError('scan_lines param must be a boolean')
+        if not is_gif(src_gif):
+            raise Exception(
+                'Input image must be a path to a GIF or be a GIF Image object')
+
+        self._set_seed(seed)
+        gif = _get_image(src_gif, gif_allowed=True)
+
+        duration, glitched_images, i = self._wrap_and_get_glitched_gifs(color_offset, cycle, gif, glitch_amount,
+                                                                        glitch_change, scan_lines, step)
+
+        return glitched_images, duration / i, i
+
+    def _wrap_and_get_glitched_gifs(self, color_offset, cycle, gif, glitch_amount, glitch_change, scan_lines, step):
+        with self._set_directory_for_glitched_images():
+            with self._set_decimal_precision():
+                duration, glitched_images, i = self._get_glitched_gifs(color_offset, cycle, gif, glitch_amount,
+                                                                       glitch_change, scan_lines, step)
+        return duration, glitched_images, i
+
+    def _get_glitched_gifs(self, color_offset, cycle, gif, glitch_amount, glitch_change, scan_lines, step):
+        i = 0
+        duration = 0
+        glitched_images = []
+        duration, i = self._glitch_over_gif_frames(color_offset, cycle, duration, gif, glitch_amount, glitch_change,
+                                                   glitched_images, i, scan_lines, step)
+        return duration, glitched_images, i
+
+    def _glitch_over_gif_frames(self, color_offset, cycle, duration, gif, glitch_amount, glitch_change, glitched_images,
+                                i, scan_lines, step):
+        for frame in ImageSequence.Iterator(gif):
+            """
+             * Save each frame in the temp directory (always png)
+             * Glitch the saved image
+             * Save the glitched image in temp directory
+             * Open the image and append a copy of it to the list
+            """
+            duration, src_frame_path = self._get_frame_src_path_and_duration(duration, frame)
+            if i % step != 0:
+                # Only every step'th frame should be glitched
+                # Other frames will be appended as they are
+                glitched_images.append(Image.open(src_frame_path).copy())
+                i += 1
+                continue
+            glitch_amount = self._save_glitched_gifs_and_change_glitch_amount(color_offset, cycle, glitch_amount,
+                                                                              glitch_change,
+                                                                              glitched_images, scan_lines,
+                                                                              src_frame_path)
+            i += 1
+        return duration, i
+
+    def _get_frame_src_path_and_duration(self, duration, frame):
+        duration = self._set_frame_duration(duration, frame)
+        src_frame_path = self._save_frame(frame)
+        return duration, src_frame_path
+
+    def _save_glitched_gifs_and_change_glitch_amount(self, color_offset, cycle, glitch_amount, glitch_change,
+                                                     glitched_images, scan_lines, src_frame_path):
+        self._save_glitched_gifs(color_offset, glitch_amount, glitched_images, scan_lines, src_frame_path)
+        # Change glitch_amount by given value
+        return self.__change_glitch(
+            glitch_amount, glitch_change, cycle)
+
+    def _save_glitched_gifs(self, color_offset, glitch_amount, glitched_images, scan_lines, src_frame_path):
+        glitched_img: Image.Image = self.glitch_image(src_frame_path, glitch_amount,
+                                                      color_offset=color_offset, scan_lines=scan_lines)
+        file_path = os.path.join(self.gif_dir_path, 'glitched_frame.png')
+        glitched_img.save(file_path, compress_level=3)
+        glitched_images.append(Image.open(file_path).copy())
+
+    def _save_frame(self, frame):
+        src_frame_path = os.path.join(self.gif_dir_path, 'frame.png')
+        frame.save(src_frame_path, compress_level=3)
+        return src_frame_path
+
+    def _set_frame_duration(self, duration, frame):
+        try:
+            duration += frame.info['duration']
+        except KeyError as e:
+            # Override error message to provide more info
+            e.args = (
+                'The key "duration" does not exist in frame.'
+                'This means PIL(pillow) could not extract necessary information from the input image',
+            )
+            raise
+        return duration
 
     def _set_arrays_and_image_attributes(self, src_img):
         img = _get_image(src_img)
@@ -206,117 +338,6 @@ class ImageGlitcher:
         self.pixel_tuple_len = len(img.getbands())
         self.img_width, self.img_height = img.size
         self.img_mode = img.mode
-
-    def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
-                   seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
-                   color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
-                   step=1) -> Tuple[List[Image.Image], float, int]:
-        """
-         Glitch each frame of input GIF
-         Returns the following:
-         * List of PngImage objects,
-         * Average duration (in centi seconds)
-           of each frame in the original GIF,
-         * Number of frames in the original GIF
-
-         NOTE: This is a time-consuming process, especially for large GIFs
-               with many frames
-         PARAMETERS:-
-         src_gif: Either the path to input Image or an Image object itself
-         glitch_amount: Level of glitch intensity, [0.1, 10.0] (inclusive)
-
-         glitch_change: Increment/Decrement in glitch_amount after every glitch
-         cycle: Whether to cycle glitch_amount back to glitch_min or glitch_max
-                if it over/underflow's
-         color_offset: Specify True if color_offset effect should be applied
-         scan_lines: Specify True if scan_lines effect should be applied
-         step: Glitch every step'th frame, defaults to 1 (i.e all frames)
-         seed: Set a random seed for generating similar images across runs,
-               defaults to None (random seed)
-        """
-
-        # Sanity checking the params
-        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
-            raise ValueError('glitch_amount parameter must be a positive number '
-                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
-        if not isinstance(glitch_change, (float, int)) or not -self.glitch_max <= glitch_change <= self.glitch_max:
-            raise ValueError(
-                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
-        if seed and not isinstance(seed, (float, int)):
-            raise ValueError('seed parameter must be a number')
-        if step <= 0 or not isinstance(step, int):
-            raise ValueError(
-                'step parameter must be a positive integer value greater than 0')
-        if not isinstance(cycle, bool):
-            raise ValueError('cycle param must be a boolean')
-        if not isinstance(color_offset, bool):
-            raise ValueError('color_offset param must be a boolean')
-        if not isinstance(scan_lines, bool):
-            raise ValueError('scan_lines param must be a boolean')
-        if not is_gif(src_gif):
-            raise Exception(
-                'Input image must be a path to a GIF or be a GIF Image object')
-
-        self._set_seed(seed)
-
-        try:
-            # Get Image, whether input was an str path or Image object
-            # GIF input is allowed in this method
-            gif = _fetch_image(src_gif, gif_allowed=True)
-        except FileNotFoundError:
-            # Throw DETAILED exception here (Traceback will be present from previous exceptions)
-            raise FileNotFoundError(f'No image found at given path: {src_gif}')
-        # Set up directory for storing glitched images
-        if os.path.isdir(self.gif_dir_path):
-            shutil.rmtree(self.gif_dir_path)
-        os.mkdir(self.gif_dir_path)
-
-        # Set up decimal precision for glitch_change
-        original_precision = getcontext().prec
-        getcontext().prec = 4
-
-        i = 0
-        duration = 0
-        glitched_images = []
-        for frame in ImageSequence.Iterator(gif):
-            """
-             * Save each frame in the temp directory (always png)
-             * Glitch the saved image
-             * Save the glitched image in temp directory
-             * Open the image and append a copy of it to the list
-            """
-            try:
-                duration += frame.info['duration']
-            except KeyError as e:
-                # Override error message to provide more info
-                e.args = (
-                    'The key "duration" does not exist in frame.'
-                    'This means PIL(pillow) could not extract necessary information from the input image',
-                )
-                raise
-            src_frame_path = os.path.join(self.gif_dir_path, 'frame.png')
-            frame.save(src_frame_path, compress_level=3)
-            if i % step != 0:
-                # Only every step'th frame should be glitched
-                # Other frames will be appended as they are
-                glitched_images.append(Image.open(src_frame_path).copy())
-                i += 1
-                continue
-            glitched_img: Image.Image = self.glitch_image(src_frame_path, glitch_amount,
-                                                          color_offset=color_offset, scan_lines=scan_lines)
-            file_path = os.path.join(self.gif_dir_path, 'glitched_frame.png')
-            glitched_img.save(file_path, compress_level=3)
-            glitched_images.append(Image.open(file_path).copy())
-            # Change glitch_amount by given value
-            glitch_amount = self.__change_glitch(
-                glitch_amount, glitch_change, cycle)
-            i += 1
-
-        # Set decimal precision back to original value
-        getcontext().prec = original_precision
-        # Cleanup
-        shutil.rmtree(self.gif_dir_path)
-        return glitched_images, duration / i, i
 
     def __change_glitch(self, glitch_amount: Union[int, float], glitch_change: Union[int, float], cycle: bool) -> float:
         # A function to change glitch_amount by given increment/decrement
@@ -533,4 +554,3 @@ class ImageGlitcher:
         if self.seed:
             # Set the seed if it was given
             self.__reset_rng_seed()
-
