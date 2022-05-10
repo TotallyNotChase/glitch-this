@@ -119,7 +119,8 @@ class ImageGlitcher:
             # Return glitched image
             return self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
 
-        return self._wrap_and_get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change, img, scan_lines, step)
+        return self._wrap_and_get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change,
+                                                  img, scan_lines, step)
 
     def _set_arrays_and_image_attributes(self, src_img):
         img = _get_image(src_img)
@@ -138,6 +139,12 @@ class ImageGlitcher:
 
     def _get_glitched_images(self, color_offset, cycle, frames, glitch_amount, glitch_change, img, scan_lines, step):
         glitched_images = []
+        self._glitch_over_frames(color_offset, cycle, frames, glitch_amount, glitch_change, glitched_images, img,
+                                 scan_lines, step)
+        return glitched_images
+
+    def _glitch_over_frames(self, color_offset, cycle, frames, glitch_amount, glitch_change, glitched_images, img,
+                            scan_lines, step):
         for frame in range(frames):
             """
              * Glitch the image for n times
@@ -150,15 +157,21 @@ class ImageGlitcher:
                 # Other frames will be appended as they are
                 glitched_images.append(img.copy())
                 continue
-            glitched_img = self.__get_glitched_img(
-                glitch_amount, color_offset, scan_lines)
-            file_path = os.path.join(self.gif_dir_path, 'glitched_frame.png')
-            glitched_img.save(file_path, compress_level=3)
-            glitched_images.append(Image.open(file_path).copy())
-            # Change glitch_amount by given value
-            glitch_amount = self.__change_glitch(
-                glitch_amount, glitch_change, cycle)
-        return glitched_images
+            glitch_amount = self._save_and_change_glitch(color_offset, cycle, glitch_amount, glitch_change,
+                                                         glitched_images, scan_lines)
+
+    def _save_and_change_glitch(self, color_offset, cycle, glitch_amount, glitch_change, glitched_images, scan_lines):
+        self._save_glitched_images(color_offset, glitch_amount, glitched_images, scan_lines)
+        # Change glitch_amount by given value
+        return self.__change_glitch(
+            glitch_amount, glitch_change, cycle)
+
+    def _save_glitched_images(self, color_offset, glitch_amount, glitched_images, scan_lines):
+        glitched_img = self.__get_glitched_img(
+            glitch_amount, color_offset, scan_lines)
+        file_path = os.path.join(self.gif_dir_path, 'glitched_frame.png')
+        glitched_img.save(file_path, compress_level=3)
+        glitched_images.append(Image.open(file_path).copy())
 
     @contextlib.contextmanager
     def _set_directory_for_glitched_images(self):
