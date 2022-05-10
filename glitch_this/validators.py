@@ -1,6 +1,7 @@
+import functools
 import os
 from PIL import Image, ImageSequence
-from typing import Union
+from typing import Union, Optional
 
 
 def is_gif(img: Union[str, Image.Image]) -> bool:
@@ -62,9 +63,21 @@ def _glitch_image_number_type_validator(frames, glitch_amount, glitch_change, se
     _is_number(number_map)
 
 
-def glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines,
-                            seed, step, glitch_min, glitch_max):
+def glitch_image_validators(self, src_img: Union[str, Image.Image], glitch_amount: Union[int, float],
+                            seed: Optional[Union[int, float]] = None, glitch_change: Union[int, float] = 0.0,
+                            color_offset: bool = False, scan_lines: bool = False, gif: bool = False,
+                            cycle: bool = False,
+                            frames: int = 23, step: int = 1):
     # Sanity checking the inputs
     _glitch_image_number_type_validator(frames, glitch_amount, glitch_change, seed, step,
-                                        glitch_min, glitch_max)
+                                        self.glitch_min, self.glitch_max)
     _glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
+
+
+def validate_images(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        glitch_image_validators(*args, **kwargs)
+        return func(*args, **kwargs)
+
+    return wrapper

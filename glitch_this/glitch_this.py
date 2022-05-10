@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from PIL import Image, ImageSequence
 from glitch_this.exceptions import WrongImageFormatException
-from glitch_this.validators import glitch_image_validators, is_gif
+from glitch_this.validators import glitch_image_validators, is_gif, validate_images
 from glitch_this.converters import convert_based_on_file_format, convert_based_on_file_extension
 
 
@@ -74,6 +74,7 @@ class ImageGlitcher:
         self.glitch_max = 10.0
         self.glitch_min = 0.1
 
+    @validate_images
     def glitch_image(self, src_img: Union[str, Image.Image], glitch_amount: Union[int, float],
                      seed: Optional[Union[int, float]] = None, glitch_change: Union[int, float] = 0.0,
                      color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
@@ -109,23 +110,26 @@ class ImageGlitcher:
          seed: Set a random seed for generating similar images across runs,
                defaults to None (random seed).
         """
-        glitch_image_validators(color_offset, cycle, frames, gif, glitch_amount, glitch_change, scan_lines, seed,
-                                step, self.glitch_min, self.glitch_max)
-
         self._set_seed(seed)
 
-        img = _get_image(src_img)
-        self._set_image_attributes(img)
-
-        self._set_3d_arrays_with_pixel_data(img)
+        img = self._set_arrays_and_image_attributes(src_img)
 
         # Glitching begins here
         if not gif:
             # Return glitched image
             return self.__get_glitched_img(glitch_amount, color_offset, scan_lines)
 
-        # Return glitched GIF
+        return self._wrap_and_get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change, img, scan_lines, step)
 
+    def _set_arrays_and_image_attributes(self, src_img):
+        img = _get_image(src_img)
+        self._set_image_attributes(img)
+        self._set_3d_arrays_with_pixel_data(img)
+        return img
+
+    def _wrap_and_get_glitched_images(self, color_offset, cycle, frames, glitch_amount, glitch_change, img, scan_lines,
+                                      step):
+        # Return glitched GIF
         with self._set_directory_for_glitched_images():
             with self._set_decimal_precision():
                 glitched_images = self._get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change,
