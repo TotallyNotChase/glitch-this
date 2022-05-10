@@ -321,7 +321,11 @@ class ImageGlitcher:
     def __change_glitch(self, glitch_amount: Union[int, float], glitch_change: Union[int, float], cycle: bool) -> float:
         # A function to change glitch_amount by given increment/decrement
         glitch_amount = float(Decimal(glitch_amount) + Decimal(glitch_change))
-        # glitch_amount must be between glith_min and glitch_max
+        # glitch_amount must be between glitch_min and glitch_max
+        glitch_amount = self._set_glitch_amount(cycle, glitch_amount)
+        return glitch_amount
+
+    def _set_glitch_amount(self, cycle, glitch_amount):
         if glitch_amount < self.glitch_min:
             # If it's less, it will be cycled back to max when cycle=True
             # Otherwise, it'll stay at the least possible value -> glitch_min
@@ -413,21 +417,39 @@ class ImageGlitcher:
          now it'd look like [[1, 2, 3, 0]]
          That's the end result!
         """
-        # Setting up values that will determine the rectangle height
-        start_y = random.randint(0, self.img_height)
-        chunk_height = random.randint(1, int(self.img_height / 4))
-        chunk_height = min(chunk_height, self.img_height - start_y)
-        stop_y = start_y + chunk_height
+        start_y, stop_y = self._determine_rectangle_height()
 
+        start_x, stop_x = self._determine_rectangle_width(offset)
+
+        self._set_output_array_with_left_chunk(start_x, start_y, stop_x, stop_y)
+
+    def _set_output_array_with_left_chunk(self, start_x, start_y, stop_x, stop_y):
+        left_chunk = self.input_array[start_y:stop_y, start_x:]
+        wrap_chunk = self.input_array[start_y:stop_y, :start_x]
+        self.output_array[start_y:stop_y, :stop_x] = left_chunk
+        self.output_array[start_y:stop_y, stop_x:] = wrap_chunk
+
+    def _determine_rectangle_width(self, offset, swap=None):
         # For copy
         start_x = offset
         # For paste
         stop_x = self.img_width - start_x
 
-        left_chunk = self.input_array[start_y:stop_y, start_x:]
-        wrap_chunk = self.input_array[start_y:stop_y, :start_x]
-        self.output_array[start_y:stop_y, :stop_x] = left_chunk
-        self.output_array[start_y:stop_y, stop_x:] = wrap_chunk
+        if swap:
+            # For copy
+            stop_x = self.img_width - offset
+            # For paste
+            start_x = offset
+
+        return start_x, stop_x
+
+    def _determine_rectangle_height(self):
+        # Setting up values that will determine the rectangle height
+        start_y = random.randint(0, self.img_height)
+        chunk_height = random.randint(1, int(self.img_height / 4))
+        chunk_height = min(chunk_height, self.img_height - start_y)
+        stop_y = start_y + chunk_height
+        return start_y, stop_y
 
     def __glitch_right(self, offset: int):
         """
@@ -449,17 +471,13 @@ class ImageGlitcher:
          now it'd look like [[3, 0, 1, 2]]
          That's the end result!
         """
-        # Setting up values that will determine the rectangle height
-        start_y = random.randint(0, self.img_height)
-        chunk_height = random.randint(1, int(self.img_height / 4))
-        chunk_height = min(chunk_height, self.img_height - start_y)
-        stop_y = start_y + chunk_height
+        start_y, stop_y = self._determine_rectangle_height()
 
-        # For copy
-        stop_x = self.img_width - offset
-        # For paste
-        start_x = offset
+        start_x, stop_x = self._determine_rectangle_width(offset, swap=True)
 
+        self._set_output_array_with_right_chunk(start_x, start_y, stop_x, stop_y)
+
+    def _set_output_array_with_right_chunk(self, start_x, start_y, stop_x, stop_y):
         right_chunk = self.input_array[start_y:stop_y, :stop_x]
         wrap_chunk = self.input_array[start_y:stop_y, stop_x:]
         self.output_array[start_y:stop_y, start_x:] = right_chunk
