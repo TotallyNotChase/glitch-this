@@ -1,5 +1,10 @@
-class BaseException(Exception):
+class BaseCustomException(Exception):
     pass
 
-class WrongImageFormatException(BaseException):
+
+class WrongImageFormatException(BaseCustomException):
+    pass
+
+
+class ValidGIFNotFoundException(BaseCustomException):
     pass

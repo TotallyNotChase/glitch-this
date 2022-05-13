@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from PIL import Image, ImageSequence
 from glitch_this.exceptions import WrongImageFormatException
-from glitch_this.validators import glitch_image_validators, is_gif, validate_images
+from glitch_this.validators import validate_images, validate_gifs, is_gif
 from glitch_this.converters import convert_based_on_file_format, convert_based_on_file_extension
 
 
@@ -49,6 +49,19 @@ def _get_image(src_img, gif_allowed=False):
         # Throw DETAILED exception here (Traceback will be present from previous exceptions)
         raise FileNotFoundError(f'No image found at given path: {src_img}')
     return img
+
+
+def _set_frame_duration(duration, frame):
+    try:
+        duration += frame.info['duration']
+    except KeyError as e:
+        # Override error message to provide more info
+        e.args = (
+            'The key "duration" does not exist in frame.'
+            'This means PIL(pillow) could not extract necessary information from the input image',
+        )
+        raise
+    return duration
 
 
 class ImageGlitcher:
@@ -122,6 +135,7 @@ class ImageGlitcher:
         return self._wrap_and_get_glitched_images(color_offset, cycle, frames, glitch_amount, glitch_change,
                                                   img, scan_lines, step)
 
+    @validate_gifs
     def glitch_gif(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
                    seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
                    color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False,
@@ -149,28 +163,6 @@ class ImageGlitcher:
          seed: Set a random seed for generating similar images across runs,
                defaults to None (random seed)
         """
-
-        # Sanity checking the params
-        if not (isinstance(glitch_amount, (float, int)) and self.glitch_min <= glitch_amount <= self.glitch_max):
-            raise ValueError('glitch_amount parameter must be a positive number '
-                             f'in range {self.glitch_min} to {self.glitch_max}, inclusive')
-        if not isinstance(glitch_change, (float, int)) or not -self.glitch_max <= glitch_change <= self.glitch_max:
-            raise ValueError(
-                f'glitch_change parameter must be a number between {-self.glitch_max} and {self.glitch_max}, inclusive')
-        if seed and not isinstance(seed, (float, int)):
-            raise ValueError('seed parameter must be a number')
-        if step <= 0 or not isinstance(step, int):
-            raise ValueError(
-                'step parameter must be a positive integer value greater than 0')
-        if not isinstance(cycle, bool):
-            raise ValueError('cycle param must be a boolean')
-        if not isinstance(color_offset, bool):
-            raise ValueError('color_offset param must be a boolean')
-        if not isinstance(scan_lines, bool):
-            raise ValueError('scan_lines param must be a boolean')
-        if not is_gif(src_gif):
-            raise Exception(
-                'Input image must be a path to a GIF or be a GIF Image object')
 
         self._set_seed(seed)
         gif = _get_image(src_gif, gif_allowed=True)
@@ -219,7 +211,7 @@ class ImageGlitcher:
         return duration, i
 
     def _get_frame_src_path_and_duration(self, duration, frame):
-        duration = self._set_frame_duration(duration, frame)
+        duration = _set_frame_duration(duration, frame)
         src_frame_path = self._save_frame(frame)
         return duration, src_frame_path
 
@@ -241,18 +233,6 @@ class ImageGlitcher:
         src_frame_path = os.path.join(self.gif_dir_path, 'frame.png')
         frame.save(src_frame_path, compress_level=3)
         return src_frame_path
-
-    def _set_frame_duration(self, duration, frame):
-        try:
-            duration += frame.info['duration']
-        except KeyError as e:
-            # Override error message to provide more info
-            e.args = (
-                'The key "duration" does not exist in frame.'
-                'This means PIL(pillow) could not extract necessary information from the input image',
-            )
-            raise
-        return duration
 
     def _set_arrays_and_image_attributes(self, src_img):
         img = _get_image(src_img)

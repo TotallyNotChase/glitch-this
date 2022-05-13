@@ -2,6 +2,7 @@ import functools
 import os
 from PIL import Image, ImageSequence
 from typing import Union, Optional
+from glitch_this.exceptions import ValidGIFNotFoundException
 
 
 def is_gif(img: Union[str, Image.Image]) -> bool:
@@ -74,10 +75,45 @@ def glitch_image_validators(self, src_img: Union[str, Image.Image], glitch_amoun
     _glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
 
 
+def _glitch_gif_image_number_type_validator(glitch_amount, glitch_change, seed, step, glitch_min, glitch_max):
+    positive_int_map = {
+        "step": step
+    }
+    number_map = {
+        "seed": seed
+    }
+    _is_in_range_positive_integer(glitch_amount, glitch_change, glitch_min, glitch_max)
+    _is_positive_integer(positive_int_map)
+    _is_number(number_map)
+
+
+def glitch_gif_image_validators(self, src_gif: Union[str, Image.Image], glitch_amount: Union[int, float],
+                                seed: Union[int, float] = None, glitch_change: Union[int, float] = 0.0,
+                                color_offset: bool = False, scan_lines: bool = False, gif: bool = False,
+                                cycle: bool = False,
+                                step=1):
+    _glitch_gif_image_number_type_validator(glitch_amount, glitch_change, seed, step,
+                                            self.glitch_min, self.glitch_max)
+    _glitch_image_bool_type_validator(color_offset, cycle, gif, scan_lines)
+
+    if not is_gif(src_gif):
+        raise ValidGIFNotFoundException(
+            'Input image must be a path to a GIF or be a GIF Image object')
+
+
 def validate_images(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         glitch_image_validators(*args, **kwargs)
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def validate_gifs(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        glitch_gif_image_validators(*args, **kwargs)
         return func(*args, **kwargs)
 
     return wrapper
