@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 import os
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from time import time
+from time import time, perf_counter
 from typing import Dict
 
 from glitch_this import ImageGlitcher
@@ -86,39 +87,34 @@ def main():
     glitcher = ImageGlitcher()
     global version_filepath
     version_filepath = os.path.join(glitcher.lib_path, 'version.info')
-    t0 = time()
-    if not args.input_gif:
-        # Get glitched image or GIF (from image)
-        glitch_img = glitcher.glitch_image(args.src_img_path, args.glitch_level,
-                                           glitch_change=args.increment,
-                                           cycle=args.cycle,
-                                           scan_lines=args.scan_lines,
-                                           color_offset=args.color,
-                                           seed=args.seed,
-                                           gif=args.gif,
-                                           frames=args.frames,
-                                           step=args.step)
-    else:
-        # Get glitched image or GIF (from GIF)
-        glitch_img, src_duration, args.frames = glitcher.glitch_gif(args.src_img_path, args.glitch_level,
-                                                                    glitch_change=args.increment,
-                                                                    cycle=args.cycle,
-                                                                    scan_lines=args.scan_lines,
-                                                                    color_offset=args.color,
-                                                                    seed=args.seed,
-                                                                    step=args.step)
-        # Set args.gif to true if it isn't already in this case
-        args.gif = True
-        # Set args.duration to src_duration * relative duration, if one was given
-        args.duration = int(args.rel_duration * src_duration) if args.rel_duration else args.duration
 
-    t1 = time()
-    # End of glitching
-    t2 = time()
-    # Save the image
+    with _catch_time() as glitch_time:
+        glitch_img = _glitch_gif_or_image(args, glitcher)
+    glitch_time_ = glitch_time()
+
+    with _catch_time() as save_time:
+        _save_gif_or_image(args, full_path, glitch_img)
+    save_time_ = save_time()
+
+    _show_time_stats(glitch_time_, save_time_)
+    _inform_about_new_version(current_version)
+
+
+@contextmanager
+def _catch_time():
+    start = time()
+    yield lambda: time() - start
+
+
+def _show_time_stats(glitch_time, save_time):
+    print(f'Time taken to glitch: {glitch_time}')
+    print(f'Time taken to save: {save_time}')
+    print(f'Total Time taken: {save_time + glitch_time}')
+
+
+def _save_gif_or_image(args, full_path, glitch_img):
     if not args.gif:
         glitch_img.save(full_path, compress_level=3)
-        t3 = time()
         print(f'Glitched Image saved in "{full_path}"')
     else:
         glitch_img[0].save(full_path,
@@ -128,14 +124,42 @@ def main():
                            duration=args.duration,
                            loop=args.loop,
                            compress_level=3)
-        t3 = time()
         print(
             f'Glitched GIF saved in "{full_path}"\nFrames = {args.frames}, Duration = {args.duration}, Loop = {args.loop}')
-    print(f'Time taken to glitch: {t1 - t0}')
-    print(f'Time taken to save: {t3 - t2}')
-    print(f'Total Time taken: {t3 - t0}')
 
-    _inform_about_new_version(current_version)
+
+def _glitch_gif_or_image(args, glitcher):
+    if not args.input_gif:
+        # Get glitched image or GIF (from image)
+        glitch_img = glitcher.glitch_image(src_img=args.src_img_path,
+                                           glitch_amount=args.glitch_level,
+                                           seed=args.seed,
+                                           glitch_change=args.increment,
+                                           color_offset=args.color,
+                                           scan_lines=args.scan_lines,
+                                           gif=args.gif,
+                                           cycle=args.cycle,
+                                           frames=args.frames,
+                                           step=args.step)
+    else:
+        # Get glitched image or GIF (from GIF)
+        glitch_img, src_duration, args.frames = glitcher.glitch_gif(args.src_img_path,
+                                                                    args.glitch_level,
+                                                                    glitch_change=args.increment,
+                                                                    cycle=args.cycle,
+                                                                    scan_lines=args.scan_lines,
+                                                                    color_offset=args.color,
+                                                                    seed=args.seed,
+                                                                    step=args.step)
+        _set_args_gif_and_duration(args, src_duration)
+    return glitch_img
+
+
+def _set_args_gif_and_duration(args, src_duration):
+    # Set args.gif to true if it isn't already in this case
+    args.gif = True
+    # Set args.duration to src_duration * relative duration, if one was given
+    args.duration = int(args.rel_duration * src_duration) if args.rel_duration else args.duration
 
 
 def _inform_about_new_version(current_version):
