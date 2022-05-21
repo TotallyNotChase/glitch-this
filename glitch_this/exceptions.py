@@ -8,3 +8,15 @@ class WrongImageFormatException(BaseCustomException):
 
 class ValidGIFNotFoundException(BaseCustomException):
     pass
+
+
+class BaseCLICustomException(Exception):
+    pass
+
+
+class OutFileNotFoundException(BaseCLICustomException):
+    pass
+
+
+class CanNotOverwriteUntilForceIsProvided(BaseCLICustomException):
+    pass

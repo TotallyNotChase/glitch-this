@@ -7,6 +7,7 @@ from time import time
 from typing import Dict
 
 from glitch_this import ImageGlitcher
+from glitch_this.exceptions import OutFileNotFoundException, CanNotOverwriteUntilForceIsProvided
 
 
 def read_version() -> str:
@@ -134,6 +135,10 @@ def main():
     print(f'Time taken to save: {t3 - t2}')
     print(f'Total Time taken: {t3 - t0}')
 
+    _inform_about_new_version(current_version)
+
+
+def _inform_about_new_version(current_version):
     # Let the user know if new version is available
     if not is_latest(current_version):
         print(
@@ -153,14 +158,14 @@ def _handle_out_path_and_out_file(args):
         # Overwrite the previous values
         out_path, out_file = os.path.split(Path(args.outfile))
         if out_path != '' and not os.path.exists(out_path):
-            raise Exception(f'Given outfile path, {out_path}, does not exist')
+            raise OutFileNotFoundException(f'Given outfile path, {out_path}, does not exist')
         # The extension in user provided outfile path is ignored
         out_filename = out_file.rsplit('.', 1)[0]
     # Now create the full path
     full_path = os.path.join(out_path, f'{out_filename}.{out_file_extension}')
     if os.path.exists(full_path) and not args.force:
-        raise Exception(f'{full_path} already exists\nCannot overwrite '
-                        f'existing file unless -f or --force is included\nProgram Aborted')
+        raise CanNotOverwriteUntilForceIsProvided(f'{full_path} already exists\nCannot overwrite '
+                                                  f'existing file unless -f or --force is included\nProgram Aborted')
     return full_path
 
 
@@ -218,8 +223,7 @@ def _add_cli_arguments(current_version, help_text):
                            help=help_text['loop'])
     argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
                            help=help_text['out'])
-    args = argparser.parse_args()
-    return args
+    return argparser.parse_args()
 
 
 if __name__ == '__main__':
