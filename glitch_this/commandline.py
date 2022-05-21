@@ -11,13 +11,13 @@ from glitch_this import ImageGlitcher
 from glitch_this.exceptions import OutFileNotFoundException, CanNotOverwriteUntilForceIsProvided
 
 
-def read_version() -> str:
+def _read_version() -> str:
     with open(version_filepath, 'r') as version_file:
         content = version_file.read()
     return content.strip()
 
 
-def write_version(version: str):
+def _write_version(version: str):
     with open(version_filepath, 'w') as version_file:
         version_file.write(version + '\n')
 
@@ -35,7 +35,7 @@ def is_latest(version: str) -> bool:
     import json
     if os.path.isfile(version_filepath) and not is_expired(version_filepath):
         # If a version log already exists, and it's not more than 14 days old
-        latest_version = read_version()
+        latest_version = _read_version()
     else:
         # Either version log does not exist or is outdated
         try:
@@ -47,13 +47,13 @@ def is_latest(version: str) -> bool:
             return True
         data = json.loads(contents)
         latest_version = data['info']['version']
-        write_version(latest_version)
+        _write_version(latest_version)
 
     print(f'Current version: {version} | Latest version: {latest_version}')
     return version == latest_version
 
 
-def get_help(glitch_min: float, glitch_max: float) -> Dict:
+def _get_help(glitch_min: float, glitch_max: float) -> Dict[str, str]:
     return {
         'path': 'Relative or Absolute string path to source image',
         'level': f'Number between {glitch_min} and {glitch_max}, inclusive, representing amount of glitchiness',
@@ -74,30 +74,23 @@ def get_help(glitch_min: float, glitch_max: float) -> Dict:
     }
 
 
-def main():
-    glitch_min, glitch_max = 0.1, 10.0
-    current_version = ImageGlitcher.__version__
-    help_text = get_help(glitch_min, glitch_max)
+def _add_and_validate_cli_args(current_version, help_text):
     args = _add_cli_arguments(current_version, help_text)
     _validate_cli_arguments(args)
+    return args
 
-    full_path = _handle_out_path_and_out_file(args)
 
-    # Actual work begins here
-    glitcher = ImageGlitcher()
-    global version_filepath
-    version_filepath = os.path.join(glitcher.lib_path, 'version.info')
+def _save_gif_or_image_and_get_time(args, full_path, glitch_img):
+    with _catch_time() as save_time:
+        _save_gif_or_image(args, full_path, glitch_img)
+    return save_time()
 
+
+def _execute_glitch_gif_or_image_and_get_time(args, glitcher):
     with _catch_time() as glitch_time:
         glitch_img = _glitch_gif_or_image(args, glitcher)
     glitch_time_ = glitch_time()
-
-    with _catch_time() as save_time:
-        _save_gif_or_image(args, full_path, glitch_img)
-    save_time_ = save_time()
-
-    _show_time_stats(glitch_time_, save_time_)
-    _inform_about_new_version(current_version)
+    return glitch_img, glitch_time_
 
 
 @contextmanager
@@ -248,6 +241,27 @@ def _add_cli_arguments(current_version, help_text):
     argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
                            help=help_text['out'])
     return argparser.parse_args()
+
+
+def main():
+    glitch_min, glitch_max = 0.1, 10.0
+    current_version = ImageGlitcher.__version__
+    help_text = _get_help(glitch_min, glitch_max)
+    args = _add_and_validate_cli_args(current_version, help_text)
+
+    full_path = _handle_out_path_and_out_file(args)
+
+    # Actual work begins here
+    glitcher = ImageGlitcher()
+    global version_filepath
+    version_filepath = os.path.join(glitcher.lib_path, 'version.info')
+
+    glitch_img, glitch_time_ = _execute_glitch_gif_or_image_and_get_time(args, glitcher)
+
+    save_time_ = _save_gif_or_image_and_get_time(args, full_path, glitch_img)
+
+    _show_time_stats(glitch_time_, save_time_)
+    _inform_about_new_version(current_version)
 
 
 if __name__ == '__main__':
