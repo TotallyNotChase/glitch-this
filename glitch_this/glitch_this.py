@@ -1,8 +1,8 @@
 import os
-import shutil
 import random
-from decimal import getcontext, Decimal
-from typing import List, Optional, Tuple, Union
+import shutil
+from decimal import Decimal, getcontext
+from typing import List, Literal, Optional, Tuple, Union, overload
 
 import numpy as np
 from PIL import Image, ImageSequence
@@ -106,6 +106,16 @@ class ImageGlitcher:
             # Raise the GENERIC exception here
             raise Exception('Wrong format')
         return img
+
+    @overload
+    def glitch_image(self, src_img: Union[str, Image.Image], glitch_amount: Union[int, float], seed: Optional[Union[int, float]] = None, glitch_change: Union[int, float] = 0.0,
+                     color_offset: bool = False, scan_lines: bool = False, gif: Literal[False] = False, cycle: bool = False, frames: int = 23, step: int = 1) -> Image.Image:
+        ...
+
+    @overload
+    def glitch_image(self, src_img: Union[str, Image.Image], glitch_amount: Union[int, float], seed: Optional[Union[int, float]] = None, glitch_change: Union[int, float] = 0.0,
+                     color_offset: bool = False, scan_lines: bool = False, gif: Literal[True] = False, cycle: bool = False, frames: int = 23, step: int = 1) -> List[Image.Image]: # type: ignore
+        ...
 
     def glitch_image(self, src_img: Union[str, Image.Image], glitch_amount: Union[int, float], seed: Optional[Union[int, float]] = None, glitch_change: Union[int, float] = 0.0,
                      color_offset: bool = False, scan_lines: bool = False, gif: bool = False, cycle: bool = False, frames: int = 23, step: int = 1) -> Union[Image.Image, List[Image.Image]]:
