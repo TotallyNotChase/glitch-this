@@ -11,7 +11,7 @@ from PIL import Image, ImageSequence
 class ImageGlitcher:
     # Handles Image/GIF Glitching Operations
 
-    __version__ = '1.0.2'
+    __version__ = '1.0.3'
 
     def __init__(self):
         # Setting up global variables needed for glitching
@@ -570,7 +570,7 @@ class ImageGlitcher:
         Calls random.seed() with self.seed variable
 
         offset is for looping and getting new positions for each iteration that cointains the
-        previous one, otherwise we would get the same position on every loop and different 
+        previous one, otherwise we would get the same position on every loop and different
         results afterwards on non fixed size loops
         """
         random.seed(self.seed + offset)
