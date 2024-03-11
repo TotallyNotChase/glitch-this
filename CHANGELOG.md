@@ -139,3 +139,19 @@
 ## Version 1.0.1
 * Add better error message when `frame['duration']` in `glitch_gif` (from `glitch_this.py`) raises a key error
   Suggested by [#32](https://github.com/TotallyNotChase/glitch-this/issues/32)
+
+## Version 1.0.2
+* Minor changes related to versioning fixes
+
+  See: https://github.com/TotallyNotChase/glitch-this/pull/33
+  *Thanks to @[ghost](https://github.com/ghost)*
+
+## Version 1.0.3
+* Add typing overloads for `glitch_image` to choose return type based on `gif: bool` parameter.
+
+  Whether the function returns `Image` or `List[Image]` can be deduced by the type checker based on
+  the value of the `gif` parameter (when it is a boolean constant literal)
+
+  See: https://github.com/TotallyNotChase/glitch-this/pull/44
+
+  *Thanks to @[Matthieu-LAURENT39](https://github.com/Matthieu-LAURENT39)*
