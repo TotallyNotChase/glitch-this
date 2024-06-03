@@ -164,10 +164,8 @@ def main():
     # If output type is frames, we need to check if files exist for each frame
     if args.output_frames:
         for i in range(args.frames):
-            frame_path = (
-                f"{full_path.rsplit('.', 1)[0]}_{i}.{
-                    full_path.rsplit('.', 1)[1]}"
-            )
+            frame_path = os.path.join(
+                out_path, (f"{out_filename}_{i}.{out_fileex}"))
             if os.path.exists(frame_path) and not args.force:
                 raise Exception(
                     frame_path + " already exists\nCannot overwrite "
@@ -235,14 +233,11 @@ def main():
         )
     else:
         for i, frame in enumerate(glitch_img):
-            frame_path = (
-                f"{full_path.rsplit('.', 1)[0]}_{i}.{
-                    full_path.rsplit('.', 1)[1]}"
-            )
+            frame_path = os.path.join(
+                out_path, (f"{out_filename}_{i}.{out_fileex}"))
             frame.save(frame_path, compress_level=3)
         t3 = time()
-        print(f'Glitched frames saved in "{
-              full_path.rsplit(".", 1)[0]}_*.png"')
+        print(f'Glitched frames saved in "{out_filename}_*.png"')
     print(f"Time taken to glitch: {t1 - t0}")
     print(f"Time taken to save: {t3 - t2}")
     print(f"Total Time taken: {t3 - t0}")
