@@ -54,7 +54,8 @@ def is_latest(version: str) -> bool:
 def get_help(glitch_min: float, glitch_max: float) -> Dict:
     help_text = dict()
     help_text['path'] = 'Relative or Absolute string path to source image'
-    help_text['level'] = f'Number between {glitch_min} and {glitch_max}, inclusive, representing amount of glitchiness'
+    help_text['level'] = f'Number between {glitch_min} and {
+        glitch_max}, inclusive, representing amount of glitchiness'
     help_text['color'] = 'Include if you want to add color offset'
     help_text['scan'] = 'Include if you want to add scan lines effect\nDefaults to False'
     help_text['seed'] = 'Set a random seed for generating similar images across runs'
@@ -62,13 +63,16 @@ def get_help(glitch_min: float, glitch_max: float) -> Dict:
     help_text['frames'] = 'Number of frames to include in output GIF, default - 23'
     help_text['step'] = 'Glitch every step\'th frame of output GIF, default - 1 (every frame)'
     help_text['increment'] = 'Increment glitch_amount by given value after glitching every frame of output GIF'
-    help_text['cycle'] = f'Include if glitch_amount should be cycled back to {glitch_min} or {glitch_max} if it over/underflows'
+    help_text['cycle'] = f'Include if glitch_amount should be cycled back to {
+        glitch_min} or {glitch_max} if it over/underflows'
     help_text['duration'] = 'How long to display each frame (in centiseconds), default - 200'
     help_text['relative_duration'] = 'Multiply given value to input GIF\'s original duration and use that as duration'
     help_text['loop'] = 'How many times the glitched GIF should loop, default - 0 (infinite loop)'
     help_text['inputgif'] = 'Include if input image is GIF'
     help_text['force'] = 'Forcefully overwrite output file'
     help_text['out'] = 'Explcitly supply full/relative path to output file'
+    help_text["output_frames"] = "Output individual frames of the glitched GIF as separate images"
+
     return help_text
 
 
@@ -116,6 +120,8 @@ def main():
                            help=help_text['loop'])
     argparser.add_argument('-o', '--outfile', dest='outfile', metavar='Outfile_path', type=str,
                            help=help_text['out'])
+    argparser.add_argument("-of", "--output-frames", dest="output_frames",
+                           action="store_true", help=help_text["output_frames"])
     args = argparser.parse_args()
 
     # Sanity check inputs
@@ -127,27 +133,50 @@ def main():
         raise ValueError('Frames must be greater than 0')
     if not os.path.isfile(args.src_img_path):
         raise FileNotFoundError('No image found at given path')
+    if args.output_frames and not args.gif:
+        raise ValueError("Cannot output frames without GIF output enabled")
 
     # Set up full_path, for output saving location
     out_path, out_file = os.path.split(Path(args.src_img_path))
     out_filename, out_fileex = out_file.rsplit('.', 1)
     out_filename = 'glitched_' + out_filename
     # Output file extension should be '.gif' if output file is going to be a gif
-    out_fileex = 'gif' if args.gif else out_fileex
+    if args.gif:
+        out_fileex = "gif"
+    elif args.output_frames:
+        out_fileex = "png"
+    else:
+        out_fileex = out_fileex
+
     if args.outfile:
         # If output file path is already given
         # Overwrite the previous values
         out_path, out_file = os.path.split(Path(args.outfile))
-        if out_path != '' and not os.path.exists(out_path):
-            raise Exception('Given outfile path, ' +
-                            out_path + ', does not exist')
+        if out_path != "" and not os.path.exists(out_path):
+            raise Exception("Given outfile path, " +
+                            out_path + ", does not exist")
         # The extension in user provided outfile path is ignored
-        out_filename = out_file.rsplit('.', 1)[0]
+        out_filename = out_file.rsplit(".", 1)[0]
+
     # Now create the full path
-    full_path = os.path.join(out_path, f'{out_filename}.{out_fileex}')
-    if os.path.exists(full_path) and not args.force:
-        raise Exception(full_path + ' already exists\nCannot overwrite '
-                        'existing file unless -f or --force is included\nProgram Aborted')
+    full_path = os.path.join(out_path, f"{out_filename}.{out_fileex}")
+
+    # If output type is frames, we need to check if files exist for each frame
+    if args.output_frames:
+        for i in range(args.frames):
+            frame_path = os.path.join(
+                out_path, (f"{out_filename}_{i}.{out_fileex}"))
+            if os.path.exists(frame_path) and not args.force:
+                raise Exception(
+                    frame_path + " already exists\nCannot overwrite "
+                    "existing file unless -f or --force is included\nProgram Aborted"
+                )
+    else:
+        if os.path.exists(full_path) and not args.force:
+            raise Exception(
+                full_path + " already exists\nCannot overwrite "
+                "existing file unless -f or --force is included\nProgram Aborted"
+            )
 
     # Actual work begins here
     glitcher = ImageGlitcher()
@@ -187,24 +216,36 @@ def main():
         glitch_img.save(full_path, compress_level=3)
         t3 = time()
         print('Glitched Image saved in "{}"'.format(full_path))
-    else:
-        glitch_img[0].save(full_path,
-                           format='GIF',
-                           append_images=glitch_img[1:],
-                           save_all=True,
-                           duration=args.duration,
-                           loop=args.loop,
-                           compress_level=3)
+    elif not args.output_frames:
+        glitch_img[0].save(
+            full_path,
+            format="GIF",
+            append_images=glitch_img[1:],
+            save_all=True,
+            duration=args.duration,
+            loop=args.loop,
+            compress_level=3,
+        )
         t3 = time()
         print(
-            f'Glitched GIF saved in "{full_path}"\nFrames = {args.frames}, Duration = {args.duration}, Loop = {args.loop}')
-    print(f'Time taken to glitch: {t1 - t0}')
-    print(f'Time taken to save: {t3 - t2}')
-    print(f'Total Time taken: {t3 - t0}')
+            f'Glitched GIF saved in "{full_path}"\nFrames = {
+                args.frames}, Duration = {args.duration}, Loop = {args.loop}'
+        )
+    else:
+        for i, frame in enumerate(glitch_img):
+            frame_path = os.path.join(
+                out_path, (f"{out_filename}_{i}.{out_fileex}"))
+            frame.save(frame_path, compress_level=3)
+        t3 = time()
+        print(f'Glitched frames saved in "{out_filename}_*.png"')
+    print(f"Time taken to glitch: {t1 - t0}")
+    print(f"Time taken to save: {t3 - t2}")
+    print(f"Total Time taken: {t3 - t0}")
 
     # Let the user know if new version is available
     if not is_latest(current_version):
         print('A new version of "glitch-this" is available. Please consider upgrading via `pip3 install --upgrade glitch-this`')
+
 
 if __name__ == '__main__':
     main()

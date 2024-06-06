@@ -35,7 +35,7 @@ def test_loop():
     timesum = 0
     try:
         with open('Collections/imglog.txt', 'w') as logtxt:
-            while(1):
+            while (1):
                 t0 = time()
                 level = choice(amount_list)
                 """
@@ -85,13 +85,15 @@ def test_image_to_image():
     glitch_img.save(f'Collections/glitched_test_seed.{fmt}')
 
     # How about all of them?
-    glitch_img = glitcher.glitch_image(f'test.{fmt}', 2, color_offset=True, scan_lines=True, seed=42)
+    glitch_img = glitcher.glitch_image(
+        f'test.{fmt}', 2, color_offset=True, scan_lines=True, seed=42)
     glitch_img.save(f'Collections/glitched_test_all.{fmt}')
 
     # You can also pass an Image object inplace of the path
     # Applicable in all of the examples above
     img = Image.open(f'test.{fmt}')
-    glitch_img = glitcher.glitch_image(img, 2, color_offset=True, scan_lines=True, seed=42)
+    glitch_img = glitcher.glitch_image(
+        img, 2, color_offset=True, scan_lines=True, seed=42)
     glitch_img.save(f'Collections/glitched_test_all_obj.{fmt}')
 
 
@@ -123,7 +125,8 @@ def test_image_to_gif():
                         loop=LOOP)
 
     # Now try with scan_lines set to true
-    glitch_imgs = glitcher.glitch_image(f'test.{fmt}', 2, gif=True, scan_lines=True)
+    glitch_imgs = glitcher.glitch_image(
+        f'test.{fmt}', 2, gif=True, scan_lines=True)
     glitch_imgs[0].save('Collections/glitched_test_scan.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -132,7 +135,8 @@ def test_image_to_gif():
                         loop=LOOP)
 
     # Now try with color_offset set to true
-    glitch_imgs = glitcher.glitch_image(f'test.{fmt}', 2, gif=True, color_offset=True)
+    glitch_imgs = glitcher.glitch_image(
+        f'test.{fmt}', 2, gif=True, color_offset=True)
     glitch_imgs[0].save('Collections/glitched_test_color.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -153,7 +157,8 @@ def test_image_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll just stay at glitch_max for the remaining duration since cycle = False
-    glitch_imgs = glitcher.glitch_image(f'test.{fmt}', 2, glitch_change=1, gif=True)
+    glitch_imgs = glitcher.glitch_image(
+        f'test.{fmt}', 2, glitch_change=1, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_increment.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -165,7 +170,8 @@ def test_image_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll cycle back to glitch_min after that and keep incrementing by glitch_change again
-    glitch_imgs = glitcher.glitch_image(f'test.{fmt}', 2, glitch_change=1, cycle=True, gif=True)
+    glitch_imgs = glitcher.glitch_image(
+        f'test.{fmt}', 2, glitch_change=1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_increment_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -178,7 +184,8 @@ def test_image_to_gif():
     # in this case that's 1
     # It'll cycle back to glitch_max after that and keep incrementing (actually decrementing, in this case)
     # by glitch_change again
-    glitch_imgs = glitcher.glitch_image(f'test.{fmt}', 2, glitch_change=-1, cycle=True, gif=True)
+    glitch_imgs = glitcher.glitch_image(
+        f'test.{fmt}', 2, glitch_change=-1, cycle=True, gif=True)
     glitch_imgs[0].save('Collections/glitched_test_decrement_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -220,6 +227,115 @@ def test_image_to_gif():
                         loop=LOOP)
 
 
+def test_image_to_gif_frames():
+    """
+    Example of getting a glitched GIF and saving it as frames
+
+    We use glitch_level = 2 in this example
+    Please note you can use any number in between 1 and 10
+    Including floats, floats with one or two decimal precision
+    will work the best
+
+    We also are making infinitely looping GIFs
+    i.e loop = 0
+    You may change these to whatever you'd like
+    """
+
+    DURATION = (
+        200  # Set this to however many centiseconds each frame should be visible for
+    )
+    LOOP = 0  # Set this to how many times the gif should loop
+    # LOOP = 0 means infinite loop
+
+    # Make a directory to store the frames
+    if os.path.isdir("Collections/frames_test"):
+        shutil.rmtree("Collections/frames_test")
+    os.mkdir("Collections/frames_test")
+
+    # Loop over glitch_imgs and save each image as a PNG file
+    glitch_imgs = glitcher.glitch_image(f"test.{fmt}", 2, gif=True)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_{i}.png")
+
+    # Now try with scan_lines set to true
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}", 2, gif=True, scan_lines=True)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_scan_{i}.png")
+
+    # Now try with color_offset set to true
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}", 2, gif=True, color_offset=True)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_color_{i}.png")
+
+    # Now try with 10 frames
+    glitch_imgs = glitcher.glitch_image(f"test.{fmt}", 2, gif=True, frames=10)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_frames_{i}.png")
+
+    # Now try with increasing the glitch_amount by 1 every time, with cycle set to False
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}", 2, glitch_change=1, gif=True)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_increment_{i}.png")
+
+    # Now try with increasing the glitch_amount by 1 every time, with cycle set to True
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}", 2, glitch_change=1, cycle=True, gif=True
+    )
+    for i, img in enumerate(glitch_imgs):
+        img.save(
+            f"Collections/frames_test/glitched_test_increment_cycle_{i}.png")
+
+    # Now try with increasing the glitch_amount by -1 every time, with cycle set to True
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}", 2, glitch_change=-1, cycle=True, gif=True
+    )
+    for i, img in enumerate(glitch_imgs):
+        img.save(
+            f"Collections/frames_test/glitched_test_decrement_cycle_{i}.png")
+
+    # Now try with glitching only every 2nd frame
+    glitch_imgs = glitcher.glitch_image(f"test.{fmt}", 2, step=2, gif=True)
+    for i, img in enumerate(glitch_imgs):
+        img.save(f"Collections/frames_test/glitched_test_step_{i}.png")
+
+    # How about all of the above?
+    glitch_imgs = glitcher.glitch_image(
+        f"test.{fmt}",
+        2,
+        glitch_change=-1,
+        cycle=True,
+        gif=True,
+        scan_lines=True,
+        color_offset=True,
+        frames=10,
+        step=2,
+    )
+    glitch_imgs[0].save(
+        "Collections/glitched_test_all.gif",
+    )
+
+    # You can also pass an Image object inplace of the path
+    # Applicable in all of the examples above
+    img = Image.open(f"test.{fmt}")
+    glitch_imgs = glitcher.glitch_image(
+        img,
+        2,
+        glitch_change=-1,
+        cycle=True,
+        gif=True,
+        scan_lines=True,
+        color_offset=True,
+        frames=10,
+        step=2,
+    )
+    glitch_imgs[0].save(
+        "Collections/glitched_test_all_obj.gif",
+    )
+
+
 def test_gif_to_gif():
     """
      Example of getting a glitched GIF (from another GIF)
@@ -248,7 +364,8 @@ def test_gif_to_gif():
                         duration=DURATION,
                         loop=LOOP)
     # Now try with scan_lines set to true
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, scan_lines=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, scan_lines=True)
     glitch_imgs[0].save('Collections/glitched_gif_scan.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -257,7 +374,8 @@ def test_gif_to_gif():
                         loop=LOOP)
 
     # Now try with color_offset set to true
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, color_offset=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, color_offset=True)
     glitch_imgs[0].save('Collections/glitched_gif_color.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -269,7 +387,8 @@ def test_gif_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll just stay at glitch_max for the remaining duration since cycle = False
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=1)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, glitch_change=1)
     glitch_imgs[0].save('Collections/glitched_gif_increment.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -281,7 +400,8 @@ def test_gif_to_gif():
     # glitch_amount will reach glitch_max after (glitch_max - glitch_amount)/glitch_change glitches
     # in this case that's 8
     # It'll cycle back to glitch_min after that and keep incrementing by glitch_change again
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=1, cycle=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, glitch_change=1, cycle=True)
     glitch_imgs[0].save('Collections/glitched_gif_increment_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -294,7 +414,8 @@ def test_gif_to_gif():
     # in this case that's 1
     # It'll cycle back to glitch_max after that and keep incrementing (actually decrementing, in this case)
     # by glitch_change again
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, glitch_change=-1, cycle=True)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, glitch_change=-1, cycle=True)
     glitch_imgs[0].save('Collections/glitched_gif_decrement_cycle.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -305,7 +426,8 @@ def test_gif_to_gif():
     # Now try with glitching only every 2nd frame
     # There will still be the same number of frames as in the source gif
     # But only every 2nd of the frames will be glitched
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, step=2)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, step=2)
     glitch_imgs[0].save('Collections/glitched_gif_step.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -315,7 +437,8 @@ def test_gif_to_gif():
 
     # Now try glitching with a seed
     # This will base the RNG used within the glitching on given seed
-    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif('test.gif', 2, seed=42)
+    glitch_imgs, src_duration, src_frames = glitcher.glitch_gif(
+        'test.gif', 2, seed=42)
     glitch_imgs[0].save('Collections/glitched_gif_seed.gif',
                         format='GIF',
                         append_images=glitch_imgs[1:],
@@ -368,6 +491,12 @@ if __name__ == '__main__':
     test_image_to_image()
     t1 = time()
     print(f'Done! Time taken: {t1 - t0}')
+
+    print("Testing image to GIF frames glitching....")
+    t0 = time()
+    test_image_to_gif_frames()
+    t1 = time()
+    print(f"Done! Time taken: {t1 - t0}")
 
     print('Testing image to GIF glitching....')
     t0 = time()
